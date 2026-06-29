@@ -1,68 +1,36 @@
-# roadmap.md — HelpDesk Web
+# Roadmap
 
-> El orden de las features respeta la progresión académica del proyecto
-> (semanas 6 a 16). Cada feature debe completar su spec antes de iniciar
-> la implementación.
+_Orden y estado de las features. Es la vista de "qué hay hecho, qué toca ahora y qué viene". Cada entrada apunta a su carpeta en `features/`._
 
-## Estado
+## Hecho ✅
 
-| Símbolo | Significado       |
-|---------|-------------------|
-| ✅      | Completado        |
-| 🔄      | En progreso       |
-| ⬜      | Pendiente         |
+_Features completadas, en orden de implementación._
 
----
+1. **000 · Propuesta de aplicación** — define el problema, público objetivo y funcionalidades principales de HelpDesk Web.
+2. **001 · Diseño de base de datos** — modelo de 8 entidades normalizadas, relaciones, reglas de negocio y diagrama ER.
+3. **002 · Selección de ORM** — comparación SQLAlchemy vs Django ORM y justificación técnica de la elección.
+4. **003 · Constitution SDD** — estructura spec/ con mission.md, tech-stack.md y roadmap.md.
 
-## Fase 0 — Fundamentos (Semanas 3–5) ✅
+## Siguiente 🔜
 
-| Entregable                        | Semana | Estado |
-|-----------------------------------|--------|--------|
-| Propuesta de aplicación           | 3      | ✅     |
-| Diseño de base de datos (taller)  | 4      | ✅     |
-| Selección de ORM (foro)           | 5      | ✅     |
-| Estructura SDD (spec/)            | 5      | 🔄     |
+_Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
----
+5. **004 · Setup backend** — configuración inicial de FastAPI + SQLAlchemy + Alembic con conexión a MySQL.
 
-## Fase 1 — Backend base (Semanas 6–8) ⬜
+## Backlog / ideas 💡
 
-| Feature                          | Carpeta                        | Semana | Estado |
-|----------------------------------|--------------------------------|--------|--------|
-| Configuración FastAPI + SQLAlchemy | 001-setup-backend            | 6      | ⬜     |
-| Autenticación y roles            | 002-autenticacion              | 6      | ⬜     |
-| CRUD Usuarios                    | 003-crud-usuarios              | 7      | ⬜     |
-| CRUD Tickets                     | 004-crud-tickets               | 7      | ⬜     |
-| Bandeja por rol                  | 005-bandeja-rol                | 8      | ⬜     |
+_Sin comprometer ni ordenar del todo. Ideas que respetan la constitución._
 
----
+- **005 · Autenticación y roles** — login con JWT, asignación de rol por administrador, protección de endpoints.
+- **006 · CRUD Usuarios** — crear, consultar, desactivar usuarios; gestión de sucursales y roles.
+- **007 · CRUD Tickets** — registrar, listar y actualizar tickets; enrutamiento a bandeja por categoría.
+- **008 · Bandeja por rol** — vista filtrada por rol (técnico, mesa de ayuda); tomar ticket manualmente.
+- **009 · Historial de estados** — registro automático de cada cambio de estado con fecha y responsable.
+- **010 · Comentarios** — agregar y consultar comentarios de seguimiento en cada ticket.
+- **011 · Notificaciones** — generar notificación automática al asignar ticket o cambiar estado.
+- **012 · Métricas básicas** — tiempo promedio de resolución, tickets por categoría y por sucursal.
+- **013 · Frontend login** — pantalla de inicio de sesión en Ionic conectada al backend.
+- **014 · Frontend tickets** — pantallas de crear ticket, bandeja y detalle/seguimiento.
+- **015 · PWA y despliegue** — configuración de service worker, instalación y despliegue final.
 
-## Fase 2 — Lógica de negocio (Semanas 9–11) ⬜
-
-| Feature                          | Carpeta                        | Semana | Estado |
-|----------------------------------|--------------------------------|--------|--------|
-| Historial de estados             | 006-historial-estado           | 9      | ⬜     |
-| Comentarios en tickets           | 007-comentarios                | 9      | ⬜     |
-| Notificaciones                   | 008-notificaciones             | 10     | ⬜     |
-| Métricas básicas                 | 009-metricas                   | 11     | ⬜     |
-
----
-
-## Fase 3 — Frontend Ionic (Semanas 12–14) ⬜
-
-| Feature                          | Carpeta                        | Semana | Estado |
-|----------------------------------|--------------------------------|--------|--------|
-| Login y navegación base          | 010-frontend-login             | 12     | ⬜     |
-| Pantalla crear ticket            | 011-frontend-crear-ticket      | 12     | ⬜     |
-| Pantalla bandeja de tickets      | 012-frontend-bandeja           | 13     | ⬜     |
-| Pantalla detalle y seguimiento   | 013-frontend-detalle           | 13     | ⬜     |
-| Notificaciones PWA               | 014-frontend-notificaciones    | 14     | ⬜     |
-
----
-
-## Fase 4 — Cierre (Semanas 15–16) ⬜
-
-| Entregable                       | Semana | Estado |
-|----------------------------------|--------|--------|
-| Pruebas e integración            | 15     | ⬜     |
-| Documentación final y despliegue | 16     | ⬜     |
+> Cada feature nueva se crea como `features/NNN-nombre-feature/` con `spec.md`, `plan.md` y `tasks.md` antes de tocar código.
