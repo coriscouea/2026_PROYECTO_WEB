@@ -1,0 +1,20 @@
+# Entorno virtual Python
+backend/venv/
+
+# Variables de entorno — nunca subir al repositorio
+backend/.env
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Migraciones generadas automáticamente (opcional)
+backend/alembic/versions/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
