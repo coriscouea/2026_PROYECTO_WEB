@@ -70,8 +70,8 @@ y métricas solo tienen sentido si sabemos quién ejecuta cada acción.
 
 | Token         | Vigencia  | Propósito                                              |
 |---------------|-----------|--------------------------------------------------------|
-| Access token  | 15 min    | Autoriza cada solicitud protegida                      |
-| Refresh token | 7 días    | Obtiene nuevo access token sin requerir nuevo login    |
+| Access token  | 30 min    | Autoriza cada solicitud protegida                      |
+| Refresh token | 1 días    | Obtiene nuevo access token sin requerir nuevo login    |
 
 ## Clasificación de endpoints: públicos vs protegidos
 
