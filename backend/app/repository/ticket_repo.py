@@ -48,7 +48,7 @@ def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:
     return (
         db.query(Ticket)
         .filter(Ticket.activo == True)
-        .offset(ooset)
+        .offset(offset)
         .limit(limit)
         .all()
     )
@@ -63,7 +63,7 @@ def obtener_ticket(db: Session, id_ticket: int) -> Ticket | None:
     return (
         db.query(Ticket)
         .filter(Ticket.id_ticket == id_ticket, Ticket.activo == True)
-        .firts()
+        .first()
     )
 
 def actualizar_ticket(db: Session, ticket: Ticket, datos: TicketUpdate) -> Ticket:

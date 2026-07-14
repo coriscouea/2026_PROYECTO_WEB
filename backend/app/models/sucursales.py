@@ -26,7 +26,7 @@ class Sucursal(Base):
     # unique=True    → no pueden existir dos sucursales con el mismo nombre
     # ---------------------------------------------------------
 
-    nombre_sucursal = Column(String(100), nullable=False, unique=True)
+    nombre = Column(String(100), nullable=False, unique=True)
 
     # ---------------------------------------------------------
     # ciudad: ciudad donde está ubicada la sucursal

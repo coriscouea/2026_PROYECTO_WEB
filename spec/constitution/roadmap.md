@@ -18,6 +18,7 @@ _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 5. **004 · Setup backend** — configuración inicial de FastAPI + SQLAlchemy + Alembic con conexión a MySQL.
 6. **005 · CRUD Tickets** — endpoints Create, Read, Update y soft delete de tickets; validaciones, reglas de negocio y pruebas Postman.
 7. **006 · CRUD Usuarios** — crear, consultar, desactivar usuarios; gestión de sucursales y roles.
+8. **008 · Optimización del backend** — eager loading, caché cache-aside, BackgroundTasks y JWT sin consultas redundantes.
 
 ## Backlog / ideas 💡
 

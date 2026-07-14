@@ -104,6 +104,14 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 - **Lazy loading** — carga diferida de relaciones en SQLAlchemy para evitar el problema N+1.
 - **Encriptación extremo a extremo** — para datos sensibles en tránsito entre Ionic y FastAPI.
 
+## Optimizaciones de backend
+
+- **Eager loading** — `joinedload` en SQLAlchemy para relaciones que siempre se necesitan (categoria, solicitante, tecnico en Tickets). Previene el problema N+1.
+- **Lazy loading** — comportamiento por defecto para relaciones que solo se necesitan en casos específicos (comentarios, historial).
+- **Caché cache-aside** — `functools.lru_cache` para datos estáticos (categorías, roles). TTL de 300 segundos. Redis en versión futura (feature 017).
+- **BackgroundTasks** — FastAPI `BackgroundTasks` para procesamiento asíncrono de notificaciones sin bloquear la respuesta al cliente.
+- **JWT sin consultas redundantes** — el rol del usuario viaja en el payload del token; el middleware de autorización no consulta la BD en cada request.
+
 ## Autenticación y autorización
 
 - **Mecanismo:** JWT (JSON Web Token) con algoritmo HS256.

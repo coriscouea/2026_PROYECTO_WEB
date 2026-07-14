@@ -43,9 +43,9 @@ def svc_crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
     # Si no existe devuelve 400 Bad Request
     # ---------------------------------------------------------
 
-    categoria = db.query(Categoria)
-    .filter(Categoria.id_categoria == datos.id_categoria)
-    .first()
+    categoria = db.query(Categoria).filter(
+        Categoria.id_categoria == datos.id_categoria
+    ).first()
 
     if not categoria:
         raise HTTPException(
@@ -57,9 +57,10 @@ def svc_crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
     # Verifica que el usuario solicitante existe y está activo
     # ---------------------------------------------------------
 
-    usuario = db.query(Usuario)
-    .filter(Usuario.id_usuario == datos.id_usuario, Usuario.activo == True)
-    .first()
+    usuario = db.query(Usuario).filter(
+        Usuario.id_usuario == datos.id_usuario, 
+        Usuario.activo == True
+    ).first()
 
     if not usuario:
         raise HTTPException(
@@ -117,7 +118,7 @@ def svc_actualizar_ticket(db: Session, id_ticket: int, datos: TicketUpdate) -> T
         estados_permitidos = TRANSICIONES_VALIDAS.get(estado_actual,[])
         if datos.estado not in estados_permitidos:
             raise HTTPException(
-                status_code = status.HTTP_422_UNPROCESSABLE_CONTENT_ENTITY,
+                status_code = status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail = f"No se puede cambiar el estado de '{estado_actual}' a '{datos.estado}'"
             )   
     return actualizar_ticket(db, ticket, datos)

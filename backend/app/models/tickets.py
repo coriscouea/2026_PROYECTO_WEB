@@ -118,6 +118,8 @@ class Ticket(Base):
     categoria = relationship("Categoria")
     solicitante = relationship("Usuario", foreign_keys=[id_usuario])
     tecnico = relationship("Usuario", foreign_keys=[id_tecnico_asignado])
+    comentarios = relationship("Comentario", back_populates="ticket")
+    historial   = relationship("HistorialEstado", back_populates="ticket")
 
     # ---------------------------------------------------------
     # Índices estratégicos — aceleran las consultas más frecuentes

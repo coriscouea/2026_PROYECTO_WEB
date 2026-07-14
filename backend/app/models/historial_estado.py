@@ -64,7 +64,7 @@ class HistorialEstado(Base):
     # Relaciones con otras tablas
     # ---------------------------------------------------------
 
-    ticket = relationship("Ticket", back_populates="historiales")
+    ticket = relationship("Ticket", back_populates="historial")
     usuario = relationship("Usuario")
 
     # ---------------------------------------------------------

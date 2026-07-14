@@ -7,8 +7,20 @@
 # automática de Swagger UI en /docs.
 # =============================================================
 
-from fastapi import FastAPI             # clase principal del framework FastAPI 
-from app.database import engine, Base   # motor de conexión y clase base de modelos 
+from fastapi import FastAPI                                 # clase principal del framework FastAPI 
+from app.database import engine, Base                       # motor de conexión y clase base de modelos
+
+# Importar todos los modelos para que SQLAlchemy los registre
+from app.models.roles import Rol
+from app.models.sucursales import Sucursal
+from app.models.categorias import Categoria
+from app.models.usuario import Usuario
+from app.models.tickets import Ticket
+from app.models.comentarios import Comentario
+from app.models.historial_estado import HistorialEstado
+from app.models.notificaciones import Notificacion
+
+from app.routes.tickets import router as tickets_router     # Importar el router de tickets
 
 # -------------------------------------------------------------
 # Crea la instancia principal de la aplicación FastAPI
@@ -26,9 +38,11 @@ app = FastAPI(
 # SQLAlchemy lee los modelos que heredan de Base y genera
 # las tablas correspondientes en MySQL si no existen aún
 # Nota: en producción esto se reemplaza por migraciones Alembic
+# Registrar el router
 # -------------------------------------------------------------
 
 Base.metadata.create_all(bind=engine)
+app.include_router(tickets_router)
 
 # -------------------------------------------------------------
 # Endpoint raíz de verificación

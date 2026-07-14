@@ -27,4 +27,4 @@ class Categoria(Base):
     # unique=True    → no pueden existir dos categorías con el mismo nombre
     # ---------------------------------------------------------
 
-    nombre_categoria = Column(String(50), nullable=False, unique=True)
+    nombre = Column(String(50), nullable=False, unique=True)
