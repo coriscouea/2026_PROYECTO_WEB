@@ -20,7 +20,7 @@ from app.services.usuario_svc import (
 )
 
 # -------------------------------------------------------------
-# Router — agrupa todos los endpoints bajo /api/v1/usuarios
+# Router — agrupa todos los endpoints de usuarios bajo /api/v1/usuarios
 # -------------------------------------------------------------
 
 router = APIRouter(

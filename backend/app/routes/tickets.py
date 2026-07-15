@@ -19,6 +19,7 @@ from app.services.ticket_svc import (
     svc_actualizar_ticket,
     svc_desactivar_ticket
 )
+from app.services.notificacion_svc import crear_notificacion
 
 # -------------------------------------------------------------
 # Router — agrupa todos los endpoints de tickets bajo /api/v1/tickets
@@ -43,6 +44,19 @@ def crear_ticket(
     db: Session = Depends(get_db)
 ):
     ticket = svc_crear_ticket(db, datos)
+
+    # ---------------------------------------------------------
+    # Agrega la notificación como tarea en segundo plano
+    # El cliente recibe 201 inmediatamente
+    # La notificación se procesa después (asíncrono)
+    # ---------------------------------------------------------
+
+    background_tasks.add_task(
+        crear_notificacion,
+        id_usuario  = datos.id_usuario,
+        id_ticket   = ticket.id_ticket,
+        mensaje     = f"Tu ticket #{ticket.id_ticket} '{ticket.titulo}' fue creado correctamente"
+    )
     return RespuestaExito(
         datos=TicketResponse.model_validate(ticket),
         mensaje="Ticket creado correctamente"

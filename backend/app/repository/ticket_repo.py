@@ -9,6 +9,7 @@
 # =============================================================
 
 from sqlalchemy.orm import Session                          # sesión de base de datos
+from sqlalchemy.orm import joinedload                       # 
 from app.models.tickets import Ticket                       # sesión de base de datos
 from app.schemas.ticket import TicketCreate, TicketUpdate   # schemas Pydantic
 from datetime import datetime, timezone                               # para registrar fechas de actualización
@@ -40,13 +41,19 @@ def crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
 def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:      
 
     # ---------------------------------------------------------
-    # Busca un ticket por su ID
-    # Devuelve None si no existe — el service maneja el 404
+    # Lista tickets activos con paginación
+    # joinedload carga las relaciones en una sola consulta
+    # evitando el problema N+1 (feature 008 · Optimización)
     # ---------------------------------------------------------
 
     offset = (page - 1) * limit
     return (
         db.query(Ticket)
+        .options(
+            joinedload(Ticket.categoria),
+            joinedload(Ticket.solicitante),
+            joinedload(Ticket.tecnico)
+        )
         .filter(Ticket.activo == True)
         .offset(offset)
         .limit(limit)
@@ -54,16 +61,20 @@ def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:
     )
 
 def obtener_ticket(db: Session, id_ticket: int) -> Ticket | None:
-
+    
     # ---------------------------------------------------------
-    # Busca un ticket por su ID
-    # Devuelve None si no existe — el service maneja el 404
+    # Busca un ticket por ID con eager loading
     # ---------------------------------------------------------    
 
     return (
         db.query(Ticket)
+        .options(
+            joinedload(Ticket.categoria),
+            joinedload(Ticket.solicitante),
+            joinedload(Ticket.tecnico)
+        )
         .filter(Ticket.id_ticket == id_ticket, Ticket.activo == True)
-        .first()
+
     )
 
 def actualizar_ticket(db: Session, ticket: Ticket, datos: TicketUpdate) -> Ticket:

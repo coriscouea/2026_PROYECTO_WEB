@@ -20,8 +20,9 @@ from app.models.comentarios import Comentario
 from app.models.historial_estado import HistorialEstado
 from app.models.notificaciones import Notificacion
 
-from app.routes.tickets import router as tickets_router     # Importar el router de tickets
-from app.routes.usuarios import router as usuarios_router   # Importar el router de tickets
+from app.routes.tickets import router as tickets_router         # Importar el router de tickets
+from app.routes.usuarios import router as usuarios_router       # Importar el router de usuarios
+from app.routes.categorias import router as categorias_router   # Importar el router de categorias
 
 # -------------------------------------------------------------
 # Crea la instancia principal de la aplicación FastAPI
@@ -42,9 +43,10 @@ app = FastAPI(
 # Registrar el router
 # -------------------------------------------------------------
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind = engine)
 app.include_router(tickets_router)
 app.include_router(usuarios_router)
+app.include_router(categorias_router)
 
 # -------------------------------------------------------------
 # Endpoint raíz de verificación
