@@ -23,17 +23,17 @@ esté funcionando correctamente.
 Cada operación CRUD recorre las siguientes capas en orden:
 
 ```
-[routes/tickets.py]       ← recibe la solicitud HTTP, valida Pydantic, devuelve respuesta
+[routes/tickets.py]             ← recibe la solicitud HTTP, valida Pydantic, devuelve respuesta
         ↓
-[services/ticket_svc.py]  ← aplica reglas de negocio antes de tocar datos
+[services/ticket_svc.py]        ← aplica reglas de negocio antes de tocar datos
         ↓
-[repository/ticket_repo.py] ← ejecuta operaciones SQLAlchemy contra MySQL
+[repository/ticket_repo.py]     ← ejecuta operaciones SQLAlchemy contra MySQL
         ↓
-[models/ticket.py]        ← define la entidad y sus restricciones
+[models/ticket.py]              ← define la entidad y sus restricciones
 ```
 
-Ninguna regla de negocio vive en `routes/` ni en `repository/`.
-Ninguna consulta SQL vive fuera de `repository/`.
+Ninguna regla de negocio vive en routes/ ni en repository/.
+Ninguna consulta SQL vive fuera de repository/.
 
 ## Endpoints
 
@@ -49,10 +49,10 @@ Ninguna consulta SQL vive fuera de `repository/`.
 ## Criterios de aceptación
 
 **Create**
-- [ ] `POST /api/v1/tickets` crea un ticket con estado `pendiente` por defecto.
-- [ ] El campo `id_tecnico_asignado` inicia en `None` al crear el ticket.
-- [ ] La respuesta exitosa devuelve **201 Created** con el ticket completo en `{exito, datos, mensaje}`.
-- [ ] Si el `titulo` o `descripcion` contienen etiquetas HTML, se sanitizan antes de persistir.
+- [X] `POST /api/v1/tickets` crea un ticket con estado `pendiente` por defecto.
+- [X] El campo `id_tecnico_asignado` inicia en `None` al crear el ticket.
+- [X] La respuesta exitosa devuelve **201 Created** con el ticket completo en `{exito, datos, mensaje}`.
+- [] Si el `titulo` o `descripcion` contienen etiquetas HTML, se sanitizan antes de persistir.
 
 **Read**
 - [ ] `GET /api/v1/tickets` devuelve solo los tickets visibles al rol del usuario autenticado.

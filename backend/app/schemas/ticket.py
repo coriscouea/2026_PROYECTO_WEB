@@ -7,9 +7,9 @@
 # tipo, formato y longitud antes de que los datos lleguen
 # a la capa de servicio o repositorio.
 #
-# TicketCreate  → datos que recibe POST /api/v1/tickets
-# TicketUpdate  → datos que recibe PATCH /api/v1/tickets/{id}
-# TicketResponse → datos que devuelve la API al consultar
+# TicketCreate      → datos que recibe POST /api/v1/tickets
+# TicketUpdate      → datos que recibe PATCH /api/v1/tickets/{id}
+# TicketResponse    → datos que devuelve la API al consultar
 # =============================================================
 
 from pydantic import BaseModel, Field   # clase base para schemas de validación
@@ -41,15 +41,15 @@ class TicketCreate(BaseModel):          # nombre de la clase que representa el e
 
     titulo: str = Field(                # titulo: obligatorio, mínimo 5 chars, máximo 150
         ...,
-        min_length = 5, 
-        max_length = 150, 
+        min_length  = 5, 
+        max_length  = 150, 
         description = "Título del requerimiento"
     )
 
     descripcion: str = Field(           # descripcion: obligatorio, mínimo 10 chars
         ...,
-        min_length = 10, 
-        description = "Descripción detallada del requerimiento"
+        min_length   = 10, 
+        description  = "Descripción detallada del requerimiento"
     )
 
     prioridad: PrioridadEnum = Field(   # prioridad: obligatorio, debe ser uno de los valores del enum 

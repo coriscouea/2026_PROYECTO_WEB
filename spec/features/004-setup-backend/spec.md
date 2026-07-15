@@ -16,12 +16,12 @@ notificaciones. Debe completarse antes de tocar cualquier lógica de negocio.
 
 ## Criterios de aceptación
 
-- [ ] El servidor FastAPI arranca sin errores con `uvicorn app.main:app --reload`.
-- [ ] SQLAlchemy se conecta exitosamente a MySQL y no lanza excepciones al iniciar.
-- [ ] Las 8 entidades (Usuario, Roles, Sucursales, Categorías, Tickets, Comentarios, Historial_Estado, Notificaciones) existen como clases en `backend/app/models/`.
-- [ ] `alembic upgrade head` crea las tablas correctamente en la base de datos.
-- [ ] La documentación Swagger UI es accesible en `http://localhost:8000/docs`.
-- [ ] Las variables de entorno (host, puerto, credenciales MySQL) se leen desde `.env` y no están hardcodeadas.
+- [X] El servidor FastAPI arranca sin errores con `uvicorn app.main:app --reload`.
+- [X] SQLAlchemy se conecta exitosamente a MySQL y no lanza excepciones al iniciar.
+- [X] Las 8 entidades (Usuario, Roles, Sucursales, Categorías, Tickets, Comentarios, Historial_Estado, Notificaciones) existen como clases en `backend/app/models/`.
+- [X] `alembic upgrade head` crea las tablas correctamente en la base de datos.
+- [X] La documentación Swagger UI es accesible en `http://localhost:8000/docs`.
+- [X] Las variables de entorno (host, puerto, credenciales MySQL) se leen desde `.env` y no están hardcodeadas.
 
 ## Fuera de alcance
 

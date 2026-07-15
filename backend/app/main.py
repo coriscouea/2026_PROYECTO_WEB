@@ -21,6 +21,7 @@ from app.models.historial_estado import HistorialEstado
 from app.models.notificaciones import Notificacion
 
 from app.routes.tickets import router as tickets_router     # Importar el router de tickets
+from app.routes.usuarios import router as usuarios_router   # Importar el router de tickets
 
 # -------------------------------------------------------------
 # Crea la instancia principal de la aplicación FastAPI
@@ -43,6 +44,7 @@ app = FastAPI(
 
 Base.metadata.create_all(bind=engine)
 app.include_router(tickets_router)
+app.include_router(usuarios_router)
 
 # -------------------------------------------------------------
 # Endpoint raíz de verificación

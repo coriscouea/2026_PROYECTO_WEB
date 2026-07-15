@@ -2,27 +2,27 @@
 
 _Checklist accionable derivada del `plan.md`. Tareas pequeñas y concretas; marca `[x]` al completarlas._
 
-- [ ] Crear carpeta `backend/` y el entorno virtual de Python (`python -m venv venv`).
-- [ ] Crear `backend/requirements.txt` con: fastapi, uvicorn, sqlalchemy, alembic, pymysql, python-dotenv, pydantic.
-- [ ] Instalar dependencias (`pip install -r requirements.txt`).
-- [ ] Crear `backend/.env.example` con las variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
-- [ ] Crear `backend/app/database.py` con la conexión SQLAlchemy a MySQL.
-- [ ] Crear los modelos en `backend/app/models/`:
-  - [ ] `usuario.py` — entidad Usuario con 8 atributos y FKs a Roles y Sucursales.
-  - [ ] `roles.py` — entidad Roles.
-  - [ ] `sucursales.py` — entidad Sucursales.
-  - [ ] `categorias.py` — entidad Categorías.
-  - [ ] `tickets.py` — entidad Tickets con dos FKs hacia Usuario.
-  - [ ] `comentarios.py` — entidad Comentarios.
-  - [ ] `historial_estado.py` — entidad Historial_Estado.
-  - [ ] `notificaciones.py` — entidad Notificaciones.
-- [ ] Inicializar Alembic (`alembic init alembic`) y configurar `alembic.ini` y `env.py`.
-- [ ] Generar migración inicial (`alembic revision --autogenerate -m "initial_schema"`).
-- [ ] Aplicar migración (`alembic upgrade head`) y verificar tablas en MySQL.
-- [ ] Crear `backend/app/main.py` con FastAPI y Swagger habilitado.
-- [ ] Verificar que `http://localhost:8000/docs` responde correctamente.
-- [ ] Validar contra los criterios de aceptación de `spec.md`.
-- [ ] Mover la feature a "Hecho" en `../../constitution/roadmap.md`.
+- [X] Crear carpeta `backend/` y el entorno virtual de Python (`python -m venv venv`).
+- [X] Crear `backend/requirements.txt` con: fastapi, uvicorn, sqlalchemy, alembic, pymysql, python-dotenv, pydantic.
+- [X] Instalar dependencias (`pip install -r requirements.txt`).
+- [X] Crear `backend/.env.example` con las variables: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
+- [X] Crear `backend/app/database.py` con la conexión SQLAlchemy a MySQL.
+- [X] Crear los modelos en `backend/app/models/`:
+  - [X] `usuario.py` — entidad Usuario con 8 atributos y FKs a Roles y Sucursales.
+  - [X] `roles.py` — entidad Roles.
+  - [X] `sucursales.py` — entidad Sucursales.
+  - [X] `categorias.py` — entidad Categorías.
+  - [X] `tickets.py` — entidad Tickets con dos FKs hacia Usuario.
+  - [X] `comentarios.py` — entidad Comentarios.
+  - [X] `historial_estado.py` — entidad Historial_Estado.
+  - [X] `notificaciones.py` — entidad Notificaciones.
+- [X] Inicializar Alembic (`alembic init alembic`) y configurar `alembic.ini` y `env.py`.
+- [X] Generar migración inicial (`alembic revision --autogenerate -m "initial_schema"`).
+- [X] Aplicar migración (`alembic upgrade head`) y verificar tablas en MySQL.
+- [X] Crear `backend/app/main.py` con FastAPI y Swagger habilitado.
+- [X] Verificar que `http://localhost:8000/docs` responde correctamente.
+- [X] Validar contra los criterios de aceptación de `spec.md`.
+- [X] Mover la feature a "Hecho" en `../../constitution/roadmap.md`.
 
 ## Mantenimiento (checklist recurrente)
 
