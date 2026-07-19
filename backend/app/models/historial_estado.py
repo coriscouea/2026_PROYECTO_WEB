@@ -15,7 +15,7 @@ from sqlalchemy.sql import func                     # para usar funciones SQL co
 from app.database import Base                       # clase base declarativa
 
 class HistorialEstado(Base):  
-    __tablename__ = " historial_estado"  # Nombre de la tabla en MySQL
+    __tablename__ = "historial_estado"  # Nombre de la tabla en MySQL
 
     # ---------------------------------------------------------
     # id_historial: clave primaria entera, autoincremental
@@ -43,7 +43,7 @@ class HistorialEstado(Base):
     # nullable=False → siempre debe registrarse el estado nuevo
     # ---------------------------------------------------------
 
-    estado_nuevo = Column(Enum("pendiente","en_proceso",))    
+    estado_nuevo = Column(Enum("pendiente","en_proceso","finalizado"))    
 
     # ---------------------------------------------------------
     # id_usuario: quien realizó el cambio de estado

@@ -76,7 +76,10 @@ def listar_tickets(
 ):
     tickets = svc_listar_tickets(db, page, limit)
     return RespuestaExito(
-        datos=[TicketResponse.model_validate(t) for t in tickets],
+        datos=[{
+            **TicketResponse.model_validate(t).model_dump(),
+            "nombre_categoria": t.categoria.nombre if t.categoria else None
+        } for t in tickets],
         mensaje=f"{len(tickets)} tickets encontrados"
     )
 

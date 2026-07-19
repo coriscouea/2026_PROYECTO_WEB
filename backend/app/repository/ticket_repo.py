@@ -52,7 +52,7 @@ def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:
         .options(
             joinedload(Ticket.categoria),
             joinedload(Ticket.solicitante),
-            joinedload(Ticket.tecnico)
+           joinedload(Ticket.tecnico)
         )
         .filter(Ticket.activo == True)
         .offset(offset)

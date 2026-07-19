@@ -44,7 +44,7 @@ DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB
 # Se crea una sola vez y se reutiliza en toda la aplicación
 # -------------------------------------------------------------
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, echo=True)
 
 # -------------------------------------------------------------
 # Crea la fábrica de sesiones

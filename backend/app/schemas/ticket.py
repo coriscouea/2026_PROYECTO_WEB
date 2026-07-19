@@ -107,6 +107,7 @@ class TicketResponse(BaseModel):                    # nombre de la clase que rep
     prioridad                   : PrioridadEnum
     estado                      : EstadoEnum
     id_categoria                : int
+    nombre_categoria            : Optional[str] = None
     id_usuario                  : int
     id_tecnico_asignado         : Optional[int] = None
     fecha_creacion              : Optional[datetime] = None
