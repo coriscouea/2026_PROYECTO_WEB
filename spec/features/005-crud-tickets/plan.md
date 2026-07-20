@@ -25,7 +25,7 @@ conforme a `constitution/tech-stack.md`.
 5. Crear el router de tickets — `backend/app/routes/tickets.py`
    con los 5 endpoints; solo recibe, valida con Pydantic e invoca el servicio.
 6. Registrar el router en FastAPI — `backend/app/main.py`.
-7. Probar cada endpoint en Postman y registrar evidencias.
+7. Probar en Swagger.
 
 ## Decisiones
 
@@ -37,6 +37,8 @@ conforme a `constitution/tech-stack.md`.
 - **Paginación con `page` y `limit`** — el GET de listado soporta paginación
   para no retornar todos los tickets en una sola respuesta, protegiendo
   el rendimiento cuando el volumen crezca.
+- **joinedload** — carga categoria, solicitante y tecnico en una sola consulta (previene N+1).
+- **422 para transición inválida** — formato correcto pero valor viola regla de negocio.
 - **Respuesta JSON estandarizada** — todos los endpoints devuelven
   `{status, message, data}` para facilitar el consumo desde Ionic.
 

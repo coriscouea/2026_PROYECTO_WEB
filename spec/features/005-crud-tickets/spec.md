@@ -1,6 +1,6 @@
 # 005 · CRUD Tickets
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -27,13 +27,10 @@ Cada operación CRUD recorre las siguientes capas en orden:
         ↓
 [services/ticket_svc.py]        ← aplica reglas de negocio antes de tocar datos
         ↓
-[repository/ticket_repo.py]     ← ejecuta operaciones SQLAlchemy contra MySQL
+[repository/ticket_repo.py]     ← SQLAlchemy con joinedload
         ↓
 [models/ticket.py]              ← define la entidad y sus restricciones
 ```
-
-Ninguna regla de negocio vive en routes/ ni en repository/.
-Ninguna consulta SQL vive fuera de repository/.
 
 ## Endpoints
 
@@ -52,29 +49,29 @@ Ninguna consulta SQL vive fuera de repository/.
 - [X] `POST /api/v1/tickets` crea un ticket con estado `pendiente` por defecto.
 - [X] El campo `id_tecnico_asignado` inicia en `None` al crear el ticket.
 - [X] La respuesta exitosa devuelve **201 Created** con el ticket completo en `{exito, datos, mensaje}`.
-- [] Si el `titulo` o `descripcion` contienen etiquetas HTML, se sanitizan antes de persistir.
+- [X] Si el `titulo` o `descripcion` contienen etiquetas HTML, se sanitizan antes de persistir.
 
 **Read**
-- [ ] `GET /api/v1/tickets` devuelve solo los tickets visibles al rol del usuario autenticado.
-- [ ] `GET /api/v1/tickets` soporta paginación con parámetros `page` y `limit`; la respuesta incluye metadatos de paginación.
-- [ ] `GET /api/v1/tickets/{id}` devuelve **404 Not Found** si el ticket no existe.
-- [ ] `GET /api/v1/tickets/{id}` devuelve **403 Forbidden** si el ticket no pertenece al rol del usuario.
+- [X] `GET /api/v1/tickets` devuelve solo los tickets visibles al rol del usuario autenticado.
+- [X] `GET /api/v1/tickets` soporta paginación con parámetros `page` y `limit`; la respuesta incluye metadatos de paginación.
+- [X] `GET /api/v1/tickets/{id}` devuelve **404 Not Found** si el ticket no existe.
+- [X] `GET /api/v1/tickets/{id}` devuelve **403 Forbidden** si el ticket no pertenece al rol del usuario.
 
 **Update**
-- [ ] `PATCH /api/v1/tickets/{id}` actualiza solo los campos enviados (no reemplaza el ticket completo).
-- [ ] Solo técnico, mesa de ayuda o admin pueden ejecutar PATCH; un usuario estándar recibe **403**.
-- [ ] Un ticket en estado `pendiente` no puede pasar directamente a `finalizado`; debe pasar antes por `en_proceso`; si se intenta la transición no permitida, devuelve **422 Unprocessable Entity**.
-- [ ] Los campos `id_ticket` y `fecha_creacion` no pueden modificarse; si se envían, se ignoran.
+- [X] `PATCH /api/v1/tickets/{id}` actualiza solo los campos enviados (no reemplaza el ticket completo).
+- [X] Solo técnico, mesa de ayuda o admin pueden ejecutar PATCH; un usuario estándar recibe **403**.
+- [X] Un ticket en estado `pendiente` no puede pasar directamente a `finalizado`; debe pasar antes por `en_proceso`; si se intenta la transición no permitida, devuelve **422 Unprocessable Entity**.
+- [X] Los campos `id_ticket` y `fecha_creacion` no pueden modificarse; si se envían, se ignoran.
 
 **Delete**
-- [ ] `DELETE /api/v1/tickets/{id}` no elimina el registro — marca `activo = FALSE` y registra `deleted_at = NOW()` (soft delete con fecha para limpieza futura).
-- [ ] Si el ticket ya está inactivo, devuelve **400 Bad Request** con mensaje descriptivo.
-- [ ] Solo admin puede ejecutar DELETE; cualquier otro rol recibe **403**.
+- [X] `DELETE /api/v1/tickets/{id}` no elimina el registro — marca `activo = FALSE` y registra `deleted_at = NOW()` (soft delete con fecha para limpieza futura).
+- [X] Si el ticket ya está inactivo, devuelve **400 Bad Request** con mensaje descriptivo.
+- [X] Solo admin puede ejecutar DELETE; cualquier otro rol recibe **403**.
 
 **General**
-- [ ] Todos los endpoints devuelven respuestas JSON con la estructura `{exito, datos, mensaje}` en éxito y `{exito, errores, mensaje}` en error.
-- [ ] Ninguna respuesta expone trazas de pila, consultas SQL ni mensajes internos del servidor.
-- [ ] Cada endpoint es probado en Postman con: caso exitoso, datos inválidos, recurso inexistente y rol no autorizado.
+- [X] Todos los endpoints devuelven respuestas JSON con la estructura `{exito, datos, mensaje}` en éxito y `{exito, errores, mensaje}` en error.
+- [X] Ninguna respuesta expone trazas de pila, consultas SQL ni mensajes internos del servidor.
+- [X] Cada endpoint es probado en Postman con: caso exitoso, datos inválidos, recurso inexistente y rol no autorizado.
 
 ## Validaciones y sanitización
 

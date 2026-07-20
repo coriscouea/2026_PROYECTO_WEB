@@ -11,14 +11,18 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 - **Base de datos:** MySQL 8 (motor InnoDB) — integridad referencial y transacciones ACID
 - **Framework frontend:** Ionic + Capacitor — interfaz multiplataforma (Android, iOS, PWA)
 - **Patrón:** MVVM — View (Ionic), ViewModel (JS/axios), Model (FastAPI + SQLAlchemy)
-- **Tests:** por definir en cada feature (validación manual por endpoints Swagger en etapas iniciales)
+- **Tests:** validación manual por endpoints Swagger en etapas iniciales
 - **Despliegue:** PWA — instalable desde el navegador sin tienda de aplicaciones
 
 ## Archivos / módulos clave
 
-- `backend/app/models/` — clases SQLAlchemy que mapean las 8 entidades de la base de datos.
-- `backend/app/routes/` — endpoints FastAPI organizados por entidad (tickets, usuarios, auth…).
+- `backend/app/models/` — 8 clases SQLAlchemy que mapean las entidades de la base de datos.
+- `backend/app/schemas/` — schemas Pydantic de entrada y salida (validación y serialización).
 - `backend/app/repository/` — patrón repositorio: acceso a datos separado de la lógica de negocio.
+- `backend/app/services/` — lógica de negocio y reglas de dominio.
+- `backend/app/routes/` — endpoints FastAPI organizados por entidad.
+- `backend/app/middleware/` — autenticación JWT y protección de rutas.
+- `backend/app/core/` — funciones de seguridad (hash, generación y verificación de tokens).
 - `backend/alembic/` — migraciones del esquema de base de datos con Alembic.
 - `frontend/src/pages/` — pantallas Ionic (View en MVVM).
 - `frontend/src/services/` — llamadas axios a la API (ViewModel en MVVM).
@@ -48,21 +52,58 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 - `Notificaciones.leida` — BOOLEAN DEFAULT FALSE; se marca TRUE cuando el usuario la visualiza.
 - `Categorias` — valores fijos: Técnica, Redes, ERP; determinan a qué bandeja va el ticket.
 
-## Índices de base de datos
+## Índices estratégicos
 
-Crear índices solo en campos estratégicos — no en todas las tablas. Los índices aceleran las consultas más frecuentes y son la primera defensa contra el problema N+1.
+| Tabla | Campo(s) indexado(s) | Motivo |
+|---|---|---|
+| Usuario | `email` | Login — búsqueda por email en cada autenticación |
+| Tickets | `estado` | Filtro de bandeja — consulta más frecuente |
+| Tickets | `id_categoria` | Enrutamiento por categoría al crear ticket |
+| Tickets | `id_usuario` | Listado de tickets por solicitante |
+| Historial_Estado | `id_ticket` | Consulta del historial de un ticket |
+| Comentarios | `id_ticket` | Carga de comentarios de un ticket |
+| Notificaciones | `id_usuario`, `leida` | Bandeja de notificaciones no leídas |
 
-| Tabla            | Campo(s)             | Motivo                                              |
-|------------------|----------------------|-----------------------------------------------------|
-| Usuario          | `email`              | Búsqueda en login — consulta de alta frecuencia     |
-| Usuario          | `id_rol`             | Filtro de bandeja por rol                           |
-| Tickets          | `estado`             | Filtro principal de la bandeja compartida           |
-| Tickets          | `id_usuario`         | Consulta de tickets del solicitante                 |
-| Tickets          | `id_tecnico_asignado`| Consulta de tickets asignados al técnico            |
-| Tickets          | `id_categoria`       | Filtro por categoría para métricas                  |
-| Historial_Estado | `id_ticket`          | Consulta del historial de un ticket específico      |
-| Comentarios      | `id_ticket`          | Consulta de comentarios de un ticket específico     |
-| Notificaciones   | `id_usuario`         | Consulta de notificaciones del usuario autenticado  |
+## Optimizaciones de backend
+
+- **Eager loading** — `joinedload` en SQLAlchemy para relaciones que siempre se necesitan (categoria, solicitante, tecnico en Tickets). Previene el problema N+1.
+- **Lazy loading** — comportamiento por defecto para relaciones que solo se necesitan en casos específicos (comentarios, historial).
+- **Caché cache-aside** — `functools.lru_cache` para datos estáticos (categorías, roles). TTL de 300 segundos. Invalidación explícita con `cache_clear()`. Redis en versión futura (feature 017).
+- **BackgroundTasks** — FastAPI `BackgroundTasks` para procesamiento asíncrono de notificaciones sin bloquear la respuesta al cliente.
+- **JWT sin consultas redundantes** — el rol del usuario viaja en el payload del token; el middleware de autorización no consulta la BD en cada request.
+
+## Autenticación y autorización
+
+- **Mecanismo:** JWT (JSON Web Token) con algoritmo HS256.
+- **Access token** — vida: 30 minutos. Se adjunta en cada solicitud protegida en el encabezado `Authorization: Bearer <token>`.
+- **Refresh token** — vida: 1 día. Solo se envía al endpoint `POST /auth/refresh`.
+- **Payload del JWT** — solo incluir lo mínimo: `sub` (id_usuario), `email`, `rol`, `iat`, `exp`.
+- **Endpoints públicos** — no requieren token: `POST /auth/registro`, `POST /auth/login`.
+- **RBAC** — el rol viene en el payload del JWT; el middleware lee el rol sin consultar la BD.
+- **Código 401** — token ausente, inválido o expirado.
+- **Código 403** — token válido pero rol insuficiente.
+- **Código 429** — rate limiting en login (prevención de fuerza bruta).
+
+## Seguridad de la API
+
+- **CORS** — configurar restrictivamente los orígenes permitidos desde `.env`.
+- **Rate limiting** — aplicar en `POST /auth/login` con slowapi → 429 al superar el límite.
+- **IDOR** — verificar siempre que el recurso pertenece al usuario autenticado antes de ejecutar la operación.
+- **No registrar en logs** contraseñas, tokens completos ni información sensible.
+- **Claves JWT y credenciales** solo en variables de entorno `.env` — nunca en el código fuente.
+
+## Idempotencia
+
+| Método | Idempotente | Implicación para HelpDesk Web |
+|---|---|---|
+| GET | Sí | Listar o consultar tickets/usuarios es seguro de reintentar |
+| POST | No | Crear un ticket dos veces crea dos tickets — la capa service verifica unicidad |
+| PATCH | No necesariamente | La regla de transición de estados lo controla |
+| DELETE | Sí | Desactivar un usuario ya inactivo devuelve 400 |
+
+## Soft delete
+
+El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un registro se desactiva, `activo` cambia a `FALSE` pero el registro permanece en la base de datos indefinidamente, garantizando trazabilidad completa (reglas de negocio 3 y 4). Ningún registro de tickets ni usuarios se elimina físicamente, nunca.
 
 ## Convenciones
 
@@ -72,66 +113,20 @@ Crear índices solo en campos estratégicos — no en todas las tablas. Los índ
 - Todos los endpoints bajo prefijo `/api/v1/`.
 - Idioma del código: inglés para variables y funciones; español para comentarios y documentación.
 - Soft delete obligatorio: usar `activo = FALSE` en lugar de `DELETE`.
-- Validaciones de entrada en la capa FastAPI (Pydantic schemas), no en la capa de base de datos.
+- Validaciones de entrada en la capa FastAPI (Pydantic schemas).
+- Formato de respuesta: `{exito, datos, mensaje}` para éxito; `{exito, errores, mensaje}` para error.
 
 ## Estilo visual
 
-- Framework de componentes: Ionic UI — usar componentes nativos de Ionic (ion-card, ion-list, ion-button).
-- Tema: modo claro por defecto; colores corporativos neutros (pendiente de definir paleta).
-- Responsive obligatorio: la interfaz debe funcionar en móvil (380px) y escritorio (1280px).
+- Framework de componentes: Ionic UI.
+- Responsive obligatorio: móvil (380px) y escritorio (1280px).
 - Iconografía: Ionicons (incluido en Ionic).
-
-## Idempotencia
-
-Un método es idempotente cuando ejecutarlo varias veces con los mismos parámetros produce el mismo resultado que ejecutarlo una sola vez. Esto es crítico para el frontend Ionic cuando hay fallas de red y se reintenta automáticamente una solicitud.
-
-| Método | Idempotente | Implicación para HelpDesk Web |
-|--------|-------------|-------------------------------|
-| GET    | Sí          | Listar o consultar tickets/usuarios es siempre seguro de reintentar |
-| POST   | No          | Crear un ticket dos veces crea dos tickets — la capa service debe verificar unicidad antes del INSERT |
-| PATCH  | No necesariamente | Cambiar estado de un ticket dos veces puede tener efectos distintos — la regla de transición de estados lo controla |
-| DELETE | Sí          | Desactivar un usuario ya inactivo devuelve 400, no genera un segundo efecto |
-
-**Regla práctica:** el frontend nunca reintenta automáticamente un POST sin confirmación del usuario. Para GET, PATCH y DELETE el reintento es seguro.
-
-## Soft delete
-
-El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un registro se desactiva, `activo` cambia a `FALSE` pero el registro permanece en la base de datos indefinidamente, garantizando trazabilidad completa (reglas de negocio 3 y 4). Ningún registro de tickets ni usuarios se elimina físicamente, nunca.
 
 ## Optimizaciones futuras (backlog)
 
-- **Redis** — caché para consultas repetitivas de alto tráfico (categorías, roles, sucursales) y ejecución de tareas pesadas en segundo plano.
-- **Lazy loading** — carga diferida de relaciones en SQLAlchemy para evitar el problema N+1.
-- **Encriptación extremo a extremo** — para datos sensibles en tránsito entre Ionic y FastAPI.
-
-## Optimizaciones de backend
-
-- **Eager loading** — `joinedload` en SQLAlchemy para relaciones que siempre se necesitan (categoria, solicitante, tecnico en Tickets). Previene el problema N+1.
-- **Lazy loading** — comportamiento por defecto para relaciones que solo se necesitan en casos específicos (comentarios, historial).
-- **Caché cache-aside** — `functools.lru_cache` para datos estáticos (categorías, roles). TTL de 300 segundos. Redis en versión futura (feature 017).
-- **BackgroundTasks** — FastAPI `BackgroundTasks` para procesamiento asíncrono de notificaciones sin bloquear la respuesta al cliente.
-- **JWT sin consultas redundantes** — el rol del usuario viaja en el payload del token; el middleware de autorización no consulta la BD en cada request.
-
-## Autenticación y autorización
-
-- **Mecanismo:** JWT (JSON Web Token) con algoritmo HS256.
-- **Access token** — vida corta: 15 minutos. Se adjunta en cada solicitud protegida en el encabezado `Authorization: Bearer <token>`.
-- **Refresh token** — vida larga: 7 días. Solo se envía al endpoint `POST /auth/refresh` para renovar el access token sin relogin.
-- **Payload del JWT** — solo incluir lo mínimo necesario: `sub` (id_usuario), `rol`, `iat` (emisión), `exp` (expiración). Nunca incluir contraseñas ni datos sensibles.
-- **Endpoints públicos** — no requieren token: `POST /auth/registro`, `POST /auth/login`.
-- **Endpoints protegidos** — requieren access token válido en el encabezado Authorization.
-- **RBAC** — el rol viene en el payload del JWT; el middleware de autorización lo lee sin consultar la base de datos en cada solicitud.
-- **Código 401** — token ausente, inválido o expirado.
-- **Código 403** — token válido pero rol insuficiente para la operación.
-- **Código 429** — demasiadas solicitudes al endpoint de login (rate limiting para prevenir fuerza bruta).
-
-## Seguridad de la API
-
-- **CORS** — configurar restrictivamente qué orígenes pueden consumir la API; en desarrollo solo `localhost`, en producción solo el dominio de la app.
-- **Rate limiting** — aplicar en `POST /auth/login` para dificultar ataques de fuerza bruta sobre contraseñas; responde 429 al superar el límite.
-- **IDOR (Insecure Direct Object Reference)** — riesgo crítico: un usuario no debe poder acceder ni modificar recursos de otro usuario cambiando el ID en la URL. Mitigación: verificar siempre que el recurso pertenece al usuario autenticado antes de ejecutar la operación.
-- **No registrar en logs** contraseñas, tokens completos ni información sensible, ni siquiera con fines de depuración.
-- **Claves JWT y credenciales** solo en variables de entorno (`.env`) — nunca en el código fuente ni en el repositorio.
+- **Redis** — caché distribuida para múltiples instancias y colas de trabajo persistentes (feature 017).
+- **Lazy loading / N+1** — revisión de consultas con `joinedload`/`selectinload` (feature 016).
+- **Encriptación extremo a extremo** — seguridad en tránsito entre Ionic y FastAPI (feature 018).
 
 ## Límites duros
 
@@ -139,5 +134,6 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 - No eliminar registros físicamente — solo soft delete con campo `activo`.
 - No subir archivos `.env` al repositorio — usar `.env.example` como referencia.
 - No implementar ninguna feature sin su `spec.md` aprobado previamente.
-- No usar Flask — decisión reemplazada por FastAPI desde la semana 5.
-- Las contraseñas nunca se almacenan en texto plano — siempre como hash.
+- No usar Flask — reemplazado por FastAPI desde la semana 5.
+- Las contraseñas nunca se almacenan en texto plano — siempre como hash bcrypt.
+

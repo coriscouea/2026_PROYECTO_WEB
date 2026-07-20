@@ -1,6 +1,6 @@
 # 006 · CRUD Usuarios
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -41,34 +41,34 @@ de autenticación y de cualquier operación que involucre identidad.
 ## Criterios de aceptación
 
 **Create**
-- [ ] `POST /api/v1/usuarios` crea un usuario con rol `usuario` por defecto (regla 7).
-- [ ] Si el email ya existe en la base de datos, devuelve **409 Conflict**.
-- [ ] El campo `password` se almacena como hash — nunca en texto plano.
-- [ ] La respuesta exitosa devuelve **201 Created** con el usuario creado (sin el campo `password`).
+- [X] `POST /api/v1/usuarios` crea un usuario con rol `usuario` por defecto (regla 7).
+- [X] Si el email ya existe en la base de datos, devuelve **409 Conflict**.
+- [X] El campo `password` se almacena como hash — nunca en texto plano.
+- [X] La respuesta exitosa devuelve **201 Created** con el usuario creado (sin el campo `password`).
 
 **Read**
-- [ ] `GET /api/v1/usuarios` devuelve solo usuarios con `activo = TRUE` por defecto.
-- [ ] `GET /api/v1/usuarios` soporta paginación con parámetros `page` y `limit`.
-- [ ] `GET /api/v1/usuarios/{id}` devuelve **404 Not Found** si el usuario no existe.
-- [ ] Ninguna respuesta incluye el campo `password` (ni cifrado).
+- [X] `GET /api/v1/usuarios` devuelve solo usuarios con `activo = TRUE` por defecto.
+- [X] `GET /api/v1/usuarios` soporta paginación con parámetros `page` y `limit`.
+- [X] `GET /api/v1/usuarios/{id}` devuelve **404 Not Found** si el usuario no existe.
+- [X] Ninguna respuesta incluye el campo `password` (ni cifrado).
 
 **Update**
-- [ ] `PATCH /api/v1/usuarios/{id}` actualiza solo los campos enviados.
-- [ ] El campo `email` no puede modificarse mediante PATCH — si se envía, se ignora.
-- [ ] El campo `password` no puede modificarse mediante este endpoint — tiene su propio flujo futuro.
-- [ ] Solo admin puede ejecutar PATCH; cualquier otro rol recibe **403 Forbidden**.
+- [X] `PATCH /api/v1/usuarios/{id}` actualiza solo los campos enviados.
+- [X] El campo `email` no puede modificarse mediante PATCH — si se envía, se ignora.
+- [X] El campo `password` no puede modificarse mediante este endpoint — tiene su propio flujo futuro.
+- [X] Solo admin puede ejecutar PATCH; cualquier otro rol recibe **403 Forbidden**.
 
 **Delete**
-- [ ] `DELETE /api/v1/usuarios/{id}` marca `activo = FALSE` y registra `deleted_at = NOW()` (soft delete con fecha, regla 4).
-- [ ] Si el usuario tiene tickets activos asociados, el sistema permite la desactivación
+- [X] `DELETE /api/v1/usuarios/{id}` marca `activo = FALSE` y registra `deleted_at = NOW()` (soft delete con fecha, regla 4).
+- [X] Si el usuario tiene tickets activos asociados, el sistema permite la desactivación
   pero los tickets permanecen en la base de datos con su historial intacto.
-- [ ] Si el usuario ya está inactivo, devuelve **400 Bad Request**.
-- [ ] Solo admin puede ejecutar DELETE; cualquier otro rol recibe **403 Forbidden**.
+- [X] Si el usuario ya está inactivo, devuelve **400 Bad Request**.
+- [X] Solo admin puede ejecutar DELETE; cualquier otro rol recibe **403 Forbidden**.
 
 **General**
-- [ ] Todos los endpoints devuelven `{exito, datos, mensaje}` en éxito y `{exito, errores, mensaje}` en error.
-- [ ] Ninguna respuesta expone trazas de pila, consultas SQL ni mensajes internos.
-- [ ] Cada endpoint es probado en Postman con: caso exitoso, datos inválidos, email duplicado y rol no autorizado.
+- [X] Todos los endpoints devuelven `{exito, datos, mensaje}` en éxito y `{exito, errores, mensaje}` en error.
+- [X] Ninguna respuesta expone trazas de pila, consultas SQL ni mensajes internos.
+- [X] Cada endpoint es probado en Postman con: caso exitoso, datos inválidos, email duplicado y rol no autorizado.
 
 ## Validaciones y sanitización
 

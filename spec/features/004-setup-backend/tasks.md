@@ -22,9 +22,9 @@ _Checklist accionable derivada del `plan.md`. Tareas pequeñas y concretas; marc
 - [X] Crear `backend/app/main.py` con FastAPI y Swagger habilitado.
 - [X] Verificar que `http://localhost:8000/docs` responde correctamente.
 - [X] Validar contra los criterios de aceptación de `spec.md`.
-- [X] Mover la feature a "Hecho" en `../../constitution/roadmap.md`.
+- [X] Mover la feature a "Hecho" en `../../constitution/roadmap.md`.✅
 
 ## Mantenimiento (checklist recurrente)
 
-- [ ] Cada vez que se agregue o modifique un modelo, generar nueva migración con Alembic.
-- [ ] Verificar que `.env` nunca aparezca en commits (`git status` antes de cada push).
+- [X] Cada vez que se agregue o modifique un modelo, generar nueva migración con Alembic.
+- [X] Verificar que `.env` nunca aparezca en commits (`git status` antes de cada push).

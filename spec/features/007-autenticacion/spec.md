@@ -21,17 +21,17 @@ y métricas solo tienen sentido si sabemos quién ejecuta cada acción.
 ## Arquitectura por capas
 
 ```
-[routes/auth.py]          ← endpoints públicos: registro, login, refresh
+[routes/auth.py]                ← endpoints públicos: registro, login, refresh
         ↓
-[services/auth_svc.py]    ← lógica de autenticación: verificar credenciales,
-                             generar tokens, verificar hash de contraseña
+[services/auth_svc.py]          ← lógica de autenticación: verificar credenciales,
+                                   generar tokens, verificar hash de contraseña
         ↓
-[repository/usuario_repo.py] ← buscar usuario por email (ya existe en 006)
+[repository/usuario_repo.py]    ← buscar usuario por email (ya existe en 006)
         ↓
-[models/usuario.py]       ← entidad Usuario con password hasheado
+[models/usuario.py]             ← entidad Usuario con password hasheado
 
-[middleware/auth.py]      ← dependencias FastAPI que protegen rutas:
-                             verificar token y verificar rol
+[middleware/auth.py]            ← dependencias FastAPI que protegen rutas:
+                                   verificar token y verificar rol
 ```
 
 ## Endpoints de autenticación (públicos)
@@ -58,11 +58,11 @@ y métricas solo tienen sentido si sabemos quién ejecuta cada acción.
 }
 ```
 
-- `sub` — id_usuario (identificador único del sujeto)
-- `email` — correo del usuario autenticado
-- `rol` — rol del usuario (para RBAC sin consulta adicional a BD)
-- `iat` — fecha de emisión (Unix timestamp)
-- `exp` — fecha de expiración (Unix timestamp)
+- `sub`         — id_usuario (identificador único del sujeto)
+- `email`       — correo del usuario autenticado
+- `rol`         — rol del usuario (para RBAC sin consulta adicional a BD)
+- `iat`         — fecha de emisión (Unix timestamp)
+- `exp` —       fecha de expiración (Unix timestamp)
 
 **Nunca incluir en el payload:** contraseñas, tokens internos, datos bancarios ni información confidencial. El JWT es firmado, no cifrado — cualquiera puede leer su contenido.
 

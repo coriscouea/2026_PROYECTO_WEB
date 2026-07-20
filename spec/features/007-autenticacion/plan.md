@@ -25,20 +25,20 @@ slowapi                     ← rate limiting para el endpoint de login
    `REFRESH_TOKEN_EXPIRE_DAYS`, `CORS_ORIGINS`.
 
 2. Crear `backend/app/core/security.py` — funciones de seguridad:
-   - `hash_password(password)` → hash bcrypt
-   - `verify_password(plain, hashed)` → comparar hash
-   - `create_access_token(data)` → genera JWT de 15 min
-   - `create_refresh_token(data)` → genera JWT de 7 días
-   - `decode_token(token)` → verifica firma y expiración
+   - `hash_password(password)`          → hash bcrypt
+   - `verify_password(plain, hashed)`   → comparar hash
+   - `create_access_token(data)`        → genera JWT de 15 min
+   - `create_refresh_token(data)`       → genera JWT de 7 días
+   - `decode_token(token)`              → verifica firma y expiración
 
 3. Crear `backend/app/middleware/auth.py` — dependencias FastAPI:
-   - `get_current_user(token)` → extrae usuario del JWT, devuelve 401 si falla
-   - `require_roles(*roles)` → verifica que el rol del token esté en la lista, devuelve 403 si no
+   - `get_current_user(token)`  → extrae usuario del JWT, devuelve 401 si falla
+   - `require_roles(*roles)`    → verifica que el rol del token esté en la lista, devuelve 403 si no
 
 4. Crear `backend/app/services/auth_svc.py` — lógica de autenticación:
-   - `registrar(db, datos)` → llama usuario_repo, hashea password, crea usuario
-   - `login(db, email, password)` → busca usuario, verifica hash, genera tokens
-   - `refresh(db, refresh_token)` → valida refresh token, genera nuevo access token
+   - `registrar(db, datos)`         → llama usuario_repo, hashea password, crea usuario
+   - `login(db, email, password)`   → busca usuario, verifica hash, genera tokens
+   - `refresh(db, refresh_token)`   → valida refresh token, genera nuevo access token
 
 5. Crear `backend/app/routes/auth.py` — endpoints públicos:
    - `POST /auth/registro`
