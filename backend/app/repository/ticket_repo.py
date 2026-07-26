@@ -74,6 +74,7 @@ def obtener_ticket(db: Session, id_ticket: int) -> Ticket | None:
             joinedload(Ticket.tecnico)
         )
         .filter(Ticket.id_ticket == id_ticket, Ticket.activo == True)
+        .first()
 
     )
 
