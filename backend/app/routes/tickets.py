@@ -7,7 +7,8 @@
 # lógica de negocio ni acceso directo a la base de datos.
 # =============================================================
 
-from fastapi import APIRouter, Depends, status, BackgroundTasks
+from app.middleware.auth import get_current_user, require_roles
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.ticket import TicketCreate, TicketUpdate, TicketResponse
@@ -19,7 +20,6 @@ from app.services.ticket_svc import (
     svc_actualizar_ticket,
     svc_desactivar_ticket
 )
-from app.services.notificacion_svc import crear_notificacion
 
 # -------------------------------------------------------------
 # Router — agrupa todos los endpoints de tickets bajo /api/v1/tickets
@@ -40,8 +40,8 @@ router = APIRouter(
 @router.post("", status_code=status.HTTP_201_CREATED)
 def crear_ticket(
     datos: TicketCreate,
-    background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
     ticket = svc_crear_ticket(db, datos)
 
@@ -51,12 +51,6 @@ def crear_ticket(
     # La notificación se procesa después (asíncrono)
     # ---------------------------------------------------------
 
-    background_tasks.add_task(
-        crear_notificacion,
-        id_usuario  = datos.id_usuario,
-        id_ticket   = ticket.id_ticket,
-        mensaje     = f"Tu ticket #{ticket.id_ticket} '{ticket.titulo}' fue creado correctamente"
-    )
     return RespuestaExito(
         datos=TicketResponse.model_validate(ticket),
         mensaje="Ticket creado correctamente"
@@ -72,7 +66,8 @@ def crear_ticket(
 def listar_tickets(
     page: int = 1,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
     tickets = svc_listar_tickets(db, page, limit)
     return RespuestaExito(
@@ -91,7 +86,8 @@ def listar_tickets(
 @router.get("/{id_ticket}", status_code=status.HTTP_200_OK)
 def obtener_ticket(
     id_ticket: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user) 
 ):
     ticket = svc_obtener_ticket(db, id_ticket)
     return RespuestaExito(
@@ -110,7 +106,8 @@ def obtener_ticket(
 def actualizar_ticket(
     id_ticket: int,
     datos: TicketUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("tecnico", "mesa_ayuda", "admin"))
 ):
     ticket = svc_actualizar_ticket(db, id_ticket, datos)
     return RespuestaExito(
@@ -127,7 +124,8 @@ def actualizar_ticket(
 @router.delete("/{id_ticket}", status_code=status.HTTP_200_OK)
 def desactivar_ticket(
     id_ticket: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("admin"))
 ):
     ticket = svc_desactivar_ticket(db, id_ticket)
     return RespuestaExito(

@@ -1,6 +1,7 @@
 # =============================================================
 # main.py — Punto de entrada de la aplicación FastAPI
 # HelpDesk Web | Feature 004 · Setup Backend
+# HelpDesk Web | Feature 007 · Autenticación JWT
 # ============================================================= 
 # Responsabilidad: inicializar la aplicación FastAPI, registrar
 # los routers de cada entidad y exponer la documentación
@@ -8,6 +9,10 @@
 # =============================================================
 
 from fastapi import FastAPI                                 # clase principal del framework FastAPI 
+from fastapi.middleware.cors import CORSMiddleware 
+from dotenv import load_dotenv
+import os
+
 from app.database import engine, Base                       # motor de conexión y clase base de modelos
 
 # Importar todos los modelos para que SQLAlchemy los registre
@@ -23,6 +28,7 @@ from app.models.notificaciones import Notificacion
 from app.routes.tickets import router as tickets_router         # Importar el router de tickets
 from app.routes.usuarios import router as usuarios_router       # Importar el router de usuarios
 from app.routes.categorias import router as categorias_router   # Importar el router de categorias
+from app.routes.auth import router as auth_router               # Importar el router de auth
 
 # -------------------------------------------------------------
 # Crea la instancia principal de la aplicación FastAPI
@@ -30,9 +36,26 @@ from app.routes.categorias import router as categorias_router   # Importar el ro
 # version  → versión de la API visible en la documentación
 # -------------------------------------------------------------
 
+load_dotenv()
+
 app = FastAPI(
     TITLE="HelpDesk Web API",
     VERSION="1.0.0"
+)
+
+# -------------------------------------------------------------
+# CORS — permite solicitudes desde el frontend Ionic
+# Los orígenes se leen desde .env
+# -------------------------------------------------------------
+
+origins = os.getenv("CORS_ORIGINS", "http://localhost:8100").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # -------------------------------------------------------------
@@ -44,6 +67,8 @@ app = FastAPI(
 # -------------------------------------------------------------
 
 Base.metadata.create_all(bind = engine)
+
+app.include_router(auth_router)
 app.include_router(tickets_router)
 app.include_router(usuarios_router)
 app.include_router(categorias_router)

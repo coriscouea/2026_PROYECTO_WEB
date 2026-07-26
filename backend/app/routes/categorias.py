@@ -14,7 +14,7 @@ from app.schemas.response import RespuestaExito
 from app.repository.categoria_repo import listar_categorias
 
 # -------------------------------------------------------------
-# Router — agrupa todos los endpoints de categorias bajo /api/v1/tickets
+# Router — agrupa todos los endpoints de categorias bajo /api/v1/categorias
 # -------------------------------------------------------------
 
 router = APIRouter(
