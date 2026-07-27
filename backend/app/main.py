@@ -8,8 +8,10 @@
 # automática de Swagger UI en /docs.
 # =============================================================
 
-from fastapi import FastAPI                                 # clase principal del framework FastAPI 
+from fastapi import FastAPI, HTTPException                                 # clase principal del framework FastAPI 
 from fastapi.middleware.cors import CORSMiddleware 
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from dotenv import load_dotenv
 import os
 
@@ -43,8 +45,8 @@ from slowapi.errors import RateLimitExceeded
 load_dotenv()
 
 app = FastAPI(
-    TITLE="HelpDesk Web API",
-    VERSION="1.0.0"
+    title="HelpDesk Web API",
+    version="1.0.0"
 )
 
 # -------------------------------------------------------------
@@ -54,6 +56,36 @@ app = FastAPI(
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# -------------------------------------------------------------
+# Exception handlers globales
+# Estandariza todos los errores al formato {exito, errores, mensaje}
+# -------------------------------------------------------------
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "exito": False,
+            "errores": None,
+            "mensaje": exc.detail
+        }
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "exito": False,
+            "errores": [
+                {"campo": e["loc"][-1], "mensaje": e["msg"]}
+                for e in exc.errors()
+            ],
+            "mensaje": "Los datos enviados no son válidos"
+        }
+    )
 
 # -------------------------------------------------------------
 # CORS — permite solicitudes desde el frontend Ionic
