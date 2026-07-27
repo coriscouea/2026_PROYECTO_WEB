@@ -6,7 +6,8 @@
 # login y renovación de token. No requieren autenticación previa.
 # =============================================================
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Request
+from app.core.limiter import limiter
 from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -62,7 +63,9 @@ def usuario(
 # -------------------------------------------------------------
 
 @router.post("/login", status_code=status.HTTP_200_OK)
+@limiter.limit("5/minute")
 def login(
+    request: Request,
     datos: LoginRequest,
     db: Session = Depends(get_db)
 ):
