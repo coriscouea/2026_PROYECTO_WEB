@@ -38,7 +38,13 @@ def crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
     db.refresh(nuevo_ticket)     # actualiza el objeto con el id generado por MySQL   
     return nuevo_ticket
 
-def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:      
+def listar_tickets(
+    db: Session, 
+    page: int = 1, 
+    limit: int = 10,
+    rol: str = None,
+    id_usuario: int = None
+) -> list[Ticket]:      
 
     # ---------------------------------------------------------
     # Lista tickets activos con paginación
@@ -47,7 +53,7 @@ def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:
     # ---------------------------------------------------------
 
     offset = (page - 1) * limit
-    return (
+    query = (
         db.query(Ticket)
         .options(
             joinedload(Ticket.categoria),
@@ -55,10 +61,18 @@ def listar_tickets(db: Session, page: int = 1, limit: int = 10) -> list[Ticket]:
             joinedload(Ticket.tecnico)
         )
         .filter(Ticket.activo == True)
-        .offset(offset)
-        .limit(limit)
-        .all()
     )
+
+    # Filtro por rol aplicado en SQL antes de paginar
+    if rol == "usuario":
+        query = query.filter(Ticket.id_usuario == id_usuario)
+    elif rol == "tecnico":
+        query = query.filter(Ticket.id_categoria.in_([1, 2]))
+    elif rol == "mesa_ayuda":
+        query = query.filter(Ticket.id_categoria == 3)
+    # admin → sin filtro adicional
+
+    return query.offset(offset).limit(limit).all()
 
 def obtener_ticket(db: Session, id_ticket: int) -> Ticket | None:
     

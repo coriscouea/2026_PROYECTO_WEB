@@ -93,23 +93,9 @@ def svc_listar_tickets(db: Session, page: int, limit: int, current_user: dict) -
     rol = current_user.get("rol")
     id_usuario = int(current_user.get("sub"))
 
-    # Obtiene todos los tickets activos desde el repositorio
-    
-    tickets = listar_tickets(db, page, limit)
+    return listar_tickets(db, page, limit, rol, id_usuario)
 
-    # Filtra según el rol — lógica de negocio
-
-    if rol == "usuario":
-        return [t for t in tickets if t.id_usuario == id_usuario]
-    elif rol == "tecnico":
-        return [t for t in tickets if t.id_categoria in [1, 2]]
-    elif rol == "mesa_ayuda":
-        return [t for t in tickets if t.id_categoria == 3]
-    
-    # admin → devuelve todos
-    return tickets
-
-def svc_obtener_ticket(db: Session, id_ticket: int) -> Ticket:
+def svc_obtener_ticket(db: Session, id_ticket: int, current_user: dict) -> Ticket:
 
     # ---------------------------------------------------------
     # Busca el ticket — devuelve 404 si no existe
@@ -118,11 +104,37 @@ def svc_obtener_ticket(db: Session, id_ticket: int) -> Ticket:
     ticket = obtener_ticket(db, id_ticket)
     if not ticket:
         raise HTTPException(
-            status_code = status.HTTP_404_NOT_FOUND
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail=f"Ticket con ID {id_ticket} no encontrado"
+        )
+
+    rol = current_user.get("rol")
+    id_usuario = int(current_user.get("sub"))
+
+    # Verifica pertenencia según rol
+    if rol == "usuario" and ticket.id_usuario != id_usuario:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para ver este ticket"
+        )
+    elif rol == "tecnico" and ticket.id_categoria not in [1, 2]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para ver este ticket"
+        )
+    elif rol == "mesa_ayuda" and ticket.id_categoria != 3:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para ver este ticket"
         )
     return ticket
 
-def svc_actualizar_ticket(db: Session, id_ticket: int, datos: TicketUpdate) -> Ticket:
+def svc_actualizar_ticket(
+    db: Session,
+    id_ticket: int,
+    datos: TicketUpdate,
+    current_user: dict 
+) -> Ticket:
 
     # ---------------------------------------------------------
     # Verifica que el ticket existe
@@ -134,6 +146,20 @@ def svc_actualizar_ticket(db: Session, id_ticket: int, datos: TicketUpdate) -> T
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Ticket con ID {id_ticket} no enocntrado"
         )  
+    
+    rol = current_user.get("rol")
+
+    # Verifica que el técnico solo modifique tickets de su categoría
+    if rol == "tecnico" and ticket.id_categoria not in [1, 2]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo puedes modificar tickets de categoría Técnica o Redes"
+        )
+    elif rol == "mesa_ayuda" and ticket.id_categoria != 3:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo puedes modificar tickets de categoría ERP"
+        )
 
     # ---------------------------------------------------------
     # Valida la transición de estado si se envía un nuevo estado

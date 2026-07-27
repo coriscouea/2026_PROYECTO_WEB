@@ -86,7 +86,7 @@ def obtener_ticket(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user) 
 ):
-    ticket = svc_obtener_ticket(db, id_ticket)
+    ticket = svc_obtener_ticket(db, id_ticket, current_user)
     return RespuestaExito(
         datos=TicketResponse.model_validate(ticket),
         mensaje="Ticket encontrado"
@@ -106,7 +106,7 @@ def actualizar_ticket(
     db: Session = Depends(get_db),
     current_user: dict = Depends(require_roles("tecnico", "mesa_ayuda", "admin"))
 ):
-    ticket = svc_actualizar_ticket(db, id_ticket, datos)
+    ticket = svc_actualizar_ticket(db, id_ticket, datos, current_user)
     return RespuestaExito(
         datos=TicketResponse.model_validate(ticket),
         mensaje="Ticket actualizado correctamente"
