@@ -14,12 +14,13 @@ _Features completadas, en orden de implementación._
 6. **005 · CRUD Tickets** — 5 endpoints REST (POST, GET, GET/{id}, PATCH, DELETE) con validaciones Pydantic, regla de transición de estados y soft delete. Probado en Swagger.
 7. **006 · CRUD Usuarios** — 5 endpoints REST con hash bcrypt, asignación de rol por defecto, email único y soft delete. Probado en Swagger.
 8. **008 · Optimización del backend** — eager loading con joinedload, caché cache-aside con lru_cache, BackgroundTasks para notificaciones asíncronas. Comparación antes/después documentada.
+9. **007 · Autenticación y roles** — login con JWT, access token (30 min) + refresh token (1 día), middleware de protección de rutas por rol (RBAC sin consulta a BD), rate limiting con slowapi en `/auth/login` (5/min), filtrado de tickets por pertenencia/categoría (mitigación IDOR), respuestas de error estandarizadas `{exito, errores, mensaje}`. Probado en Postman/Swagger. (Semana 9)
 
 ## Siguiente 🔜
 
 _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
-9. **007 · Autenticación y roles** — login con JWT, access token + refresh token, middleware de protección de rutas por rol, rate limiting en login. (Semana 9)
+- _(vacío — definir la siguiente feature del backlog)_
 
 ## Backlog / ideas 💡
 
