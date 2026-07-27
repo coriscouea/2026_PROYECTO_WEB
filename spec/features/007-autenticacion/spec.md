@@ -1,6 +1,6 @@
 # 007 · Autenticación y Autorización
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -62,7 +62,7 @@ y métricas solo tienen sentido si sabemos quién ejecuta cada acción.
 - `email`       — correo del usuario autenticado
 - `rol`         — rol del usuario (para RBAC sin consulta adicional a BD)
 - `iat`         — fecha de emisión (Unix timestamp)
-- `exp` —       fecha de expiración (Unix timestamp)
+- `exp`         — fecha de expiración (Unix timestamp)
 
 **Nunca incluir en el payload:** contraseñas, tokens internos, datos bancarios ni información confidencial. El JWT es firmado, no cifrado — cualquiera puede leer su contenido.
 
@@ -101,33 +101,33 @@ y métricas solo tienen sentido si sabemos quién ejecuta cada acción.
 ## Criterios de aceptación
 
 **Registro**
-- [ ] `POST /auth/registro` crea usuario con rol `usuario` por defecto.
-- [ ] Si el email ya existe devuelve **409 Conflict**.
-- [ ] La contraseña se almacena como hash bcrypt — nunca en texto plano.
-- [ ] La respuesta no incluye el campo `password`.
+- [X] `POST /auth/registro` crea usuario con rol `usuario` por defecto.
+- [X] Si el email ya existe devuelve **409 Conflict**.
+- [X] La contraseña se almacena como hash bcrypt — nunca en texto plano.
+- [X] La respuesta no incluye el campo `password`.
 
 **Login**
-- [ ] `POST /auth/login` verifica email y contraseña correctos.
-- [ ] Si las credenciales son inválidas devuelve **401 Unauthorized**.
-- [ ] Si el usuario está inactivo (`activo=FALSE`) devuelve **401 Unauthorized**.
-- [ ] Respuesta exitosa devuelve `access_token`, `refresh_token` y `expira_en` (segundos).
+- [X] `POST /auth/login` verifica email y contraseña correctos.
+- [X] Si las credenciales son inválidas devuelve **401 Unauthorized**.
+- [X] Si el usuario está inactivo (`activo=FALSE`) devuelve **401 Unauthorized**.
+- [X] Respuesta exitosa devuelve `access_token`, `refresh_token` y `expira_en` (segundos).
 
 **Refresh**
-- [ ] `POST /auth/refresh` emite nuevo access token sin requerir login.
-- [ ] Si el refresh token es inválido o expirado devuelve **401 Unauthorized**.
+- [X] `POST /auth/refresh` emite nuevo access token sin requerir login.
+- [X] Si el refresh token es inválido o expirado devuelve **401 Unauthorized**.
 
 **Protección de rutas**
-- [ ] Cualquier endpoint protegido sin token devuelve **401 Unauthorized**.
-- [ ] Token inválido o expirado devuelve **401 Unauthorized**.
-- [ ] Token válido pero rol insuficiente devuelve **403 Forbidden**.
-- [ ] El middleware verifica autenticación antes de cualquier lógica de negocio.
-- [ ] El middleware de autorización lee el rol directamente del JWT — sin consulta adicional a la BD.
+- [X] Cualquier endpoint protegido sin token devuelve **401 Unauthorized**.
+- [X] Token inválido o expirado devuelve **401 Unauthorized**.
+- [X] Token válido pero rol insuficiente devuelve **403 Forbidden**.
+- [X] El middleware verifica autenticación antes de cualquier lógica de negocio.
+- [X] El middleware de autorización lee el rol directamente del JWT — sin consulta adicional a la BD.
 
 **Seguridad**
-- [ ] La clave secreta JWT se lee desde `.env` — nunca hardcodeada en el código.
-- [ ] `POST /auth/login` aplica rate limiting — devuelve **429** al superar el límite.
-- [ ] El backend configura CORS permitiendo solo los orígenes definidos en `.env`.
-- [ ] Ningún endpoint expone contraseñas, tokens completos ni trazas internas en la respuesta.
+- [X] La clave secreta JWT se lee desde `.env` — nunca hardcodeada en el código.
+- [X] `POST /auth/login` aplica rate limiting — devuelve **429** al superar el límite.
+- [X] El backend configura CORS permitiendo solo los orígenes definidos en `.env`.
+- [X] Ningún endpoint expone contraseñas, tokens completos ni trazas internas en la respuesta.
 
 ## Comparación de alternativas — decisión documentada
 

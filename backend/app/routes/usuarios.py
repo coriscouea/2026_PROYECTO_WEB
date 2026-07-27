@@ -8,6 +8,7 @@
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+from app.middleware.auth import get_current_user, require_roles
 from app.database import get_db
 from app.schemas.usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse
 from app.schemas.response import RespuestaExito
@@ -36,7 +37,8 @@ router = APIRouter(
 @router.post("", status_code=status.HTTP_201_CREATED)
 def crear_usuario(
     datos: UsuarioCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("admin"))
 ):
     usuario = svc_crear_usuario(db, datos)
     return RespuestaExito(
@@ -52,7 +54,8 @@ def crear_usuario(
 def listar_usuarios(
     page: int = 1,
     limit: int = 10,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("admin"))
 ):
     usuarios = svc_listar_usuarios(db, page, limit)
     return RespuestaExito(
@@ -68,7 +71,8 @@ def listar_usuarios(
 @router.get("/{id_usuario}", status_code=status.HTTP_200_OK)
 def obtener_usuario(
     id_usuario: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("admin"))
 ):
     usuario = svc_obtener_usuario(db, id_usuario)
     return RespuestaExito(
@@ -85,7 +89,8 @@ def obtener_usuario(
 def actualizar_usuario(
     id_usuario: int,
     datos: UsuarioUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("admin"))
 ):
     usuario = svc_actualizar_usuario(db, id_usuario, datos)
     return RespuestaExito(
@@ -101,7 +106,8 @@ def actualizar_usuario(
 @router.delete("/{id_usuario}", status_code=status.HTTP_200_OK)
 def desactivar_usuario(
     id_usuario: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_roles("admin"))
 ):
     usuario = svc_desactivar_usuario(db, id_usuario)
     return RespuestaExito(

@@ -30,6 +30,10 @@ from app.routes.usuarios import router as usuarios_router       # Importar el ro
 from app.routes.categorias import router as categorias_router   # Importar el router de categorias
 from app.routes.auth import router as auth_router               # Importar el router de auth
 
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
 # -------------------------------------------------------------
 # Crea la instancia principal de la aplicación FastAPI
 # title    → nombre que aparece en Swagger UI
@@ -42,6 +46,14 @@ app = FastAPI(
     TITLE="HelpDesk Web API",
     VERSION="1.0.0"
 )
+
+# -------------------------------------------------------------
+# Rate limiting — previene ataques de fuerza bruta
+# -------------------------------------------------------------
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # -------------------------------------------------------------
 # CORS — permite solicitudes desde el frontend Ionic

@@ -8,7 +8,8 @@
 # pasa por esta capa de servicio.
 # =============================================================
 
-from sqlalchemy.orm import Session # 
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import joinedload  
 from fastapi import HTTPException, status
 from app.schemas.ticket import TicketCreate, TicketUpdate
 from app.models.tickets import Ticket
@@ -79,8 +80,34 @@ def svc_crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
 
     return crear_ticket(db, datos)
 
-def svc_listar_tickets(db: Session, page: int, limit: int) -> list[Ticket]:
-    return listar_tickets(db, page, limit)
+def svc_listar_tickets(db: Session, page: int, limit: int, current_user: dict) -> list[Ticket]:
+
+    # ---------------------------------------------------------
+    # Filtra tickets según el rol del usuario autenticado:
+    # - usuario → solo sus propios tickets
+    # - tecnico → tickets de categoría Técnica (1) y Redes (2)
+    # - mesa_ayuda → tickets de categoría ERP (3)
+    # - admin → todos los tickets
+    # ---------------------------------------------------------
+    
+    rol = current_user.get("rol")
+    id_usuario = int(current_user.get("sub"))
+
+    # Obtiene todos los tickets activos desde el repositorio
+    
+    tickets = listar_tickets(db, page, limit)
+
+    # Filtra según el rol — lógica de negocio
+
+    if rol == "usuario":
+        return [t for t in tickets if t.id_usuario == id_usuario]
+    elif rol == "tecnico":
+        return [t for t in tickets if t.id_categoria in [1, 2]]
+    elif rol == "mesa_ayuda":
+        return [t for t in tickets if t.id_categoria == 3]
+    
+    # admin → devuelve todos
+    return tickets
 
 def svc_obtener_ticket(db: Session, id_ticket: int) -> Ticket:
 
