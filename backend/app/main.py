@@ -24,7 +24,7 @@ from app.models.categorias import Categoria
 from app.models.usuario import Usuario
 from app.models.tickets import Ticket
 from app.models.comentarios import Comentario
-from app.models.historial_estado import HistorialEstado
+from app.models.historial_estado import HistorialTicket
 from app.models.notificaciones import Notificacion
 
 from app.routes.tickets import router as tickets_router         # Importar el router de tickets

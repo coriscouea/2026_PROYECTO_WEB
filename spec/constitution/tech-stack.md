@@ -10,9 +10,11 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 - **ORM:** SQLAlchemy 2.0 — mapeo de entidades y consultas; Alembic para migraciones
 - **Base de datos:** MySQL 8 (motor InnoDB) — integridad referencial y transacciones ACID
 - **Framework frontend:** Ionic + Capacitor — interfaz multiplataforma (Android, iOS, PWA)
+- **Autenticación:** JWT con python-jose (HS256)
 - **Patrón:** MVVM — View (Ionic), ViewModel (JS/axios), Model (FastAPI + SQLAlchemy)
 - **Tests:** validación manual por endpoints Swagger en etapas iniciales
 - **Despliegue:** PWA — instalable desde el navegador sin tienda de aplicaciones
+- **Metodología:** SDD (Spec-Driven Development)
 
 ## Archivos / módulos clave
 
@@ -36,33 +38,32 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 - `alembic upgrade head` — aplica las migraciones pendientes a la base de datos.
 - `alembic revision --autogenerate -m "descripcion"` — genera una migración automática.
 - `pip install -r requirements.txt` — instala dependencias del backend.
+- `pytest` — ejecutar pruebas automatizadas (feature 022)
 
 **Frontend:**
 - `ionic serve` — arranca el entorno local del frontend.
 - `ionic build` — compila el frontend para producción.
 - `npm install` — instala dependencias del frontend.
 
-## Modelo de datos / dominio
+## Modelo de datos
 
-- `Usuario.activo` — BOOLEAN, controla si el usuario está habilitado; nunca se elimina físicamente.
-- `Usuario.id_rol` — FK → Roles; el rol por defecto al registrarse es siempre 'usuario'.
-- `Tickets.estado` — ENUM(pendiente, en_proceso, finalizado); inicia siempre en 'pendiente'.
-- `Tickets.id_tecnico_asignado` — nullable; se llena cuando un técnico toma el ticket desde su bandeja.
-- `Historial_Estado` — se inserta automáticamente en cada cambio de Tickets.estado.
-- `Notificaciones.leida` — BOOLEAN DEFAULT FALSE; se marca TRUE cuando el usuario la visualiza.
-- `Categorias` — valores fijos: Técnica, Redes, ERP; determinan a qué bandeja va el ticket.
+- `Usuario.activo` — BOOLEAN; nunca se elimina físicamente (regla 4)
+- `Tickets.estado` — ENUM(pendiente, en_proceso, finalizado); inicia en pendiente
+- `Tickets.id_tecnico_asignado` — nullable; se llena cuando un técnico toma el ticket
+- `Historial_Ticket` — registra todos los eventos del ticket, no solo cambios de estado
+- `Notificaciones.leida` — BOOLEAN DEFAULT FALSE
 
 ## Índices estratégicos
 
-| Tabla | Campo(s) indexado(s) | Motivo |
+| Tabla | Campo(s) | Motivo |
 |---|---|---|
-| Usuario | `email` | Login — búsqueda por email en cada autenticación |
-| Tickets | `estado` | Filtro de bandeja — consulta más frecuente |
-| Tickets | `id_categoria` | Enrutamiento por categoría al crear ticket |
-| Tickets | `id_usuario` | Listado de tickets por solicitante |
-| Historial_Estado | `id_ticket` | Consulta del historial de un ticket |
-| Comentarios | `id_ticket` | Carga de comentarios de un ticket |
-| Notificaciones | `id_usuario`, `leida` | Bandeja de notificaciones no leídas |
+| Usuario | `email` | Login — búsqueda por email |
+| Tickets | `estado` | Filtro de bandeja |
+| Tickets | `id_categoria` | Enrutamiento por categoría |
+| Tickets | `id_usuario` | Tickets por solicitante |
+| Historial_Ticket | `id_ticket` | Historial de un ticket |
+| Comentarios | `id_ticket` | Comentarios de un ticket |
+| Notificaciones | `id_usuario`, `leida` | Notificaciones no leídas |
 
 ## Optimizaciones de backend
 
@@ -115,6 +116,7 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 - Soft delete obligatorio: usar `activo = FALSE` en lugar de `DELETE`.
 - Validaciones de entrada en la capa FastAPI (Pydantic schemas).
 - Formato de respuesta: `{exito, datos, mensaje}` para éxito; `{exito, errores, mensaje}` para error.
+- Logging con niveles INFO/WARNING/ERROR (feature 019)
 
 ## Estilo visual
 
@@ -124,9 +126,11 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 
 ## Optimizaciones futuras (backlog)
 
-- **Redis** — caché distribuida para múltiples instancias y colas de trabajo persistentes (feature 017).
-- **Lazy loading / N+1** — revisión de consultas con `joinedload`/`selectinload` (feature 016).
-- **Encriptación extremo a extremo** — seguridad en tránsito entre Ionic y FastAPI (feature 018).
+- Redis para caché distribuida y colas persistentes (feature 017)
+- Pruebas automatizadas con pytest (feature 022)
+- Docker con docker-compose (feature 023)
+- Rotación de refresh token (feature 021)
+- Configuración centralizada con Pydantic Settings (feature 020)
 
 ## Límites duros
 

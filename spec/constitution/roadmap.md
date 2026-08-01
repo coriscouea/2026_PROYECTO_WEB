@@ -20,21 +20,29 @@ _Features completadas, en orden de implementación._
 
 _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
-- _(vacío — definir la siguiente feature del backlog)_
+_Semanas 10-12 — backend completo antes de tocar frontend._
+
+10. **009 · Historial de eventos del ticket** — registro de todos los eventos (creación, asignación, cambio estado, comentario, cambio prioridad, cierre) con tipo_evento, descripción, usuario y fecha. Línea de tiempo completa.
+11. **010 · Comentarios** — CRUD de comentarios por ticket, ordenados por fecha ascendente, con autor y timestamp.
+12. **011 · Notificaciones avanzadas** — marcar como leída, contar no leídas, listar solo pendientes.
+13. **012 · Métricas básicas** — tickets abiertos/cerrados, por categoría, por técnico, tiempo promedio de resolución. Calculado en la API.
+14. **019 · Logging estructurado** — reemplazar prints por logging con niveles INFO/WARNING/ERROR.
+15. **020 · Configuración centralizada** — clase Settings de Pydantic que centralice todas las variables de entorno.
 
 ## Backlog / ideas 💡
 
 _Sin comprometer ni ordenar del todo. Ideas que respetan la constitución._
 
-- **009 · Historial de estados** — registro automático con transacción ACID: cambiar estado + insertar historial como operación atómica.
-- **010 · Comentarios** — agregar y consultar comentarios de seguimiento en cada ticket.
-- **011 · Notificaciones avanzadas** — marcar como leídas, listar por usuario, filtrar no leídas.
-- **012 · Métricas básicas** — tiempo promedio de resolución, tickets por categoría y por sucursal.
-- **013 · Frontend login** — pantalla de inicio de sesión en Ionic conectada al backend.
-- **014 · Frontend tickets** — pantallas de crear ticket, bandeja y detalle/seguimiento.
-- **015 · PWA y despliegue** — configuración de service worker, instalación y despliegue final.
-- **016 · Índices y N+1** — revisión de consultas SQLAlchemy con `joinedload`/`selectinload`; validación de índices en tablas críticas.
-- **017 · Redis y caché distribuida** — caché de consultas repetitivas y colas de trabajo persistentes con Celery.
-- **018 · Encriptación extremo a extremo** — seguridad en tránsito entre Ionic y FastAPI para datos sensibles.
+_Semanas 12-16 — frontend, calidad y despliegue._
+
+- **013 · Frontend login** — pantalla de inicio de sesión en Ionic.
+- **014 · Frontend tickets** — bandeja, detalle y crear ticket en Ionic.
+- **015 · PWA y despliegue** — service worker, instalación y despliegue final.
+- **021 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
+- **022 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
+- **023 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
+- **016 · Índices y N+1** — revisión de consultas SQLAlchemy con joinedload/selectinload.
+- **017 · Redis y caché distribuida** — caché de consultas repetitivas y colas con Celery.
+- **018 · Encriptación extremo a extremo** — HTTPS/TLS en producción.
 
 > Cada feature nueva se crea como `features/NNN-nombre-feature/` con `spec.md`, `plan.md` y `tasks.md` antes de tocar código.
