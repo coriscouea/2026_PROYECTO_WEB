@@ -27,12 +27,13 @@ from app.models.comentarios import Comentario
 from app.models.historial_estado import HistorialTicket
 from app.models.notificaciones import Notificacion
 
-from app.routes.tickets import router as tickets_router         # Importar el router de tickets
-from app.routes.usuarios import router as usuarios_router       # Importar el router de usuarios
-from app.routes.categorias import router as categorias_router   # Importar el router de categorias
-from app.routes.auth import router as auth_router               # Importar el router de auth
-from app.routes.historial import router as historial_router     # Importar el router de historial
-from app.routes.comentarios import router as comentarios_router # Importar el router de comentarios
+from app.routes.tickets import router as tickets_router                 # Importar el router de tickets
+from app.routes.usuarios import router as usuarios_router               # Importar el router de usuarios
+from app.routes.categorias import router as categorias_router           # Importar el router de categorias
+from app.routes.auth import router as auth_router                       # Importar el router de auth
+from app.routes.historial import router as historial_router             # Importar el router de historial
+from app.routes.comentarios import router as comentarios_router         # Importar el router de comentarios
+from app.routes.notificaciones import router as notificaciones_router   # Importar el router de notificaciones
 
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -132,6 +133,7 @@ app.include_router(usuarios_router)
 app.include_router(categorias_router)
 app.include_router(historial_router)
 app.include_router(comentarios_router)
+app.include_router(notificaciones_router)
 
 # -------------------------------------------------------------
 # Endpoint raíz de verificación
