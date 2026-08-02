@@ -15,6 +15,7 @@ from app.schemas.ticket import TicketCreate, TicketUpdate
 from app.models.tickets import Ticket
 from app.models.categorias import Categoria
 from app.models.usuario import Usuario
+from app.services import historial_svc
 from app import repository
 from app.repository.ticket_repo import (
     crear_ticket,
@@ -78,7 +79,19 @@ def svc_crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
     datos.titulo = datos.titulo.strip()
     datos.descripcion = datos.descripcion.strip()
 
-    return crear_ticket(db, datos)
+# ... código existente ...
+    ticket = crear_ticket(db, datos)
+    
+    # Registrar evento de creación
+    historial_svc.registrar_ticket_creado(
+        db         = db,
+        id_ticket  = ticket.id_ticket,
+        id_usuario = ticket.id_usuario,
+        titulo     = ticket.titulo
+    )
+    db.commit()
+    return ticket
+
 
 def svc_listar_tickets(db: Session, page: int, limit: int, current_user: dict) -> list[Ticket]:
 
@@ -130,9 +143,9 @@ def svc_obtener_ticket(db: Session, id_ticket: int, current_user: dict) -> Ticke
     return ticket
 
 def svc_actualizar_ticket(
-    db: Session,
-    id_ticket: int,
-    datos: TicketUpdate,
+    db          : Session,
+    id_ticket   : int,
+    datos       : TicketUpdate,
     current_user: dict 
 ) -> Ticket:
 
@@ -148,8 +161,8 @@ def svc_actualizar_ticket(
         )  
     
     rol = current_user.get("rol")
+    id_usuario = int(current_user.get("sub"))
 
-    # Verifica que el técnico solo modifique tickets de su categoría
     if rol == "tecnico" and ticket.id_categoria not in [1, 2]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -161,22 +174,54 @@ def svc_actualizar_ticket(
             detail="Solo puedes modificar tickets de categoría ERP"
         )
 
-    # ---------------------------------------------------------
-    # Valida la transición de estado si se envía un nuevo estado
-    # Solo permite: pendiente → en_proceso → finalizado
-    # ---------------------------------------------------------
-
     if datos.estado:
         estado_actual = ticket.estado
-        estados_permitidos = TRANSICIONES_VALIDAS.get(estado_actual,[])
+        estados_permitidos = TRANSICIONES_VALIDAS.get(estado_actual, [])
         if datos.estado not in estados_permitidos:
             raise HTTPException(
-                status_code = status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail = f"No se puede cambiar el estado de '{estado_actual}' a '{datos.estado}'"
-            )   
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=f"No se puede cambiar el estado de '{estado_actual}' a '{datos.estado}'"
+            )
+        
+        # Registrar cambio de estado
+
+        historial_svc.registrar_estado_cambiado(
+            db              = db,
+            id_ticket       = id_ticket,
+            id_usuario      = id_usuario,
+            estado_anterior = estado_actual,
+            estado_nuevo    = datos.estado.value
+        )
+        if datos.estado == "finalizado":
+            historial_svc.registrar_ticket_cerrado(
+                db         = db,
+                id_ticket  = id_ticket,
+                id_usuario = id_usuario
+            )
+
+    if datos.prioridad and datos.prioridad != ticket.prioridad:
+        historial_svc.registrar_prioridad_cambiada(
+            db                 = db,
+            id_ticket          = id_ticket,
+            id_usuario         = id_usuario,
+            prioridad_anterior = ticket.prioridad,
+            prioridad_nueva    = datos.prioridad.value
+        )
+
+    if datos.id_tecnico_asignado and datos.id_tecnico_asignado != ticket.id_tecnico_asignado:
+        from app.repository.usuario_repo import obtener_usuario
+        tecnico = obtener_usuario(db, datos.id_tecnico_asignado)
+        historial_svc.registrar_tecnico_asignado(
+            db             = db,
+            id_ticket      = id_ticket,
+            id_usuario     = id_usuario,
+            nombre_tecnico = tecnico.nombre if tecnico else "Técnico"
+        )
+
     return actualizar_ticket(db, ticket, datos)
 
-def svc_desactivar_ticket(db: Session, id_ticket: int) -> Ticket:
+
+def svc_desactivar_ticket(db: Session, id_ticket: int, current_user: dict) -> Ticket:
 
     # ---------------------------------------------------------
     # Verifica que el ticket existe
@@ -198,5 +243,12 @@ def svc_desactivar_ticket(db: Session, id_ticket: int) -> Ticket:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El ticket ya está inactivo"
         )
+
+    id_usuario = int(current_user.get("sub"))
+    historial_svc.registrar_ticket_cerrado(
+        db         = db,
+        id_ticket  = id_ticket,
+        id_usuario = id_usuario
+    )
 
     return desactivar_ticket(db, ticket)

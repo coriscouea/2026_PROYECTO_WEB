@@ -124,7 +124,7 @@ def desactivar_ticket(
     db: Session = Depends(get_db),
     current_user: dict = Depends(require_roles("admin"))
 ):
-    ticket = svc_desactivar_ticket(db, id_ticket)
+    ticket = svc_desactivar_ticket(db, id_ticket, current_user)
     return RespuestaExito(
         datos=TicketResponse.model_validate(ticket),
         mensaje="Ticket desactivado correctamente"
