@@ -34,6 +34,7 @@ from app.routes.auth import router as auth_router                       # Import
 from app.routes.historial import router as historial_router             # Importar el router de historial
 from app.routes.comentarios import router as comentarios_router         # Importar el router de comentarios
 from app.routes.notificaciones import router as notificaciones_router   # Importar el router de notificaciones
+from app.routes.metricas import router as metricas_router               # Importar el router de métricas
 
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -134,7 +135,7 @@ app.include_router(categorias_router)
 app.include_router(historial_router)
 app.include_router(comentarios_router)
 app.include_router(notificaciones_router)
-
+app.include_router(metricas_router)
 # -------------------------------------------------------------
 # Endpoint raíz de verificación
 # GET / → confirma que el servidor está corriendo
