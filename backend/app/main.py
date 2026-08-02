@@ -32,6 +32,7 @@ from app.routes.usuarios import router as usuarios_router       # Importar el ro
 from app.routes.categorias import router as categorias_router   # Importar el router de categorias
 from app.routes.auth import router as auth_router               # Importar el router de auth
 from app.routes.historial import router as historial_router     # Importar el router de historial
+from app.routes.comentarios import router as comentarios_router # Importar el router de comentarios
 
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -130,6 +131,7 @@ app.include_router(tickets_router)
 app.include_router(usuarios_router)
 app.include_router(categorias_router)
 app.include_router(historial_router)
+app.include_router(comentarios_router)
 
 # -------------------------------------------------------------
 # Endpoint raíz de verificación

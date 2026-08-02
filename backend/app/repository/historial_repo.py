@@ -31,7 +31,7 @@ def registrar_evento(
     )
 
     db.add(evento)
-    db.flush()                  # inserta sin hacer commit — el commit lo hace el service padre
+    db.commit()                  # hace commit para que se registre la fecha y hora del evento
     return evento
 
 def listar_historial(db: Session, id_ticket: int) -> list[HistorialTicket]:

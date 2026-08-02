@@ -9,9 +9,9 @@
 # =============================================================
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index  # tipos de columna SQLAlchemy
-from sqlalchemy.orm import relationship             # para definir relaciones entre tablas
-from sqlalchemy.sql import func                     # para usar funciones SQL como CURRENT_TIMESTAMP
-from app.database import Base                       # clase base declarativa    
+from sqlalchemy.orm import relationship                                      # para definir relaciones entre tablas
+from sqlalchemy.sql import func                                              # para usar funciones SQL como CURRENT_TIMESTAMP
+from app.database import Base                                                # clase base declarativa    
 
 class Comentario(Base): 
     __tablename__ = "comentarios"  # Nombre de la tabla en MySQL
