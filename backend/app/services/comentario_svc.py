@@ -64,7 +64,8 @@ def svc_crear_comentario(
     # Sanitiza el texto — elimina espacios sobrantes
     # ---------------------------------------------------------
 
-    texto = texto.strip()
+    import bleach
+    texto = bleach.clean(texto.strip(), tags=[], strip=True)
 
     # ---------------------------------------------------------
     # Crea el comentario
@@ -81,6 +82,7 @@ def svc_crear_comentario(
         id_ticket  = id_ticket,
         id_usuario = id_usuario
     )
+    db.commit()  # confirma el comentario y el evento de historial
 
     return comentario
 

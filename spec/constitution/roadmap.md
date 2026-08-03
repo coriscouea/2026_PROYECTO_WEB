@@ -14,7 +14,11 @@ _Features completadas, en orden de implementación._
 6. **005 · CRUD Tickets** — 5 endpoints REST (POST, GET, GET/{id}, PATCH, DELETE) con validaciones Pydantic, regla de transición de estados y soft delete. Probado en Swagger.
 7. **006 · CRUD Usuarios** — 5 endpoints REST con hash bcrypt, asignación de rol por defecto, email único y soft delete. Probado en Swagger.
 8. **008 · Optimización del backend** — eager loading con joinedload, caché cache-aside con lru_cache, BackgroundTasks para notificaciones asíncronas. Comparación antes/después documentada.
-9. **007 · Autenticación y roles** — login con JWT, access token (30 min) + refresh token (1 día), middleware de protección de rutas por rol (RBAC sin consulta a BD), rate limiting con slowapi en `/auth/login` (5/min), filtrado de tickets por pertenencia/categoría (mitigación IDOR), respuestas de error estandarizadas `{exito, errores, mensaje}`. Probado en Postman/Swagger. (Semana 9)
+9. **007 · Autenticación y roles** — login con JWT, access token (30 min) + refresh token (1 día), middleware de protección de rutas por rol (RBAC sin consulta a BD), rate limiting con slowapi en `/auth/login` (5/min), filtrado de tickets por pertenencia/categoría (mitigación IDOR), respuestas de error estandarizadas `{exito, errores, mensaje}`. Probado en Postman/Swagger. (Semana 9). Revisión posterior: corregida escalada de roles en `/auth/registro` (forzaba rol por defecto solo si no venía `id_rol` — ahora lo sobreescribe siempre).
+10. **009 · Historial de eventos del ticket** — registro de todos los eventos (creación, asignación, cambio estado, comentario, cambio prioridad, cierre) con tipo_evento, descripción, usuario y fecha. Línea de tiempo completa. Registro y operación principal son atómicos (una sola transacción) en creación/actualización/desactivación de ticket y en creación de comentario.
+11. **010 · Comentarios** — CRUD de comentarios por ticket, ordenados por fecha ascendente, con autor y timestamp.
+12. **011 · Notificaciones avanzadas** — marcar como leída, contar no leídas, listar solo pendientes.
+13. **012 · Métricas básicas** — tickets abiertos/cerrados, por categoría, por técnico, tiempo promedio de resolución. Calculado en la API. Revisión posterior: corregido bug de filtro (`estado == True` → `activo == True`) que rompía el conteo por estado/categoría/técnico.
 
 ## Siguiente 🔜
 
@@ -22,12 +26,10 @@ _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
 _Semanas 10-12 — backend completo antes de tocar frontend._
 
-10. **009 · Historial de eventos del ticket** — registro de todos los eventos (creación, asignación, cambio estado, comentario, cambio prioridad, cierre) con tipo_evento, descripción, usuario y fecha. Línea de tiempo completa.
-11. **010 · Comentarios** — CRUD de comentarios por ticket, ordenados por fecha ascendente, con autor y timestamp.
-12. **011 · Notificaciones avanzadas** — marcar como leída, contar no leídas, listar solo pendientes.
-13. **012 · Métricas básicas** — tickets abiertos/cerrados, por categoría, por técnico, tiempo promedio de resolución. Calculado en la API.
 14. **019 · Logging estructurado** — reemplazar prints por logging con niveles INFO/WARNING/ERROR.
 15. **020 · Configuración centralizada** — clase Settings de Pydantic que centralice todas las variables de entorno.
+16. **Sanitización HTML real** — reemplazar los `.strip()` en tickets/usuarios/comentarios por una sanitización real (ej. `bleach`) que cumpla lo que 005/006/010 ya dan por hecho.
+17. **Validación de formato de email** — `UsuarioCreate.email` es `str` plano; falta `EmailStr` o regex para cumplir el criterio de "formato válido" de 006/007.
 
 ## Backlog / ideas 💡
 

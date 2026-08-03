@@ -38,31 +38,32 @@ def svc_registro(db: Session, datos: UsuarioCreate) -> dict:
             status_code=status.HTTP_409_CONFLICT,
             detail="Ya existe un usuario registrado con ese correo"
         )
-        
-    # ---------------------------------------------------------
-    # Asigna rol por defecto si no se envía (regla 7)
-    # ---------------------------------------------------------
 
-    if not datos.id_rol:
-        rol_default = (
-            db.query(Rol)
-            .filter(Rol.nombre_rol == "usuario")
-            .first()
+    # ---------------------------------------------------------
+    # SEGURIDAD — forzar siempre el rol 'usuario' en el registro
+    # Sin importar lo que venga en el body — regla 7
+    # Un atacante que envíe id_rol=4 (admin) será ignorado
+    # ---------------------------------------------------------
+    
+    rol_default = (
+        db.query(Rol)
+        .filter(Rol.nombre_rol == "usuario")
+        .first()
+    )
+        
+    if not rol_default: 
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Rol por defecto no encontrado"
         )
-        if not rol_default:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="No se encontró el rol por defecto"
-            )
-        datos.id_rol = rol_default.id_rol
+    datos.id_rol = rol_default.id_rol                           # siempre sobreescribe — no condicional
 
     # ---------------------------------------------------------
     # Hashea la contraseña y crea el usuario
     # ---------------------------------------------------------
 
     password_hash = hash_password(datos.password)
-    usuario = crear_usuario(db, datos, password_hash)
-    return usuario
+    return crear_usuario(db, datos, password_hash)
 
 def svc_login(db: Session, email:str, password:str) -> dict:
 

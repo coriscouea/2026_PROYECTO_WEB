@@ -1,6 +1,6 @@
 # 009 · Historial de Eventos del Ticket
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -59,15 +59,15 @@ historial_ticket:
 
 ## Criterios de aceptación
 
-- [ ] Al crear un ticket se registra evento `ticket_creado` automáticamente.
-- [ ] Al asignar técnico se registra evento `tecnico_asignado`.
-- [ ] Al cambiar estado se registra evento `estado_cambiado` con descripción del cambio.
-- [ ] Al cambiar prioridad se registra evento `prioridad_cambiada`.
-- [ ] Al agregar comentario se registra evento `comentario_agregado`.
-- [ ] Al finalizar ticket se registra evento `ticket_cerrado`.
-- [ ] GET /api/v1/tickets/{id}/historial devuelve eventos ordenados por fecha ASC.
-- [ ] Solo usuarios con acceso al ticket pueden ver su historial.
-- [ ] Los eventos se registran dentro de una transacción ACID con la operación principal.
+- [X] Al crear un ticket se registra evento `ticket_creado` automáticamente (`ticket_svc.svc_crear_ticket`).
+- [X] Al asignar técnico se registra evento `tecnico_asignado` (`ticket_svc.svc_actualizar_ticket`).
+- [X] Al cambiar estado se registra evento `estado_cambiado` con descripción del cambio.
+- [X] Al cambiar prioridad se registra evento `prioridad_cambiada`.
+- [X] Al agregar comentario se registra evento `comentario_agregado` (`comentario_svc.svc_crear_comentario`).
+- [X] Al finalizar ticket se registra evento `ticket_cerrado` (también se registra al desactivar el ticket vía DELETE).
+- [X] GET /api/v1/tickets/{id}/historial devuelve eventos ordenados por fecha ASC (`historial_repo.listar_historial`).
+- [X] Solo usuarios con acceso al ticket pueden ver su historial (verificación por rol/categoría en `historial_svc.svc_listar_historial`).
+- [X] Los eventos se registran dentro de una transacción ACID con la operación principal. `ticket_repo.crear_ticket`, `comentario_repo.crear_comentario`, `ticket_repo.actualizar_ticket` y `ticket_repo.desactivar_ticket` usan `flush()` en vez de `commit()` propio; `historial_repo.registrar_evento` también usa solo `flush()`. El `commit()` único queda a cargo del service que orquesta la operación (`ticket_svc`/`comentario_svc`), cubriendo registro principal + evento en la misma transacción — si algo falla entremedio, ninguno de los dos se persiste.
 
 ## Fuera de alcance
 

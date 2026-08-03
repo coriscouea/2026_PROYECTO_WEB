@@ -1,6 +1,6 @@
 # 011 · Notificaciones Avanzadas
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -25,12 +25,12 @@ para mostrar el badge de notificaciones y la bandeja de avisos.
 
 ## Criterios de aceptación
 
-- [ ] GET /notificaciones devuelve solo las del usuario autenticado (del JWT).
-- [ ] GET /notificaciones/no-leidas devuelve solo las con `leida=FALSE`.
-- [ ] GET /notificaciones/conteo devuelve `{"total": N}`.
-- [ ] PATCH /{id}/leer marca `leida=TRUE` — 404 si no existe o no pertenece al usuario.
-- [ ] PATCH /leer-todas marca todas las notificaciones del usuario como leídas.
-- [ ] Ningún usuario puede ver ni modificar notificaciones de otro usuario.
+- [X] GET /notificaciones devuelve solo las del usuario autenticado (del JWT).
+- [X] GET /notificaciones/no-leidas devuelve solo las con `leida=FALSE`.
+- [X] GET /notificaciones/conteo devuelve `{"total": N}`.
+- [X] PATCH /{id}/leer marca `leida=TRUE` — 404 si no existe o no pertenece al usuario.
+- [X] PATCH /leer-todas marca todas las notificaciones del usuario como leídas.
+- [X] Ningún usuario puede ver ni modificar notificaciones de otro usuario — todas las queries de `notificacion_repo` filtran por `id_usuario` del JWT.
 
 ## Fuera de alcance
 

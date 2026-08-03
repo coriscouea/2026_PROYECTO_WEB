@@ -21,7 +21,7 @@ def total_por_estado(db: Session) -> dict:
 
     resultados = (
         db.query(Ticket.estado, func.count(Ticket.id_ticket))
-        .filter(Ticket.estado == True)                              # Solo tickets activos
+        .filter(Ticket.activo == True)                              # Solo tickets activos
         .group_by(Ticket.estado)
         .all()
     )   
@@ -37,7 +37,7 @@ def total_por_categoria(db: Session) -> dict:
     resultados = (
         db.query(Categoria.nombre, func.count(Ticket.id_ticket))
         .join(Ticket, Ticket.id_categoria == Categoria.id_categoria)
-        .filter(Ticket.estado == True)                              # Solo tickets activos
+        .filter(Ticket.activo == True)                              # Solo tickets activos
         .group_by(Categoria.nombre)
         .all()
     )
@@ -53,7 +53,7 @@ def total_por_tecnico(db: Session) -> dict:
     resultados = (
         db.query(Usuario.nombre, func.count(Ticket.id_ticket))
         .join(Ticket, Ticket.id_tecnico_asignado == Usuario.id_usuario)
-        .filter(Ticket.estado == True)                              # Solo tickets activos
+        .filter(Ticket.activo == True)                              # Solo tickets activos
         .group_by(Usuario.nombre)
         .all()
     )

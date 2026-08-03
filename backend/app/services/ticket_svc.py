@@ -76,8 +76,9 @@ def svc_crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
     # en una fase posterior
     # ---------------------------------------------------------
 
-    datos.titulo = datos.titulo.strip()
-    datos.descripcion = datos.descripcion.strip()
+    import bleach
+    datos.titulo = bleach.clean(datos.titulo.strip(), tags=[], strip=True)
+    datos.descripcion = bleach.clean(datos.descripcion.strip(), tags=[], strip=True)
 
 # ... código existente ...
     ticket = crear_ticket(db, datos)

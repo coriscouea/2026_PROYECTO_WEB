@@ -99,7 +99,8 @@ def svc_crear_usuario(db: Session, datos: UsuarioCreate) -> Usuario:
     # Sanitiza el nombre — elimina espacios sobrantes
     # ---------------------------------------------------------
 
-    datos.nombre = datos.nombre.strip()
+    import bleach
+    datos.nombre = bleach.clean(datos.nombre.strip(), tags=[], strip=True)
 
     # ---------------------------------------------------------
     # Hashea la contraseña antes de persistir
@@ -139,6 +140,17 @@ def svc_actualizar_usuario(db: Session, id_usuario: int, datos: UsuarioUpdate) -
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Usuario con ID {id_usuario} no encontrado"
         )
+    
+    # Valida que el rol exista si se envía
+    
+    if datos.id_rol:
+        rol = db.query(Rol).filter(Rol.id_rol == datos.id_rol).first()
+        if not rol:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El rol especificado no existe"
+            )
+        
     return actualizar_usuario(db, usuario, datos)
 
 def svc_desactivar_usuario(db: Session, id_usuario: int) -> Usuario:

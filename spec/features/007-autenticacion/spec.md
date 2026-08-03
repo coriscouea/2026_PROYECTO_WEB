@@ -158,6 +158,7 @@ Se elige JWT porque respeta el principio REST de statelessness, escala horizonta
 - **IDOR** — mitigación: verificar siempre que el recurso solicitado pertenece al usuario autenticado antes de ejecutar la operación.
 - **Fuerza bruta en login** — mitigación: rate limiting en `POST /auth/login` → 429 al superar el límite.
 - **Tokens vencidos mal manejados** — mitigación: el frontend detecta 401, usa el refresh token para renovar el access token, y solo redirige al login si el refresh también falla.
+- **Escalada de roles en `/auth/registro`** — corregido en revisión: `auth_svc.svc_registro` sobreescribe `datos.id_rol` de forma incondicional con el rol `usuario` por defecto antes de crear la cuenta, sin importar qué `id_rol` venga en el body. Antes de la corrección, un cliente no autenticado podía enviar `id_rol` de admin/técnico/mesa_ayuda y el registro lo aceptaba.
 
 ## Fuera de alcance
 

@@ -27,8 +27,8 @@ def crear_comentario(
         texto        = texto
     )
     db.add(comentario)
-    db.commit()                                         # hace commit para que se registre la fecha y hora del comentario
-    db.refresh(comentario)                  
+    db.flush()                           # prepara el INSERT sin confirmar — el commit lo hace el service padre
+    db.refresh(comentario)               # actualiza el objeto para obtener el id y fecha generados por MySQL         
     return comentario
 
 def listar_comentarios(db: Session, id_ticket: int) -> list[Comentario]:

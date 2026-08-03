@@ -34,7 +34,7 @@ def crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
     )
 
     db.add(nuevo_ticket)
-    db.commit()
+    db.flush()                   # prepara el INSERT sin confirmar — el commit lo hace el service padre
     db.refresh(nuevo_ticket)     # actualiza el objeto con el id generado por MySQL   
     return nuevo_ticket
 

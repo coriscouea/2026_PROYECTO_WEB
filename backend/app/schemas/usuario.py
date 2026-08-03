@@ -10,7 +10,7 @@
 # UsuarioResponse → datos que devuelve la API (sin password)
 # =============================================================
 
-from pydantic import BaseModel, Field  # 
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from datetime import datetime
 
@@ -27,7 +27,7 @@ class UsuarioCreate(BaseModel):         # nombre de la clase que representa el e
         description = "Nombre completo del Usuario"    
     ) 
 
-    email : str = Field(           # email: obligatorio, formato válido de correo electrónico
+    email : EmailStr = Field(           # email: obligatorio, formato válido de correo electrónico
         ...,
         description = "Correo electrócnico - usado para iniciar sesión"
     )
@@ -68,6 +68,12 @@ class UsuarioUpdate(BaseModel):
         None,
         gt  = 0,
         description = "Nueva sucursal del usuario"
+    )
+
+    id_rol: Optional[int] = Field(
+        None,
+        gt  = 0,
+        description = "Nuevo rol del usuario — solo admin puede cambiarlo"
     )
 
 # -------------------------------------------------------------
