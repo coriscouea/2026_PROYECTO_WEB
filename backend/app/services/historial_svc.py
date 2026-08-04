@@ -9,6 +9,7 @@
 
 from sqlalchemy.orm import Session
 from app.repository.historial_repo import registrar_evento, listar_historial
+from app.repository.ticket_repo import obtener_ticket_por_id
 from app.models.historial_estado import HistorialTicket
 from fastapi import HTTPException, status
 
@@ -99,11 +100,11 @@ def registrar_ticket_cerrado(db: Session, id_ticket: int, id_usuario: int):
 def svc_listar_historial(db: Session, id_ticket: int, current_user: dict) -> list[HistorialTicket]:
 
     # ---------------------------------------------------------
-    # Lista el historial de un ticket verificando acceso
+    # Busca el ticket incluyendo inactivos para garantizar
+    # trazabilidad completa — el historial siempre es consultable
     # ---------------------------------------------------------
     
-    from app.repository.ticket_repo import obtener_ticket
-    ticket = obtener_ticket(db, id_ticket)
+    ticket = obtener_ticket_por_id(db, id_ticket, incluir_inactivos=True)
     if not ticket:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

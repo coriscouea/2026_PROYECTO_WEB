@@ -78,10 +78,11 @@ def crear_ticket(
 def listar_tickets(
     page: int = 1,
     limit: int = 10,
+    filtro: str = "activos",
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    tickets = svc_listar_tickets(db, page, limit, current_user)
+    tickets = svc_listar_tickets(db, page, limit, current_user, filtro)
     return RespuestaExito(
         datos=[TicketResponse.model_validate(t) for t in tickets],
         mensaje=f"{len(tickets)} tickets encontrados"

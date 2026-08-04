@@ -43,7 +43,8 @@ def listar_tickets(
     page: int = 1, 
     limit: int = 10,
     rol: str = None,
-    id_usuario: int = None
+    id_usuario: int = None,
+    filtro : str = "activos"
 ) -> list[Ticket]:      
 
     # ---------------------------------------------------------
@@ -60,19 +61,25 @@ def listar_tickets(
             joinedload(Ticket.solicitante),
             joinedload(Ticket.tecnico)
         )
-        .filter(Ticket.activo == True)
     )
 
-    # Filtro por rol aplicado en SQL antes de paginar
+    # Filtro por estado activo — en SQL antes de paginar
+    if filtro == "activos":
+        query = query.filter(Ticket.activo == True)
+    elif filtro == "inactivos":
+        query = query.filter(Ticket.activo == False)
+    # "todos" → sin filtro de activo
+
+    # Filtro por rol — en SQL antes de paginar
     if rol == "usuario":
         query = query.filter(Ticket.id_usuario == id_usuario)
     elif rol == "tecnico":
         query = query.filter(Ticket.id_categoria.in_([1, 2]))
     elif rol == "mesa_ayuda":
         query = query.filter(Ticket.id_categoria == 3)
-    # admin → sin filtro adicional
 
     return query.offset(offset).limit(limit).all()
+
 
 def obtener_ticket(db: Session, id_ticket: int) -> Ticket | None:
     
@@ -91,6 +98,27 @@ def obtener_ticket(db: Session, id_ticket: int) -> Ticket | None:
         .first()
 
     )
+
+def obtener_ticket_por_id(db: Session, id_ticket: int, incluir_inactivos: bool = False) -> Ticket | None:
+
+    # ---------------------------------------------------------
+    # Busca un ticket por ID con eager loading
+    # ---------------------------------------------------------    
+
+    query = (
+        db.query(Ticket)
+        .options(
+            joinedload(Ticket.categoria),
+            joinedload(Ticket.solicitante),
+            joinedload(Ticket.tecnico)
+        )
+        .filter(Ticket.id_ticket == id_ticket)
+    )
+
+    if not incluir_inactivos:
+        query = query.filter(Ticket.activo == True)
+
+    return query.first()
 
 def actualizar_ticket(db: Session, ticket: Ticket, datos: TicketUpdate) -> Ticket:
 
