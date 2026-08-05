@@ -17,6 +17,7 @@ from app.repository.usuario_repo import (
     crear_usuario,
     listar_usuarios,
     obtener_usuario,
+    obtener_usuario_por_id,
     buscar_por_email,
     actualizar_usuario,
     desactivar_usuario
@@ -156,10 +157,10 @@ def svc_actualizar_usuario(db: Session, id_usuario: int, datos: UsuarioUpdate) -
 def svc_desactivar_usuario(db: Session, id_usuario: int) -> Usuario:
 
     # ---------------------------------------------------------
-    # Verifica que el usuario existe
+    # Busca sin filtro de activo para dar mensaje correcto
     # ---------------------------------------------------------
 
-    usuario = obtener_usuario(db, id_usuario)
+    usuario = obtener_usuario_por_id(db, id_usuario)
     if not usuario:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

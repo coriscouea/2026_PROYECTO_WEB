@@ -62,6 +62,20 @@ def obtener_usuario(db: Session, id_usuario: int) -> Usuario | None:
         .first()
     )
 
+def obtener_usuario_por_id(db: Session, id_usuario: int) -> Usuario | None:
+    
+    # ---------------------------------------------------------
+    # Busca un usuario por ID sin filtrar por activo
+    # Usado para operaciones que aplican a usuarios inactivos
+    # ---------------------------------------------------------
+    
+    return (
+        db.query(Usuario)
+        .filter(Usuario.id_usuario == id_usuario)
+        .first()
+    )
+
+
 def buscar_por_email(db: Session, email: str) -> Usuario | None:
     
     # ---------------------------------------------------------
