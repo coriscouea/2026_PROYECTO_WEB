@@ -37,14 +37,51 @@ _Sin comprometer ni ordenar del todo. Ideas que respetan la constitución._
 
 _Semanas 12-16 — frontend, calidad y despliegue._
 
-- **013 · Frontend login** — pantalla de inicio de sesión en Ionic.
-- **014 · Frontend tickets** — bandeja, detalle y crear ticket en Ionic.
-- **015 · PWA y despliegue** — service worker, instalación y despliegue final.
 - **021 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
 - **022 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
 - **023 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
 - **016 · Índices y N+1** — revisión de consultas SQLAlchemy con joinedload/selectinload.
 - **017 · Redis y caché distribuida** — caché de consultas repetitivas y colas con Celery.
 - **018 · Encriptación extremo a extremo** — HTTPS/TLS en producción.
+
+## Plan de frontend (detalle)
+
+### 013 · Frontend login
+- Pantalla de login con email y contraseña
+- Validación de campos en el frontend
+- Llamada a `POST /auth/login` con axios
+- Guardar access_token y refresh_token en almacenamiento seguro de Capacitor
+- Interceptor HTTP para adjuntar token en cada request
+- Redirección automática al expirar token — usar refresh token
+- Mensaje claro de error (401, 422)
+
+### 014 · Frontend tickets
+**Bandeja de tickets:**
+- Lista de tickets con filtros: activos, inactivos, todos
+- Tarjeta por ticket: número, título, categoría, estado, prioridad, fecha
+- Filtro por estado y categoría
+- Paginación con scroll infinito o botón "cargar más"
+- Botón flotante para crear ticket (rol usuario)
+
+**Crear ticket:**
+- Formulario simple: título, descripción, categoría
+- Selector de prioridad
+- Llamada a `POST /api/v1/tickets`
+
+**Detalle del ticket:**
+- Información general del ticket
+- Historial de eventos en línea de tiempo
+- Sección de comentarios ordenados ASC
+- Campo para agregar comentario
+- Botones de acción según rol (cambiar estado, asignar técnico)
+
+### 015 · PWA y despliegue
+- `ionic build --prod` — genera carpeta `dist/`
+- Configurar `manifest.json` — nombre, ícono, color tema
+- Verificar service worker generado por Ionic
+- `npx cap sync` — sincronizar con proyectos nativos
+- `npx cap open android` — generar .apk en Android Studio
+- Probar en celular Android conectado por USB o WiFi local
+- Probar en PC como PWA instalable desde el navegador
 
 > Cada feature nueva se crea como `features/NNN-nombre-feature/` con `spec.md`, `plan.md` y `tasks.md` antes de tocar código.

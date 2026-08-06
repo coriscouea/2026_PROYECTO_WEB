@@ -12,6 +12,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError
 from app.core.security import decode_token
+from app.core.logging_config import logger
 
 # -------------------------------------------------------------
 # HTTPBearer extrae el token del encabezado Authorization
@@ -36,6 +37,7 @@ def get_current_user(
         payload = decode_token(token)
         return payload
     except JWTError:
+        logger.warning("Token inválido o expirado — acceso denegado")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token invalido o expirado",

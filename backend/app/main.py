@@ -8,16 +8,21 @@
 # automática de Swagger UI en /docs.
 # =============================================================
 
-from fastapi import FastAPI, HTTPException                                 # clase principal del framework FastAPI 
+from fastapi import FastAPI, HTTPException                              # clase principal del framework FastAPI 
 from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from contextlib import asynccontextmanager                             # Importar asynccontextmanager para manejar el ciclo de vida de la aplicación
 from dotenv import load_dotenv
 import os
 
-from app.database import engine, Base                       # motor de conexión y clase base de modelos
+from app.database import engine, Base                                   # motor de conexión y clase base de modelos
+from app.core.logging_config import logger                              # Importar el logger configurado para logging estructurado
+from slowapi.errors import RateLimitExceeded
+from app.core.limiter import limiter
 
 # Importar todos los modelos para que SQLAlchemy los registre
+
 from app.models.roles import Rol
 from app.models.sucursales import Sucursal
 from app.models.categorias import Categoria
@@ -36,9 +41,22 @@ from app.routes.comentarios import router as comentarios_router         # Import
 from app.routes.notificaciones import router as notificaciones_router   # Importar el router de notificaciones
 from app.routes.metricas import router as metricas_router               # Importar el router de métricas
 
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
-from app.core.limiter import limiter
+load_dotenv()
+
+# -------------------------------------------------------------
+# Lifespan — ciclo de vida de la aplicación
+# -------------------------------------------------------------
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    # Al arrancar
+    logger.info("HelpDesk Web API iniciada correctamente")
+    yield
+
+    # Al apagar (opcional)
+    logger.info("HelpDesk Web API detenida")
+
 
 # -------------------------------------------------------------
 # Crea la instancia principal de la aplicación FastAPI
@@ -46,17 +64,15 @@ from app.core.limiter import limiter
 # version  → versión de la API visible en la documentación
 # -------------------------------------------------------------
 
-load_dotenv()
-
 app = FastAPI(
     title="HelpDesk Web API",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # -------------------------------------------------------------
 # Rate limiting — previene ataques de fuerza bruta
 # -------------------------------------------------------------
-
 
 app.state.limiter = limiter
 
@@ -67,6 +83,10 @@ app.state.limiter = limiter
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
+    if exc.status_code >= 500:
+        logger.error(f"Error HTTP {exc.status_code}: {exc.detail}")
+    elif exc.status_code >= 400:
+        logger.warning(f"Error HTTP {exc.status_code}: {exc.detail}")
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -78,6 +98,7 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
+    logger.warning(f"Error de validación en {request.url.path}")
     return JSONResponse(
         status_code=422,
         content={
@@ -89,8 +110,6 @@ async def validation_exception_handler(request, exc):
             "mensaje": "Los datos enviados no son válidos"
         }
     )
-from slowapi.errors import RateLimitExceeded
-from fastapi.responses import JSONResponse
 
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request, exc):
@@ -128,6 +147,8 @@ app.add_middleware(
 
 Base.metadata.create_all(bind = engine)
 
+# Routers
+
 app.include_router(auth_router)
 app.include_router(tickets_router)
 app.include_router(usuarios_router)
@@ -136,6 +157,7 @@ app.include_router(historial_router)
 app.include_router(comentarios_router)
 app.include_router(notificaciones_router)
 app.include_router(metricas_router)
+
 # -------------------------------------------------------------
 # Endpoint raíz de verificación
 # GET / → confirma que el servidor está corriendo

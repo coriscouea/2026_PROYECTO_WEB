@@ -34,16 +34,50 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 ## Comandos
 
 **Backend:**
-- `uvicorn app.main:app --reload` — arranca el servidor FastAPI en modo desarrollo.
-- `alembic upgrade head` — aplica las migraciones pendientes a la base de datos.
-- `alembic revision --autogenerate -m "descripcion"` — genera una migración automática.
-- `pip install -r requirements.txt` — instala dependencias del backend.
+- `uvicorn app.main:app --reload` — servidor de desarrollo
+- `uvicorn app.main:app --host 0.0.0.0 --port 8000` — accesible desde la red local (pruebas móvil)
+- `alembic upgrade head` — aplicar migraciones
+- `alembic revision --autogenerate -m "descripcion"` — generar migración
+- `pip install -r requirements.txt` — instalar dependencias
 - `pytest` — ejecutar pruebas automatizadas (feature 022)
 
 **Frontend:**
-- `ionic serve` — arranca el entorno local del frontend.
-- `ionic build` — compila el frontend para producción.
-- `npm install` — instala dependencias del frontend.
+- `ionic serve` — servidor de desarrollo web
+- `ionic serve --host 0.0.0.0` — accesible desde celular en red local WiFi
+- `ionic build --prod` — compilar para producción (genera PWA)
+- `npx cap sync` — sincronizar código web con proyectos nativos
+- `npx cap open android` — abrir en Android Studio para generar .apk
+- `npx cap open ios` — abrir en Xcode para generar .ipa (requiere Mac)
+
+## Despliegue multiplataforma
+
+Ionic + Capacitor permite generar las tres plataformas desde un único código fuente:
+
+```
+Código Ionic (HTML/CSS/JS)
+        ↓
+┌─────────────────────────────────┐
+│     Capacitor (puente nativo)   │
+├──────────┬──────────┬───────────┤
+│ Android  │   iOS    │  PWA/Web  │
+│  .apk    │  .ipa    │           │
+└──────────┴──────────┴───────────┘
+```
+
+| Plataforma | Herramienta requerida | Resultado |
+|---|---|---|
+| PWA / PC | Solo navegador | Instalable desde el browser |
+| Android | Android Studio | Archivo .apk |
+| iOS | Xcode + Mac | Archivo .ipa |
+
+**Para la defensa universitaria:**
+- PC → navegador normal en la computadora
+- Android → celular con .apk instalado o red local WiFi
+- iOS → simulador Xcode (si se tiene Mac)
+
+**Prueba en red local:**
+El celular y la computadora deben estar en la misma red WiFi. El backend corre con `--host 0.0.0.0` y el frontend con `ionic serve --host 0.0.0.0`. El celular accede por la IP local de la computadora.
+
 
 ## Modelo de datos
 
@@ -72,6 +106,7 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 - **Caché cache-aside** — `functools.lru_cache` para datos estáticos (categorías, roles). TTL de 300 segundos. Invalidación explícita con `cache_clear()`. Redis en versión futura (feature 017).
 - **BackgroundTasks** — FastAPI `BackgroundTasks` para procesamiento asíncrono de notificaciones sin bloquear la respuesta al cliente.
 - **JWT sin consultas redundantes** — el rol del usuario viaja en el payload del token; el middleware de autorización no consulta la BD en cada request.
+- **Filtro SQL** — activos/inactivos/todos aplicado en SQL antes de paginar
 
 ## Autenticación y autorización
 
@@ -84,6 +119,8 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 - **Código 401** — token ausente, inválido o expirado.
 - **Código 403** — token válido pero rol insuficiente.
 - **Código 429** — rate limiting en login (prevención de fuerza bruta).
+- **Escalada de roles:** `/auth/registro` siempre fuerza `id_rol = usuario` ignorando el body
+- **Sanitización XSS:** bleach.clean() en titulo, descripcion, nombre y texto de comentarios
 
 ## Seguridad de la API
 
@@ -131,6 +168,7 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 - Docker con docker-compose (feature 023)
 - Rotación de refresh token (feature 021)
 - Configuración centralizada con Pydantic Settings (feature 020)
+- Logging estructurado (feature 019)
 
 ## Límites duros
 
@@ -140,4 +178,5 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 - No implementar ninguna feature sin su `spec.md` aprobado previamente.
 - No usar Flask — reemplazado por FastAPI desde la semana 5.
 - Las contraseñas nunca se almacenan en texto plano — siempre como hash bcrypt.
+- No loguear passwords, tokens ni datos sensibles
 
