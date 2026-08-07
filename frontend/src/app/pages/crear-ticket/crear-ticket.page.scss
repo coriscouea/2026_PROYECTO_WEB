@@ -1,0 +1,124 @@
+// =============================================================
+// crear-ticket.page.scss — Estilos de Crear Ticket
+// HelpDesk Web | Feature 014 · Frontend Tickets
+// =============================================================
+
+.header-toolbar {
+  --background: #0D1B2A;
+  --color: #ffffff;
+}
+
+.back-btn { --color: #4FC3F7; }
+.header-title { font-weight: 700; font-size: 16px; }
+.crear-content { --background: #F8FAFC; }
+
+.form-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field-group {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748B;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.field-input {
+  width: 100%;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #1a1a2e;
+  background: #F8FAFC;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.field-input:focus { border-color: #0288D1; }
+.field-input::placeholder { color: #CBD5E1; }
+
+.field-textarea {
+  resize: none;
+  line-height: 1.6;
+}
+
+.field-hint {
+  font-size: 10px;
+  color: #CBD5E1;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.options-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.option-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #F1F5F9;
+  color: #64748B;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.option-btn.selected {
+  border-color: #0288D1;
+  background: #EFF8FF;
+  color: #0288D1;
+}
+
+.option-btn.prioridad-baja.selected  { border-color: #10B981; background: #F0FDF4; color: #10B981; }
+.option-btn.prioridad-media.selected { border-color: #F59E0B; background: #FFFBEB; color: #F59E0B; }
+.option-btn.prioridad-alta.selected  { border-color: #EF4444; background: #FEF2F2; color: #EF4444; }
+
+.error-message {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #EF4444;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #0288D1, #4FC3F7);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(2,136,209,0.3);
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,100 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title">Ticket #{{ ticket?.id_ticket }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detalle-content">
+
+  <!-- Cargando -->
+  <div class="loading-state" *ngIf="cargando">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <div *ngIf="!cargando && ticket">
+
+    <!-- Info principal -->
+    <div class="section-card">
+      <div class="ticket-titulo">{{ ticket.titulo }}</div>
+      <div class="badges-row">
+        <span class="estado-badge" [class]="'estado-' + ticket.estado">
+          {{ ticket.estado | titlecase }}
+        </span>
+        <span class="chip">{{ getCategoriaLabel(ticket.id_categoria) }}</span>
+        <span class="chip" [class]="'chip-' + ticket.prioridad">
+          {{ ticket.prioridad | titlecase }}
+        </span>
+      </div>
+      <div class="ticket-descripcion">{{ ticket.descripcion }}</div>
+
+      <div class="info-rows">
+        <div class="info-row">
+          <span class="info-label">Creado</span>
+          <span class="info-value">{{ ticket.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Técnico</span>
+          <span class="info-value" [class.sin-asignar]="!ticket.id_tecnico_asignado">
+            {{ ticket.id_tecnico_asignado ? 'Asignado #' + ticket.id_tecnico_asignado : 'Sin asignar' }}
+          </span>
+        </div>
+        <div class="info-row" *ngIf="ticket.fecha_actualizacion">
+          <span class="info-label">Actualizado</span>
+          <span class="info-value">{{ ticket.fecha_actualizacion | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial -->
+    <div class="section-card" *ngIf="historial.length > 0">
+      <div class="section-title">Historial</div>
+      <div class="timeline">
+        <div class="tl-event" *ngFor="let evento of historial; let last = last">
+          <div class="tl-left">
+            <div class="tl-dot" [class]="'dot-' + evento.tipo_evento"></div>
+            <div class="tl-line" *ngIf="!last"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-tipo">{{ getTipoLabel(evento.tipo_evento) }}</div>
+            <div class="tl-desc">{{ evento.descripcion }}</div>
+            <div class="tl-fecha">{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comentarios -->
+    <div class="section-card">
+      <div class="section-title">Comentarios ({{ comentarios.length }})</div>
+
+      <div class="sin-comentarios" *ngIf="comentarios.length === 0">
+        Sin comentarios aún
+      </div>
+
+      <div class="comentario" *ngFor="let c of comentarios">
+        <div class="comentario-header">
+          <span class="comentario-autor">Usuario #{{ c.id_usuario }}</span>
+          <span class="comentario-fecha">{{ c.fecha | date:'dd/MM HH:mm' }}</span>
+        </div>
+        <div class="comentario-texto">{{ c.texto }}</div>
+      </div>
+
+      <!-- Agregar comentario -->
+      <div class="comentario-input-row" *ngIf="ticket.activo">
+        <input
+          class="comentario-input"
+          [(ngModel)]="nuevoComentario"
+          placeholder="Escribe un comentario..."
+          (keyup.enter)="enviarComentario()">
+        <button class="send-btn" (click)="enviarComentario()" [disabled]="!nuevoComentario.trim()">
+          <ion-icon name="send"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

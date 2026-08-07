@@ -1,0 +1,161 @@
+// =============================================================
+// tickets.page.scss — Bandeja de Tickets
+// HelpDesk Web | Feature 014 · Frontend Tickets
+// =============================================================
+
+// Header
+.header-toolbar {
+  --background: #0D1B2A;
+  --color: #ffffff;
+  padding: 4px 0;
+}
+
+.header-logo {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #4FC3F7, #0288D1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  color: #fff;
+  margin-left: 8px;
+}
+
+.header-title { font-weight: 700; font-size: 17px; }
+.logout-btn { --color: rgba(255,255,255,0.6); }
+.tickets-content { --background: #F8FAFC; }
+
+.filter-container {
+  padding: 14px 16px 8px;
+  background: #fff;
+  border-bottom: 1px solid #E8ECF0;
+}
+
+.custom-segment {
+  --background: #F1F5F9;
+  border-radius: 12px;
+  padding: 3px;
+}
+
+.custom-segment ion-segment-button {
+  --border-radius: 10px;
+  --color: #94A3B8;
+  --color-checked: #fff;
+  --background-checked: #0288D1;
+  --indicator-color: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 34px;
+}
+
+.tickets-count {
+  padding: 10px 16px 4px;
+  font-size: 12px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.tickets-list {
+  padding: 8px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ticket-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  border-left: 4px solid #E2E8F0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+.ticket-card.prioridad-alta  { border-left-color: #EF4444; }
+.ticket-card.prioridad-media { border-left-color: #F59E0B; }
+.ticket-card.prioridad-baja  { border-left-color: #10B981; }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.ticket-num {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.estado-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.estado-pendiente  { background: #FEF3C7; color: #D97706; }
+.estado-en_proceso { background: #DBEAFE; color: #2563EB; }
+.estado-finalizado { background: #D1FAE5; color: #059669; }
+
+.ticket-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.card-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #F1F5F9;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.chip-alta  { background: #FEF2F2; color: #EF4444; }
+.chip-media { background: #FFFBEB; color: #F59E0B; }
+.chip-baja  { background: #F0FDF4; color: #10B981; }
+
+.ticket-fecha {
+  font-size: 10px;
+  color: #CBD5E1;
+  margin-left: auto;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  color: #CBD5E1;
+}
+
+.empty-state ion-icon { font-size: 56px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 16px; font-weight: 700; color: #94A3B8; margin-bottom: 6px; }
+.empty-state p  { font-size: 13px; text-align: center; }
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.fab-btn {
+  --background: linear-gradient(135deg, #4FC3F7, #0288D1);
+  --box-shadow: 0 4px 16px rgba(2,136,209,0.4);
+}

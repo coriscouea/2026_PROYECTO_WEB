@@ -9,34 +9,15 @@
 
 from sqlalchemy import create_engine                        # crea el motor de conexión a MySQL
 from sqlalchemy.orm import sessionmaker, DeclarativeBase    # sessionmaker: fábrica de sesiones | DeclarativeBase: clase base para modelos
-from dotenv import load_dotenv                              # lee las variables del archivo .env
-import os                                                   # accede a las variables de entorno del sistema
+from app.core.config import settings                        # configuración centralizada — reemplaza os.getenv()
 
 # -------------------------------------------------------------
-# Carga las variables de entorno desde el archivo .env
-# Sin esta línea, os.getenv() devolvería None para todas las variables
-# -------------------------------------------------------------
-
-load_dotenv()
-
-# -------------------------------------------------------------
-# Lee cada variable de entorno definida en .env
-# Si una variable no existe, os.getenv() devuelve None
-# -------------------------------------------------------------
-
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-
-# -------------------------------------------------------------
-# Construye la URL de conexión en el formato que SQLAlchemy entiende
+# Construye la URL de conexión desde la configuración centralizada
 # Formato: dialecto+driver://usuario:contraseña@host:puerto/base_de_datos
 # pymysql es el driver Python que conecta SQLAlchemy con MySQL
 # -------------------------------------------------------------
 
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DATABASE_URL = f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
 
 # -------------------------------------------------------------
 # Crea el motor de conexión a MySQL

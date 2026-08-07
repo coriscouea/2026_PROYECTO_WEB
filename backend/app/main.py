@@ -20,6 +20,7 @@ from app.database import engine, Base                                   # motor 
 from app.core.logging_config import logger                              # Importar el logger configurado para logging estructurado
 from slowapi.errors import RateLimitExceeded
 from app.core.limiter import limiter
+from app.core.config import settings                                    # Importar la configuración centralizada
 
 # Importar todos los modelos para que SQLAlchemy los registre
 
@@ -127,7 +128,7 @@ async def rate_limit_handler(request, exc):
 # Los orígenes se leen desde .env
 # -------------------------------------------------------------
 
-origins = os.getenv("CORS_ORIGINS", "http://localhost:8100").split(",")
+origins = settings.CORS_ORIGINS.split(",")
 
 app.add_middleware(
     CORSMiddleware,

@@ -9,10 +9,7 @@
 from datetime import datetime, timezone, timedelta  # Importa clases del módulo estándar
 from jose import JWTError,  jwt                     # Importa desde la librería 'python-jose'
 from passlib.context import CryptContext            # Importa 'CryptContext' de la librería 'passlib'
-from dotenv import load_dotenv                      # Importa 'load_dotenv' de la librería 'python-dotenv'
-import os                                           # Importa el módulo estándar 'os'
-
-load_dotenv()
+from app.core.config import settings                # Importa la configuración centralizada
 
 # -------------------------------------------------------------
 # Configuración de bcrypt para hash de contraseñas
@@ -24,10 +21,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # Variables de entorno para JWT
 # -------------------------------------------------------------
 
-SECRET_KEY                  = os.getenv("JWT_SECRET_KEY")
-ALGORITHM                   = os.getenv("JWT_ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
-REFRESH_TOKEN_EXPIRE_DAYS   = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "1"))
+SECRET_KEY                  = settings.JWT_SECRET_KEY
+ALGORITHM                   = settings.JWT_ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+REFRESH_TOKEN_EXPIRE_DAYS   = settings.REFRESH_TOKEN_EXPIRE_DAYS
 
 def hash_password(password: str) -> str:
 

@@ -1,0 +1,237 @@
+// =============================================================
+// detalle.page.scss — Estilos de la pantalla de Detalle
+// HelpDesk Web | Feature 014 · Frontend Tickets
+// =============================================================
+
+
+.header-toolbar {
+  --background: #0D1B2A;
+  --color: #ffffff;
+}
+
+.back-btn { --color: #4FC3F7; }
+.header-title { font-weight: 700; font-size: 16px; }
+.detalle-content { --background: #F8FAFC; }
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.section-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.ticket-titulo {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.badges-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.estado-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.estado-pendiente  { background: #FEF3C7; color: #D97706; }
+.estado-en_proceso { background: #DBEAFE; color: #2563EB; }
+.estado-finalizado { background: #D1FAE5; color: #059669; }
+
+.chip {
+  font-size: 10px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #F1F5F9;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.chip-alta  { background: #FEF2F2; color: #EF4444; }
+.chip-media { background: #FFFBEB; color: #F59E0B; }
+.chip-baja  { background: #F0FDF4; color: #10B981; }
+
+.ticket-descripcion {
+  font-size: 13px;
+  color: #64748B;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.info-rows { border-top: 1px solid #F1F5F9; }
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.info-row:last-child { border-bottom: none; }
+
+.info-label {
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+.info-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.sin-asignar { color: #CBD5E1 !important; font-weight: 400 !important; }
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748B;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.timeline { display: flex; flex-direction: column; }
+
+.tl-event {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+.tl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 12px;
+}
+
+.tl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0288D1;
+  flex-shrink: 0;
+}
+
+.dot-ticket_creado       { background: #10B981; }
+.dot-estado_cambiado     { background: #0288D1; }
+.dot-comentario_agregado { background: #8B5CF6; }
+.dot-ticket_cerrado      { background: #EF4444; }
+.dot-tecnico_asignado    { background: #F59E0B; }
+.dot-prioridad_cambiada  { background: #F59E0B; }
+
+.tl-line {
+  width: 1px;
+  background: #E2E8F0;
+  flex: 1;
+  margin-top: 3px;
+}
+
+.tl-content { flex: 1; }
+
+.tl-tipo {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.tl-desc {
+  font-size: 11px;
+  color: #94A3B8;
+  margin-top: 2px;
+}
+
+.tl-fecha {
+  font-size: 10px;
+  color: #CBD5E1;
+  margin-top: 2px;
+}
+
+.sin-comentarios {
+  font-size: 13px;
+  color: #CBD5E1;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.comentario {
+  background: #F8FAFC;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.comentario-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.comentario-autor {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0288D1;
+}
+
+.comentario-fecha {
+  font-size: 10px;
+  color: #CBD5E1;
+}
+
+.comentario-texto {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.comentario-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.comentario-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #1a1a2e;
+  outline: none;
+}
+
+.comentario-input::placeholder { color: #CBD5E1; }
+
+.send-btn {
+  background: none;
+  border: none;
+  color: #0288D1;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.send-btn:disabled { color: #CBD5E1; }

@@ -1,0 +1,78 @@
+// =============================================================
+// login.page.scss — Estilos de la pantalla de Login
+// HelpDesk Web | Feature 013 · Frontend Login
+// =============================================================
+
+.login-content {
+  --background: linear-gradient(135deg, #1F3864 0%, #2C5F8A 100%);
+}
+
+.login-container {
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  justify-content: center;
+  min-height     : 100vh;
+  padding        : 24px;
+}
+
+.login-header {
+  text-align   : center;
+  margin-bottom: 40px;
+  color        : white;
+
+  .logo-icon {
+    font-size: 72px;
+    color    : #4FC3F7;
+  }
+
+  h1 {
+    font-size  : 28px;
+    font-weight: 700;
+    margin     : 8px 0 4px;
+    color      : white;
+  }
+
+  p {
+    font-size: 14px;
+    color    : rgba(255,255,255,0.7);
+    margin   : 0;
+  }
+}
+
+.login-form {
+  width        : 100%;
+  max-width    : 400px;
+  background   : white;
+  border-radius: 16px;
+  padding      : 24px;
+  box-shadow   : 0 8px 32px rgba(0,0,0,0.3);
+
+  .input-item {
+    --border-radius: 8px;
+    --background   : #F8F9FA;
+    margin-bottom  : 12px;
+  }
+
+  .error-message {
+    display    : flex;
+    align-items: center;
+    gap        : 8px;
+    color      : #C62828;
+    font-size  : 13px;
+    padding    : 8px 0;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  .login-btn {
+    --background   : #1F3864;
+    --border-radius: 8px;
+    margin-top     : 16px;
+    height         : 48px;
+    font-size      : 16px;
+    font-weight    : 600;
+  }
+}

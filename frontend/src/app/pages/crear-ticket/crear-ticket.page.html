@@ -1,0 +1,93 @@
+
+<!-- =============================================================
+  crear-ticket.page.html — Crear Ticket
+  HelpDesk Web | Feature 014 · Frontend Tickets
+  ============================================================= -->
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title">Nuevo Ticket</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="crear-content">
+
+  <div class="form-container">
+
+    <!-- Título -->
+    <div class="field-group">
+      <div class="field-label">Título *</div>
+      <input
+        class="field-input"
+        [(ngModel)]="titulo"
+        placeholder="Describe brevemente el problema"
+        maxlength="150">
+      <div class="field-hint">{{ titulo.length }}/150</div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="field-group">
+      <div class="field-label">Descripción *</div>
+      <textarea
+        class="field-input field-textarea"
+        [(ngModel)]="descripcion"
+        placeholder="Explica con detalle el requerimiento..."
+        rows="4">
+      </textarea>
+    </div>
+
+    <!-- Categoría -->
+    <div class="field-group">
+      <div class="field-label">Categoría *</div>
+      <div class="options-row">
+        <div class="option-btn"
+          *ngFor="let cat of categorias"
+          [class.selected]="idCategoria === cat.id"
+          (click)="idCategoria = cat.id">
+          {{ cat.label }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Prioridad -->
+    <div class="field-group">
+      <div class="field-label">Prioridad *</div>
+      <div class="options-row">
+        <div class="option-btn prioridad-baja"
+          [class.selected]="prioridad === 'baja'"
+          (click)="prioridad = 'baja'">
+          🟢 Baja
+        </div>
+        <div class="option-btn prioridad-media"
+          [class.selected]="prioridad === 'media'"
+          (click)="prioridad = 'media'">
+          🟡 Media
+        </div>
+        <div class="option-btn prioridad-alta"
+          [class.selected]="prioridad === 'alta'"
+          (click)="prioridad = 'alta'">
+          🔴 Alta
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-message" *ngIf="errorMensaje">
+      {{ errorMensaje }}
+    </div>
+
+    <!-- Botón -->
+    <button
+      class="submit-btn"
+      (click)="crearTicket()"
+      [disabled]="enviando">
+      <ion-spinner *ngIf="enviando" name="crescent"></ion-spinner>
+      <span *ngIf="!enviando">Crear Ticket</span>
+    </button>
+
+  </div>
+
+</ion-content>
