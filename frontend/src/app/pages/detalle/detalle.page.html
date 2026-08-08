@@ -1,9 +1,14 @@
+<!-- =============================================================
+  detalle.page.html — Pantalla de Detalle del Ticket
+  HelpDesk Web | Feature 014 · Frontend Tickets
+  ============================================================= -->
+
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title class="header-title">Ticket #{{ ticket?.id_ticket }}</ion-title>
+    <ion-title class="header-title">Ticket #{{ ticket?.id_ticket || idTicket}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -46,6 +51,29 @@
           <span class="info-value">{{ ticket.fecha_actualizacion | date:'dd/MM/yyyy HH:mm' }}</span>
         </div>
       </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="section-card acciones-card" *ngIf="puedeActuar() && ticket.activo">
+
+      <!-- Tomar ticket -->
+      <button class="accion-btn tomar-btn"
+        *ngIf="!ticket.id_tecnico_asignado"
+        (click)="tomarTicket()"
+        [disabled]="actualizando">
+        <ion-icon name="person-add"></ion-icon>
+        Tomar ticket
+      </button>
+
+      <!-- Cambiar estado -->
+      <button class="accion-btn estado-btn"
+        *ngIf="getSiguienteEstado()"
+        (click)="cambiarEstado(getSiguienteEstado()!)"
+        [disabled]="actualizando">
+        <ion-spinner *ngIf="actualizando" name="crescent"></ion-spinner>
+        <span *ngIf="!actualizando">{{ getLabelSiguienteEstado() }}</span>
+      </button>
+
     </div>
 
     <!-- Historial -->
@@ -93,8 +121,30 @@
           <ion-icon name="send"></ion-icon>
         </button>
       </div>
+      
     </div>
 
   </div>
 
+  <!-- Ticket inactivo -->
+  <div class="section-card" *ngIf="!cargando && ticketNoEncontrado">
+    <div class="ticket-inactivo">
+      <ion-icon name="archive-outline"></ion-icon>
+      <p>Este ticket está inactivo</p>
+    </div>
+    <div class="section-title" style="margin-top: 16px">Historial</div>
+    <div class="timeline">
+      <div class="tl-event" *ngFor="let evento de historial; let last = last">
+        <div class="tl-left">
+          <div class="tl-dot" [class]="'dot-' + evento.tipo_evento"></div>
+          <div class="tl-line" *ngIf="!last"></div>
+        </div>
+        <div class="tl-content">
+          <div class="tl-tipo">{{ getTipoLabel(evento.tipo_evento) }}</div>
+          <div class="tl-desc">{{ evento.descripcion }}</div>
+          <div class="tl-fecha">{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

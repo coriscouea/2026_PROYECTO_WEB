@@ -1,3 +1,8 @@
+// =============================================================
+// tickets.page.ts — Bandeja de Tickets
+// HelpDesk Web | Feature 014 · Frontend Tickets
+// =============================================================
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +34,8 @@ export class TicketsPage implements OnInit {
   tickets     : any[]   = [];
   filtroActual: string  = 'activos';
   cargando    : boolean = false;
+  rol         : string  = '';
+  tituloHeader: string  = 'Mis Tickets';
 
   constructor(
     private ticketService: TicketService,
@@ -38,8 +45,20 @@ export class TicketsPage implements OnInit {
     addIcons({ logOutOutline, add, clipboardOutline });
   }
 
-  ngOnInit() {
-    this.cargarTickets();
+  async ngOnInit() {
+    this.rol = await this.authService.getRol();
+    this.tituloHeader = this.getTituloHeader();
+    await this.cargarTickets();
+  }
+
+  getTituloHeader(): string {
+    const titulos: any = {
+      usuario   : 'Mis Tickets',
+      tecnico   : 'Bandeja Técnica',
+      mesa_ayuda: 'Bandeja ERP',
+      admin     : 'Todos los Tickets'
+    };
+    return titulos[this.rol] || 'Tickets';
   }
 
   async cargarTickets() {
@@ -60,15 +79,6 @@ export class TicketsPage implements OnInit {
   getCategoriaLabel(id: number): string {
     const categorias: any = { 1: '⚙ Técnica', 2: '🌐 Redes', 3: '📊 ERP' };
     return categorias[id] || 'Sin categoría';
-  }
-
-  getBadgeColor(estado: string): string {
-    const colores: any = {
-      pendiente : 'warning',
-      en_proceso: 'primary',
-      finalizado: 'success'
-    };
-    return colores[estado] || 'medium';
   }
 
   getPrioridadColor(prioridad: string): string {

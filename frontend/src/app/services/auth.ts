@@ -59,4 +59,27 @@ export class AuthService {
     const token = await this.getToken();
     return token !== null;
   }
+
+  // -----------------------------------------------------------
+  // Obtener el rol del usuario desde el token JWT
+  // -----------------------------------------------------------
+  
+  async getRol(): Promise<string> {
+    const token = await this.getToken();
+    if (!token) return '';
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.rol || '';
+  }
+
+  // -----------------------------------------------------------
+  // Obtener el id del usuario desde el token JWT
+  // -----------------------------------------------------------
+
+  async getIdUsuario(): Promise<number> {
+    const token = await this.getToken();
+    if (!token) return 0;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return parseInt(payload.sub) || 0;
+  }  
 }
+

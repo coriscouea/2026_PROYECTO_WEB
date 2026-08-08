@@ -235,3 +235,54 @@
 }
 
 .send-btn:disabled { color: #CBD5E1; }
+
+/* página detalle */
+
+// Acciones
+.acciones-card {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.accion-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  min-width: 130px;
+}
+
+.tomar-btn {
+  background: #EFF8FF;
+  color: #0288D1;
+  border: 1.5px solid #0288D1;
+}
+
+.estado-btn {
+  background: linear-gradient(135deg, #0288D1, #4FC3F7);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(2,136,209,0.3);
+}
+
+.accion-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/*Ticket inactivo*/
+
+.ticket-inactivo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  color: #CBD5E1;
+  ion-icon { font-size: 40px; margin-bottom: 8px; }
+  p { font-size: 13px; }
+}
+

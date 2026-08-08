@@ -1,14 +1,20 @@
+// =============================================================
+// detalle.page.ts — Lógica de la pantalla de Detalle
+// HelpDesk Web | Feature 014 · Frontend Tickets
+// =============================================================
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonBackButton, IonSpinner, IonIcon
+  IonBackButton, IonSpinner, IonIcon, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { send } from 'ionicons/icons';
+import { send, personAdd, checkmarkCircle, playCircle } from 'ionicons/icons';
 import { TicketService } from '../../services/ticket';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-detalle',
@@ -18,46 +24,131 @@ import { TicketService } from '../../services/ticket';
   imports: [
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
-    IonButtons, IonBackButton, IonSpinner, IonIcon
+    IonButtons, IonBackButton, IonSpinner, IonIcon, IonButton
   ]
 })
 export class DetallePage implements OnInit {
 
-  ticket          : any     = null;
-  historial       : any[]   = [];
-  comentarios     : any[]   = [];
-  nuevoComentario : string  = '';
-  cargando        : boolean = false;
-  idTicket        : number  = 0;
+  ticket              : any     = null;
+  historial           : any[]   = [];
+  comentarios         : any[]   = [];
+  nuevoComentario     : string  = '';
+  cargando            : boolean = false;
+  actualizando        : boolean = false;
+  idTicket            : number  = 0;
+  rol                 : string  = '';
+  idUsuario           : number  = 0;
+  ticketNoEncontrado  : boolean = false; 
 
   constructor(
     private route        : ActivatedRoute,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private authService  : AuthService
   ) {
-    addIcons({ send });
+    addIcons({ send, personAdd, checkmarkCircle, playCircle });
   }
 
   async ngOnInit() {
     this.idTicket = Number(this.route.snapshot.paramMap.get('id'));
+    this.rol       = await this.authService.getRol();
+    this.idUsuario = await this.authService.getIdUsuario();
     await this.cargarDatos();
   }
 
+  ionViewWillEnter(){
+    this.cargarDatos();
+  }
+  
   async cargarDatos() {
     this.cargando = true;
+    this.ticketNoEncontrado = false;
     try {
       const [ticket, historial, comentarios] = await Promise.all([
         this.ticketService.obtenerTicket(this.idTicket),
         this.ticketService.obtenerHistorial(this.idTicket),
         this.ticketService.obtenerComentarios(this.idTicket)
       ]);
-      this.ticket     = ticket;
-      this.historial  = historial;
-      this.comentarios= comentarios;
-    } catch (error) {
+      this.ticket      = ticket;
+      this.historial   = historial;
+      this.comentarios = comentarios;
+    } catch (error: any) {
+      if (error.response?.status === 404){
+        this.ticketNoEncontrado = true;  
+      
+        // Ticket inactivo — cargar solo historial  
+    
+        try {
+          this.historial = await this.ticketService.obtenerHistorial(this.idTicket);
+        } catch (e) {}
+      }
       console.error('Error cargando detalle:', error);
     } finally {
-      this.cargando = false;
+      this.cargando = false
     }
+  }  
+    
+
+  // ---------------------------------------------------------
+  // Cambiar estado del ticket
+  // ---------------------------------------------------------
+
+  async cambiarEstado(nuevoEstado: string) {
+    this.actualizando = true;
+    try {
+      this.ticket = await this.ticketService.actualizarTicket(
+        this.idTicket,
+        { estado: nuevoEstado }
+      );
+      await this.cargarDatos();
+    } catch (error: any) {
+      console.error('Error cambiando estado:', error);
+    } finally {
+      this.actualizando = false;
+    }
+  }
+
+  // ---------------------------------------------------------
+  // Asignar técnico actual al ticket
+  // ---------------------------------------------------------
+
+  async tomarTicket() {
+    this.actualizando = true;
+    try {
+      this.ticket = await this.ticketService.actualizarTicket(
+        this.idTicket,
+        { id_tecnico_asignado: this.idUsuario }
+      );
+      await this.cargarDatos();
+    } catch (error) {
+      console.error('Error asignando técnico:', error);
+    } finally {
+      this.actualizando = false;
+    }
+  }
+
+  // ---------------------------------------------------------
+  // Verificar si puede cambiar estado
+  // ---------------------------------------------------------
+
+  puedeActuar(): boolean {
+    return ['tecnico', 'mesa_ayuda', 'admin'].includes(this.rol);
+  }
+
+  getSiguienteEstado(): string | null {
+    const transiciones: any = {
+      pendiente : 'en_proceso',
+      en_proceso: 'finalizado',
+      finalizado: null
+    };
+    return transiciones[this.ticket?.estado] || null;
+  }
+
+  getLabelSiguienteEstado(): string {
+    const labels: any = {
+      en_proceso: '▶ Iniciar',
+      finalizado : '✅ Finalizar'
+    };
+    return labels[this.getSiguienteEstado() || ''] || '';
   }
 
   async enviarComentario() {
