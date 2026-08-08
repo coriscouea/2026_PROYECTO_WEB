@@ -17,6 +17,8 @@ import { logOutOutline, add, clipboardOutline, notificationsOutline } from 'ioni
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
 import { NotificacionService } from '../../services/notificacion';
+import { ActivatedRoute } from '@angular/router';
+import { MenuController, IonMenuButton } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tickets',
@@ -27,35 +29,55 @@ import { NotificacionService } from '../../services/notificacion';
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
     IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel,
-    IonSpinner, IonFab, IonFabButton
+    IonSpinner, IonFab, IonFabButton, IonMenuButton
   ]
 })
 export class TicketsPage implements OnInit {
 
-  tickets     : any[]   = [];
-  filtroActual: string  = 'activos';
-  cargando    : boolean = false;
-  rol         : string  = '';
-  tituloHeader: string  = 'Mis Tickets';
+  tickets         : any[]   = [];
+  filtroActual    : string  = 'activos';
+  cargando        : boolean = false;
+  rol             : string  = '';
+  tituloHeader    : string  = 'Mis Tickets';
+  estadoFiltro    : string = '';
+  prioridadFiltro : string = '';
 
   constructor(
     private ticketService       : TicketService,
     private authService         : AuthService,
     private notificacionService : NotificacionService,
-    private router              : Router
+    private router              : Router,
+    private route               : ActivatedRoute,
+    private menuCtrl            : MenuController
   ) {
     addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline });
   }
 
+  
+
   async ngOnInit() {
-    this.rol = await this.authService.getRol();
+    this.rol          = await this.authService.getRol();
     this.tituloHeader = this.getTituloHeader();
-    await this.cargarTickets();
-    await this.cargarConteoNotificaciones(); 
+    
+    // Escucha parámetros del sidebar
+    
+    this.route.queryParams.subscribe(params => {
+      if (params['filtro']) {
+        this.filtroActual     = params['filtro'];
+        this.estadoFiltro     = params['estado']    || '';
+        this.prioridadFiltro  = params['prioridad'] || '';
+      }
+      this.cargarTickets();
+    });
+
+    await this.cargarConteoNotificaciones();
   }
 
   ionViewWillEnter(){
-    this.cargarTickets();
+    if(!this.estadoFiltro && !this.prioridadFiltro){
+      this.cargarTickets();
+    }
+    
     this.cargarConteoNotificaciones();
   }
 
@@ -70,9 +92,26 @@ export class TicketsPage implements OnInit {
   }
 
   async cargarTickets() {
+    console.log('filtro:', this.filtroActual, 'estado:', this.estadoFiltro, 'prioridad', this.prioridadFiltro);
     this.cargando = true;
     try {
-      this.tickets = await this.ticketService.listarTickets(this.filtroActual);
+      let tickets = await this.ticketService.listarTickets(this.filtroActual, 1, 100);
+      console.log('primer ticket', tickets[0]?.estado, tickets[0]?.prioridad);
+      // Filtro adicional por estado si viene del sidebar
+      if (this.estadoFiltro) {
+        console.log('antes filtro estado:', tickets.length);
+        tickets = tickets.filter((t: any) => t.estado === this.estadoFiltro);
+        console.log('despues filtro estado:', tickets.length);
+      }
+
+      // Filtro adicional por prioridad si viene del sidebar
+      if (this.prioridadFiltro) {
+        console.log('antes filtro prioridad:', tickets.length)
+        tickets = tickets.filter((t: any) => t.prioridad === this.prioridadFiltro);
+        console.log('despues filtro prioridad:', tickets.length);
+      }
+
+      this.tickets = tickets;
     } catch (error) {
       console.error('Error cargando tickets:', error);
     } finally {

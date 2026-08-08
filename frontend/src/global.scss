@@ -35,3 +35,131 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+// =============================================================
+// Estilos globales del Sidebar
+// HelpDesk Web | Frontend
+// =============================================================
+
+ion-menu {
+  --width: 280px;
+}
+
+ion-menu .menu-toolbar {
+  --background: #0D1B2A;
+}
+
+ion-menu ion-content {
+  --background: #0D1B2A;
+}
+
+ion-menu .menu-header {
+  display    : flex;
+  align-items: center;
+  gap        : 12px;
+  padding    : 4px 8px;
+}
+
+ion-menu .menu-logo {
+  width          : 42px;
+  height         : 42px;
+  background     : linear-gradient(135deg, #4FC3F7, #0288D1);
+  border-radius  : 14px;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  font-weight    : 800;
+  font-size      : 15px;
+  color          : #fff;
+  flex-shrink    : 0;
+  box-shadow     : 0 4px 12px rgba(79,195,247,0.3);
+}
+
+ion-menu .menu-title {
+  color      : #fff;
+  font-size  : 15px;
+  font-weight: 700;
+}
+
+ion-menu .menu-subtitle {
+  color      : rgba(255,255,255,0.4);
+  font-size  : 10px;
+  margin-top : 2px;
+}
+
+ion-menu .tree-section { margin-bottom: 2px; }
+
+ion-menu .tree-root {
+  display    : flex;
+  align-items: center;
+  gap        : 10px;
+  padding    : 12px 20px;
+  cursor     : pointer;
+  color      : rgba(255,255,255,0.75);
+  font-size  : 13px;
+  font-weight: 600;
+}
+
+ion-menu .tree-root:hover { background: rgba(255,255,255,0.06); }
+
+ion-menu .tree-icon {
+  font-size  : 17px;
+  color      : #4FC3F7;
+  flex-shrink: 0;
+}
+
+ion-menu .tree-chevron {
+  font-size  : 12px;
+  margin-left: auto;
+  color      : rgba(255,255,255,0.3);
+}
+
+ion-menu .tree-children { padding-left: 8px; }
+
+ion-menu .tree-node {
+  display    : flex;
+  align-items: center;
+  gap        : 8px;
+  padding    : 10px 20px;
+  cursor     : pointer;
+  color      : rgba(255,255,255,0.55);
+  font-size  : 12px;
+  font-weight: 500;
+  border-left: 2px solid rgba(255,255,255,0.06);
+  margin-left: 20px;
+}
+
+ion-menu .tree-node:hover {
+  color            : rgba(255,255,255,0.9);
+  border-left-color: #0288D1;
+}
+
+ion-menu .node-icon {
+  font-size  : 14px;
+  flex-shrink: 0;
+  color      : rgba(255,255,255,0.4);
+}
+
+ion-menu .tree-leaves { padding-left: 8px; }
+
+ion-menu .tree-leaf {
+  padding      : 8px 20px;
+  font-size    : 12px;
+  cursor       : pointer;
+  color        : rgba(255,255,255,0.4);
+  margin-left  : 40px;
+  border-left  : 2px solid rgba(255,255,255,0.04);
+  border-radius: 0 8px 8px 0;
+  font-weight  : 500;
+}
+
+ion-menu .tree-leaf:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.85); }
+ion-menu .tree-leaf.alta:hover  { border-left-color: #EF4444; color: #FCA5A5; background: rgba(239,68,68,0.08); }
+ion-menu .tree-leaf.media:hover { border-left-color: #F59E0B; color: #FCD34D; background: rgba(245,158,11,0.08); }
+ion-menu .tree-leaf.baja:hover  { border-left-color: #10B981; color: #6EE7B7; background: rgba(16,185,129,0.08); }
+
+ion-menu .sidebar-divider {
+  height    : 1px;
+  background: rgba(255,255,255,0.06);
+  margin    : 8px 20px;
+}

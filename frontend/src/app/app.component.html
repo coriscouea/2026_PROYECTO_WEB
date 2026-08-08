@@ -1,3 +1,132 @@
+<!-- =============================================================
+  app.component.html — Componente raíz de la aplicación
+  HelpDesk Web | Frontend
+  =============================================================
+  Responsabilidad: define el menú lateral (sidebar) con árbol
+  de navegación por estado y prioridad, y el router outlet
+  que renderiza las páginas según la ruta activa.
+  ============================================================= -->
+
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+
+  <!-- -----------------------------------------------------
+    Menú lateral — árbol de navegación por estado/prioridad
+    Se abre deslizando desde la izquierda o con el botón
+  ------------------------------------------------------ -->
+  <ion-menu contentId="main-content" side="start">
+    <ion-header>
+      <ion-toolbar class="menu-toolbar">
+        <div class="menu-header">
+          <div class="menu-logo">HD</div>
+          <div>
+            <div class="menu-title">HelpDesk Web</div>
+            <div class="menu-subtitle">Panel de navegación</div>
+          </div>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="menu-content">
+
+      <!-- Activos -->
+      <div class="tree-section">
+        <div class="tree-root" (click)="toggleSection('activos')">
+          <ion-icon name="folder-open-outline" class="tree-icon"></ion-icon>
+          <span>Activos</span>
+          <ion-icon
+            [name]="expanded['activos'] ? 'chevron-down' : 'chevron-forward'"
+            class="tree-chevron">
+          </ion-icon>
+        </div>
+
+        <div class="tree-children" *ngIf="expanded['activos']">
+
+          <!-- Pendiente -->
+          <div class="tree-node" (click)="toggleSection('pendiente')">
+            <ion-icon name="time-outline" class="node-icon"></ion-icon>
+            <span>Pendiente</span>
+            <ion-icon
+              [name]="expanded['pendiente'] ? 'chevron-down' : 'chevron-forward'"
+              class="tree-chevron">
+            </ion-icon>
+          </div>
+          <div class="tree-leaves" *ngIf="expanded['pendiente']">
+            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'pendiente', 'alta')">
+              🔴 Alta
+            </div>
+            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'pendiente', 'media')">
+              🟡 Media
+            </div>
+            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'pendiente', 'baja')">
+              🟢 Baja
+            </div>
+          </div>
+
+          <!-- En proceso -->
+          <div class="tree-node" (click)="toggleSection('en_proceso')">
+            <ion-icon name="play-circle-outline" class="node-icon"></ion-icon>
+            <span>En proceso</span>
+            <ion-icon
+              [name]="expanded['en_proceso'] ? 'chevron-down' : 'chevron-forward'"
+              class="tree-chevron">
+            </ion-icon>
+          </div>
+          <div class="tree-leaves" *ngIf="expanded['en_proceso']">
+            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'en_proceso', 'alta')">
+              🔴 Alta
+            </div>
+            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'en_proceso', 'media')">
+              🟡 Media
+            </div>
+            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'en_proceso', 'baja')">
+              🟢 Baja
+            </div>
+          </div>
+
+          <!-- Finalizado -->
+          <div class="tree-node" (click)="toggleSection('finalizado')">
+            <ion-icon name="checkmark-circle-outline" class="node-icon"></ion-icon>
+            <span>Finalizado</span>
+            <ion-icon
+              [name]="expanded['finalizado'] ? 'chevron-down' : 'chevron-forward'"
+              class="tree-chevron">
+            </ion-icon>
+          </div>
+          <div class="tree-leaves" *ngIf="expanded['finalizado']">
+            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'finalizado', 'alta')">
+              🔴 Alta
+            </div>
+            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'finalizado', 'media')">
+              🟡 Media
+            </div>
+            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'finalizado', 'baja')">
+              🟢 Baja
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Inactivos -->
+      <div class="tree-section">
+        <div class="tree-root" (click)="filtrarTickets('inactivos', '', '')">
+          <ion-icon name="archive-outline" class="tree-icon"></ion-icon>
+          <span>Inactivos</span>
+        </div>
+      </div>
+
+      <!-- Todos -->
+      <div class="tree-section">
+        <div class="tree-root" (click)="filtrarTickets('todos', '', '')">
+          <ion-icon name="list-outline" class="tree-icon"></ion-icon>
+          <span>Todos los tickets</span>
+        </div>
+      </div>
+
+    </ion-content>
+  </ion-menu>
+
+  <!-- Router outlet principal -->
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+
 </ion-app>
