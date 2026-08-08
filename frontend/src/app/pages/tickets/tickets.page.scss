@@ -159,3 +159,30 @@
   --background: linear-gradient(135deg, #4FC3F7, #0288D1);
   --box-shadow: 0 4px 16px rgba(2,136,209,0.4);
 }
+
+/* Conteo Notificaciones */
+
+.notif-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #EF4444;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notif-btn { --color: rgba(255,255,255,0.8); }

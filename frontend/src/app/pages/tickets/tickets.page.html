@@ -21,7 +21,12 @@
     <!-- Acciones del header -->
     <ion-buttons slot="end">
       <ion-button (click)="irNotificaciones()" class="notif-btn">
-        <ion-icon name="notifications-outline"></ion-icon>
+        <div class="notif-wrapper">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span class="notif-badge" *ngIf="conteoNotificaciones > 0">
+            {{conteoNotificaciones}}
+          </span>
+        </div> 
       </ion-button>
       <ion-button (click)="cerrarSesion()" class="logout-btn">
         <ion-icon name="log-out-outline"></ion-icon>

@@ -16,6 +16,7 @@ import { addIcons } from 'ionicons';
 import { logOutOutline, add, clipboardOutline, notificationsOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
+import { NotificacionService } from '../../services/notificacion';
 
 @Component({
   selector: 'app-tickets',
@@ -38,9 +39,10 @@ export class TicketsPage implements OnInit {
   tituloHeader: string  = 'Mis Tickets';
 
   constructor(
-    private ticketService: TicketService,
-    private authService  : AuthService,
-    private router       : Router
+    private ticketService       : TicketService,
+    private authService         : AuthService,
+    private notificacionService : NotificacionService,
+    private router              : Router
   ) {
     addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline });
   }
@@ -49,6 +51,12 @@ export class TicketsPage implements OnInit {
     this.rol = await this.authService.getRol();
     this.tituloHeader = this.getTituloHeader();
     await this.cargarTickets();
+    await this.cargarConteoNotificaciones(); 
+  }
+
+  ionViewWillEnter(){
+    this.cargarTickets();
+    this.cargarConteoNotificaciones();
   }
 
   getTituloHeader(): string {
@@ -101,5 +109,16 @@ export class TicketsPage implements OnInit {
 
   irNotificaciones() {
     this.router.navigate(['/notificaciones']);
+  }
+  // propiedad
+  conteoNotificaciones: number = 0;
+
+  // método
+  async cargarConteoNotificaciones() {
+    try {
+      this.conteoNotificaciones = await this.notificacionService.conteoNoLeidas();
+    } catch (error) {
+      this.conteoNotificaciones = 0;
+    }
   }
 }
