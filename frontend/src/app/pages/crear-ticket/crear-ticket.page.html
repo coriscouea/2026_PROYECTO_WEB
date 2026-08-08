@@ -1,15 +1,22 @@
-
 <!-- =============================================================
-  crear-ticket.page.html — Crear Ticket
+  crear-ticket.page.html — Crear Nuevo Ticket
   HelpDesk Web | Feature 014 · Frontend Tickets
+  =============================================================
+  Responsabilidad: formulario para registrar un nuevo
+  requerimiento técnico. Valida los campos en el frontend
+  antes de enviar al backend. El autor se obtiene del JWT.
   ============================================================= -->
 
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
+
+    <!-- Botón volver a la bandeja -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
     </ion-buttons>
+
     <ion-title class="header-title">Nuevo Ticket</ion-title>
+
   </ion-toolbar>
 </ion-header>
 
@@ -17,7 +24,10 @@
 
   <div class="form-container">
 
-    <!-- Título -->
+    <!-- -----------------------------------------------------
+      Campo: Título del requerimiento
+      Mínimo 5 caracteres, máximo 150
+    ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Título *</div>
       <input
@@ -28,7 +38,10 @@
       <div class="field-hint">{{ titulo.length }}/150</div>
     </div>
 
-    <!-- Descripción -->
+    <!-- -----------------------------------------------------
+      Campo: Descripción detallada del requerimiento
+      Mínimo 10 caracteres
+    ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Descripción *</div>
       <textarea
@@ -39,7 +52,10 @@
       </textarea>
     </div>
 
-    <!-- Categoría -->
+    <!-- -----------------------------------------------------
+      Selector de categoría — Técnica, Redes o ERP
+      El backend filtra los tickets por categoría según el rol
+    ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Categoría *</div>
       <div class="options-row">
@@ -52,7 +68,10 @@
       </div>
     </div>
 
-    <!-- Prioridad -->
+    <!-- -----------------------------------------------------
+      Selector de prioridad — Baja, Media o Alta
+      Determina el color del borde izquierdo en la bandeja
+    ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Prioridad *</div>
       <div class="options-row">
@@ -74,12 +93,16 @@
       </div>
     </div>
 
-    <!-- Error -->
+    <!-- -----------------------------------------------------
+      Mensaje de error — validaciones del formulario
+    ------------------------------------------------------ -->
     <div class="error-message" *ngIf="errorMensaje">
       {{ errorMensaje }}
     </div>
 
-    <!-- Botón -->
+    <!-- -----------------------------------------------------
+      Botón de envío — deshabilitado mientras se procesa
+    ------------------------------------------------------ -->
     <button
       class="submit-btn"
       (click)="crearTicket()"

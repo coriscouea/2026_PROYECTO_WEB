@@ -1,53 +1,75 @@
 <!-- =============================================================
   notificaciones.page.html — Pantalla de Notificaciones
   HelpDesk Web | Feature 011 · Notificaciones Avanzadas
+  =============================================================
+  Responsabilidad: lista todas las notificaciones del usuario
+  autenticado. Permite marcar como leída individualmente al
+  hacer clic, o marcar todas con el botón del header.
   ============================================================= -->
 
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
+
+    <!-- Botón volver a la bandeja -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
     </ion-buttons>
+
     <ion-title class="header-title">Notificaciones</ion-title>
+
+    <!-- Marcar todas como leídas -->
     <ion-buttons slot="end">
       <ion-button (click)="marcarTodasLeidas()" class="leer-btn" *ngIf="notificaciones.length > 0">
         <ion-icon name="checkmark-done-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="notif-content">
 
-  <!-- Cargando -->
+  <!-- -----------------------------------------------------
+    Indicador de carga mientras se obtienen las notificaciones
+  ------------------------------------------------------ -->
   <div class="loading-state" *ngIf="cargando">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
   </div>
 
-  <!-- Lista -->
+  <!-- -----------------------------------------------------
+    Lista de notificaciones
+    No leídas: borde azul y punto rojo en la esquina
+    Clic: marca como leída y navega al ticket
+  ------------------------------------------------------ -->
   <div class="notif-list" *ngIf="!cargando && notificaciones.length > 0">
     <div class="notif-item"
       *ngFor="let n of notificaciones"
       [class.no-leida]="!n.leida"
       (click)="verTicket(n)">
 
+      <!-- Punto indicador de no leída -->
       <div class="notif-dot" *ngIf="!n.leida"></div>
 
+      <!-- Ícono del tipo de notificación -->
       <div class="notif-icon">
         <ion-icon name="ticket-outline"></ion-icon>
       </div>
 
+      <!-- Contenido de la notificación -->
       <div class="notif-body">
         <div class="notif-mensaje">{{ n.mensaje }}</div>
         <div class="notif-fecha">{{ n.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
       </div>
 
+      <!-- Flecha de navegación -->
       <div class="notif-arrow">›</div>
 
     </div>
   </div>
 
-  <!-- Sin notificaciones -->
+  <!-- -----------------------------------------------------
+    Estado vacío — no hay notificaciones
+  ------------------------------------------------------ -->
   <div class="empty-state" *ngIf="!cargando && notificaciones.length === 0">
     <ion-icon name="notifications-off-outline"></ion-icon>
     <h3>Sin notificaciones</h3>

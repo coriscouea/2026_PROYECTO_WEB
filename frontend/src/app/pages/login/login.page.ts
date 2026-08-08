@@ -7,12 +7,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import {
-  IonContent, IonItem, IonLabel, IonInput,
-  IonButton, IonIcon, IonSpinner
+  IonButton, IonIcon, IonSpinner, IonCheckbox
 } from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
-import { helpCircle, eye, eyeOff, alertCircle } from 'ionicons/icons';
+import { 
+  helpCircle, eye, eyeOff, alertCircle,
+  mailOutline, lockClosedOutline, 
+  eyeOutline, eyeOffOutline, alertCircleOutline 
+} from 'ionicons/icons';
+
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -23,8 +29,7 @@ import { AuthService } from '../../services/auth';
   imports: [
     CommonModule,
     FormsModule,
-    IonContent, IonItem, IonLabel, IonInput,
-    IonButton, IonIcon, IonSpinner
+    IonButton, IonIcon, IonSpinner, IonCheckbox
   ]
 })
 export class LoginPage {
@@ -34,12 +39,17 @@ export class LoginPage {
   errorMensaje : string  = '';
   cargando     : boolean = false;
   mostrarPassword: boolean = false;
+  rememberMe: boolean = false
 
   constructor(
     private authService: AuthService,
     private router     : Router
   ) {
-    addIcons({ helpCircle, eye, eyeOff, alertCircle });
+    addIcons({ 
+      helpCircle, eye, eyeOff, alertCircle,
+      mailOutline, lockClosedOutline, eyeOutline,
+      eyeOffOutline, alertCircleOutline
+    });
   }
 
   togglePassword() {

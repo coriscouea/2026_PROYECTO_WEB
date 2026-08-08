@@ -1,55 +1,89 @@
-<!-- ============================================================
+<!-- =============================================================
   login.page.html — Pantalla de Login
   HelpDesk Web | Feature 013 · Frontend Login
-  ============================================================ -->
+  =============================================================
+  Responsabilidad: permite al usuario autenticarse con email
+  y contraseña. Guarda los tokens JWT en Capacitor Preferences
+  y redirige a la bandeja de tickets al iniciar sesión.
+  ============================================================= -->
 
 <ion-content class="login-content">
-
   <div class="login-container">
 
-    <!-- Logo e título -->
-
-    <div class="login-header">
-      <ion-icon name="help-circle" class="logo-icon"></ion-icon>
-      <h1>HelpDesk Web</h1>
-      <p>Sistema de Soporte Técnico</p>
+    <!-- -----------------------------------------------------
+      Sección de marca — logo, título y bienvenida
+    ------------------------------------------------------ -->
+    <div class="brand-section">
+      <div class="logo-wrapper">
+        <div class="logo-circle">
+          <ion-icon name="help-circle" class="logo-icon"></ion-icon>
+        </div>
+        <div class="brand-text">
+          <h1>HelpDesk</h1>
+          <span class="badge-web">Web</span>
+        </div>
+      </div>
+      <p class="subtitle">Sistema de Soporte Técnico</p>
+      <div class="divider-line"></div>
+      <p class="welcome-text">Bienvenido de vuelta</p>
     </div>
 
-    <!-- Formulario -->
-
+    <!-- -----------------------------------------------------
+      Formulario de acceso
+      ngSubmit maneja tanto clic en botón como Enter
+    ------------------------------------------------------ -->
     <div class="login-form">
 
-      <ion-item class="input-item">
-        <ion-label position="floating">Correo electrónico</ion-label>
-        <ion-input
-          type="email"
-          [(ngModel)]="email"
-          placeholder="usuario@empresa.com"
-          autocomplete="email">
-        </ion-input>
-      </ion-item>
-
-      <ion-item class="input-item">
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input
-          [type]="mostrarPassword ? 'text' : 'password'"
-          [(ngModel)]="password"
-          placeholder="••••••••">
-        </ion-input>
-        <ion-button fill="clear" slot="end" (click)="togglePassword()">
-          <ion-icon [name]="mostrarPassword ? 'eye-off' : 'eye'"></ion-icon>
-        </ion-button>
-      </ion-item>
-
-      <!-- Mensaje de error -->
-
-      <div class="error-message" *ngIf="errorMensaje">
-        <ion-icon name="alert-circle"></ion-icon>
-        {{ errorMensaje }}
+      <!-- Campo email -->
+      <div class="form-field">
+        <div class="campo-wrapper">
+          <ion-icon name="mail-outline" class="field-icon"></ion-icon>
+          <div class="campo-inner">
+            <label class="campo-label">Correo electrónico</label>
+            <input
+              class="campo-input"
+              type="email"
+              [(ngModel)]="email"
+              placeholder="usuario@empresa.com"
+              autocomplete="email">
+          </div>
+        </div>
       </div>
 
-      <!-- Botón login -->
-       
+      <!-- Campo contraseña -->
+      <div class="form-field">
+        <div class="campo-wrapper">
+          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
+          <div class="campo-inner">
+            <label class="campo-label">Contraseña</label>
+            <input
+              class="campo-input"
+              [type]="mostrarPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              placeholder="••••••••"
+              (keydown.enter)="iniciarSesion()">
+          </div>
+          <button class="toggle-btn" (click)="togglePassword()">
+            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Opciones adicionales -->
+      <div class="form-options">
+        <div class="remember-item">
+          <ion-checkbox [(ngModel)]="rememberMe" class="remember-check"></ion-checkbox>
+          <span class="remember-label">Mantener sesión</span>
+        </div>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div class="error-message" *ngIf="errorMensaje">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ errorMensaje }}</span>
+      </div>
+
+      <!-- Botón de inicio de sesión -->
       <ion-button
         expand="block"
         class="login-btn"
@@ -62,5 +96,4 @@
     </div>
 
   </div>
-
 </ion-content>
