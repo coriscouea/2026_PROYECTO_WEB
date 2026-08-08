@@ -1,0 +1,170 @@
+// =============================================================
+// usuarios.page.scss — Estilos de Gestión de Usuarios
+// HelpDesk Web | Feature 006 · CRUD Usuarios
+// =============================================================
+
+.header-toolbar {
+  --background: #0D1B2A;
+  --color     : #ffffff;
+}
+
+.back-btn    { --color: #4FC3F7; }
+.header-title { font-weight: 700; font-size: 16px; }
+.usuarios-content { --background: #F0F4F8; }
+
+.loading-state {
+  display        : flex;
+  justify-content: center;
+  padding        : 60px 0;
+}
+
+.usuarios-list {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.usuario-card {
+  background   : #fff;
+  border-radius: 16px;
+  padding      : 14px;
+  display      : flex;
+  align-items  : center;
+  justify-content: space-between;
+  box-shadow   : 0 2px 8px rgba(0,0,0,0.06);
+  gap          : 12px;
+}
+
+.card-left {
+  display    : flex;
+  align-items: center;
+  gap        : 12px;
+  flex       : 1;
+  min-width  : 0;
+}
+
+// Avatar con inicial del nombre
+.avatar {
+  width          : 44px;
+  height         : 44px;
+  border-radius  : 14px;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  font-weight    : 800;
+  font-size      : 18px;
+  color          : #fff;
+  flex-shrink    : 0;
+  background     : #94A3B8;
+}
+
+.rol-1 { background: linear-gradient(135deg, #64748B, #94A3B8); }
+.rol-2 { background: linear-gradient(135deg, #0288D1, #4FC3F7); }
+.rol-3 { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
+.rol-4 { background: linear-gradient(135deg, #D97706, #FCD34D); }
+
+.usuario-info { flex: 1; min-width: 0; }
+
+.usuario-nombre {
+  font-size    : 14px;
+  font-weight  : 600;
+  color        : #1a1a2e;
+  white-space  : nowrap;
+  overflow     : hidden;
+  text-overflow: ellipsis;
+}
+
+.usuario-email {
+  font-size    : 11px;
+  color        : #94A3B8;
+  margin-top   : 2px;
+  white-space  : nowrap;
+  overflow     : hidden;
+  text-overflow: ellipsis;
+}
+
+.usuario-meta {
+  display    : flex;
+  gap        : 6px;
+  margin-top : 6px;
+  flex-wrap  : wrap;
+}
+
+.rol-badge {
+  font-size    : 10px;
+  font-weight  : 700;
+  padding      : 3px 10px;
+  border-radius: 20px;
+}
+
+.rol-badge-1 { background: #F1F5F9; color: #64748B; }
+.rol-badge-2 { background: #EFF8FF; color: #0288D1; }
+.rol-badge-3 { background: #F5F3FF; color: #7C3AED; }
+.rol-badge-4 { background: #FFFBEB; color: #D97706; }
+
+.estado-chip {
+  font-size    : 10px;
+  font-weight  : 600;
+  padding      : 3px 10px;
+  border-radius: 20px;
+  background   : #D1FAE5;
+  color        : #059669;
+}
+
+.estado-chip.inactivo {
+  background: #FEE2E2;
+  color     : #EF4444;
+}
+
+// Acciones
+.card-actions {
+  display    : flex;
+  align-items: center;
+  gap        : 8px;
+  flex-shrink: 0;
+}
+
+.rol-select {
+  background   : #F1F5F9;
+  border       : 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  padding      : 6px 10px;
+  font-size    : 12px;
+  color        : #1a1a2e;
+  outline      : none;
+  cursor       : pointer;
+}
+
+.rol-select:focus { border-color: #0288D1; }
+
+.delete-btn {
+  width          : 36px;
+  height         : 36px;
+  border-radius  : 10px;
+  background     : #FEF2F2;
+  border         : 1.5px solid #FECACA;
+  color          : #EF4444;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  cursor         : pointer;
+  font-size      : 16px;
+}
+
+.delete-btn:hover {
+  background: #EF4444;
+  color     : #fff;
+}
+
+.empty-state {
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  justify-content: center;
+  padding        : 60px 24px;
+  color          : #CBD5E1;
+}
+
+.empty-state ion-icon { font-size: 56px; margin-bottom: 16px; }
+.empty-state h3       { font-size: 16px; font-weight: 700; color: #94A3B8; }

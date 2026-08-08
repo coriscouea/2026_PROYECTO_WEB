@@ -1,0 +1,82 @@
+<!-- =============================================================
+  usuarios.page.html — Gestión de Usuarios
+  HelpDesk Web | Feature 006 · CRUD Usuarios
+  =============================================================
+  Responsabilidad: permite al admin listar, ver detalle,
+  cambiar rol y desactivar usuarios del sistema.
+  Solo accesible para el rol admin.
+  ============================================================= -->
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+
+    <!-- Botón volver -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title class="header-title">Usuarios</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="usuarios-content">
+
+  <!-- Cargando -->
+  <div class="loading-state" *ngIf="cargando">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Lista de usuarios -->
+  <div class="usuarios-list" *ngIf="!cargando">
+
+    <div class="usuario-card" *ngFor="let u of usuarios">
+
+      <!-- Avatar y datos principales -->
+      <div class="card-left">
+        <div class="avatar" [class]="'rol-' + u.id_rol">
+          {{ u.nombre.charAt(0).toUpperCase() }}
+        </div>
+        <div class="usuario-info">
+          <div class="usuario-nombre">{{ u.nombre }}</div>
+          <div class="usuario-email">{{ u.email }}</div>
+          <div class="usuario-meta">
+            <span class="rol-badge" [class]="'rol-badge-' + u.id_rol">
+              {{ getRolLabel(u.id_rol) }}
+            </span>
+            <span class="estado-chip" [class.inactivo]="!u.activo">
+              {{ u.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="card-actions">
+
+        <!-- Cambiar rol -->
+        <select class="rol-select" [(ngModel)]="u.id_rol" (change)="cambiarRol(u)">
+          <option value="1">Usuario</option>
+          <option value="2">Técnico</option>
+          <option value="3">Mesa Ayuda</option>
+          <option value="4">Admin</option>
+        </select>
+
+        <!-- Desactivar -->
+        <button class="delete-btn" *ngIf="u.activo" (click)="desactivarUsuario(u)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Sin usuarios -->
+    <div class="empty-state" *ngIf="usuarios.length === 0">
+      <ion-icon name="people-outline"></ion-icon>
+      <h3>Sin usuarios</h3>
+    </div>
+
+  </div>
+
+</ion-content>

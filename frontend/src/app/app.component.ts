@@ -14,7 +14,7 @@ import { addIcons } from 'ionicons';
 import {
   folderOpenOutline, timeOutline, playCircleOutline,
   checkmarkCircleOutline, archiveOutline, listOutline,
-  chevronDown, chevronForward
+  chevronDown, chevronForward, peopleOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -43,7 +43,7 @@ export class AppComponent {
     addIcons({
       folderOpenOutline, timeOutline, playCircleOutline,
       checkmarkCircleOutline, archiveOutline, listOutline,
-      chevronDown, chevronForward
+      chevronDown, chevronForward, peopleOutline
     });
   }
 
@@ -56,5 +56,9 @@ export class AppComponent {
     this.router.navigate(['/tickets'], {
       queryParams: { filtro, estado, prioridad }
     });
+  }
+  async irUsuarios() {
+    await this.menuCtrl.close();
+    this.router.navigate(['/usuarios']);
   }
 }
