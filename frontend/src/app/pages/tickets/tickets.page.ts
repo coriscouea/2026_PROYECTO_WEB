@@ -13,7 +13,7 @@ import {
   IonSpinner, IonFab, IonFabButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { logOutOutline, add, clipboardOutline } from 'ionicons/icons';
+import { logOutOutline, add, clipboardOutline, notificationsOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
 
@@ -42,7 +42,7 @@ export class TicketsPage implements OnInit {
     private authService  : AuthService,
     private router       : Router
   ) {
-    addIcons({ logOutOutline, add, clipboardOutline });
+    addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline });
   }
 
   async ngOnInit() {
@@ -97,5 +97,9 @@ export class TicketsPage implements OnInit {
   async cerrarSesion() {
     await this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  irNotificaciones() {
+    this.router.navigate(['/notificaciones']);
   }
 }

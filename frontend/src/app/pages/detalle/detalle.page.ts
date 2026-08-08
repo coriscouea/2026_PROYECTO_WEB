@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonBackButton, IonSpinner, IonIcon, IonButton
+  IonBackButton, IonSpinner, IonIcon
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { send, personAdd, checkmarkCircle, playCircle } from 'ionicons/icons';
@@ -24,7 +24,7 @@ import { AuthService } from '../../services/auth';
   imports: [
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
-    IonButtons, IonBackButton, IonSpinner, IonIcon, IonButton
+    IonButtons, IonBackButton, IonSpinner, IonIcon
   ]
 })
 export class DetallePage implements OnInit {

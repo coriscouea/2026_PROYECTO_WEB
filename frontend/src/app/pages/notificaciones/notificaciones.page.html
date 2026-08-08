@@ -1,0 +1,57 @@
+<!-- =============================================================
+  notificaciones.page.html — Pantalla de Notificaciones
+  HelpDesk Web | Feature 011 · Notificaciones Avanzadas
+  ============================================================= -->
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="header-title">Notificaciones</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="marcarTodasLeidas()" class="leer-btn" *ngIf="notificaciones.length > 0">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="notif-content">
+
+  <!-- Cargando -->
+  <div class="loading-state" *ngIf="cargando">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Lista -->
+  <div class="notif-list" *ngIf="!cargando && notificaciones.length > 0">
+    <div class="notif-item"
+      *ngFor="let n of notificaciones"
+      [class.no-leida]="!n.leida"
+      (click)="verTicket(n)">
+
+      <div class="notif-dot" *ngIf="!n.leida"></div>
+
+      <div class="notif-icon">
+        <ion-icon name="ticket-outline"></ion-icon>
+      </div>
+
+      <div class="notif-body">
+        <div class="notif-mensaje">{{ n.mensaje }}</div>
+        <div class="notif-fecha">{{ n.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+      </div>
+
+      <div class="notif-arrow">›</div>
+
+    </div>
+  </div>
+
+  <!-- Sin notificaciones -->
+  <div class="empty-state" *ngIf="!cargando && notificaciones.length === 0">
+    <ion-icon name="notifications-off-outline"></ion-icon>
+    <h3>Sin notificaciones</h3>
+    <p>Aquí aparecerán tus avisos</p>
+  </div>
+
+</ion-content>
