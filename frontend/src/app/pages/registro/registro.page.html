@@ -1,0 +1,150 @@
+<!-- =============================================================
+  registro.page.html — Pantalla de Registro
+  HelpDesk Web | Feature 013 · Frontend Login
+  =============================================================
+  Responsabilidad: formulario de registro con validaciones
+  en tiempo real, barra de fortaleza de contraseña y
+  confirmación de contraseña. Buenas prácticas UX/UIX.
+  ============================================================= -->
+
+<ion-content class="login-content">
+  <div class="login-container">
+
+    <!-- Logo y título -->
+    <div class="brand-section">
+      <div class="logo-wrapper">
+        <div class="logo-circle">
+          <ion-icon name="help-circle" class="logo-icon"></ion-icon>
+        </div>
+        <div class="brand-text">
+          <h1>HelpDesk</h1>
+          <span class="badge-web">Web</span>
+        </div>
+      </div>
+      <p class="subtitle">Sistema de Soporte Técnico</p>
+      <div class="divider-line"></div>
+      <p class="welcome-text">Crear cuenta nueva</p>
+    </div>
+
+    <!-- Formulario -->
+    <div class="login-form">
+
+      <!-- Nombre -->
+      <div class="form-field">
+        <div class="campo-wrapper" [class.campo-error]="errores.nombre" [class.campo-ok]="errores.nombre === null">
+          <ion-icon name="person-outline" class="field-icon"></ion-icon>
+          <div class="campo-inner">
+            <label class="campo-label">Nombre completo</label>
+            <input
+              class="campo-input"
+              type="text"
+              [(ngModel)]="nombre"
+              placeholder="Juan Pérez"
+              (input)="validarNombre()">
+          </div>
+          <ion-icon name="checkmark-circle-outline" class="valid-icon" *ngIf="errores.nombre === null"></ion-icon>
+        </div>
+        <div class="field-error" *ngIf="errores.nombre">{{ errores.nombre }}</div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-field">
+        <div class="campo-wrapper" [class.campo-error]="errores.email" [class.campo-ok]="errores.email === null">
+          <ion-icon name="mail-outline" class="field-icon"></ion-icon>
+          <div class="campo-inner">
+            <label class="campo-label">Correo electrónico</label>
+            <input
+              class="campo-input"
+              type="email"
+              [(ngModel)]="email"
+              placeholder="usuario@empresa.com"
+              (input)="validarEmail()">
+          </div>
+          <ion-icon name="checkmark-circle-outline" class="valid-icon" *ngIf="errores.email === null"></ion-icon>
+        </div>
+        <div class="field-error" *ngIf="errores.email">{{ errores.email }}</div>
+      </div>
+
+      <!-- Contraseña -->
+      <div class="form-field">
+        <div class="campo-wrapper" [class.campo-error]="errores.password" [class.campo-ok]="errores.password === null">
+          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
+          <div class="campo-inner">
+            <label class="campo-label">Contraseña</label>
+            <input
+              class="campo-input"
+              [type]="mostrarPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              placeholder="Mínimo 8 caracteres"
+              (input)="validarPassword()">
+          </div>
+          <button class="toggle-btn" (click)="togglePassword()">
+            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+        <div class="field-error" *ngIf="errores.password">{{ errores.password }}</div>
+
+        <!-- Barra de fortaleza -->
+        <div class="fortaleza-container" *ngIf="password.length > 0">
+          <div class="fortaleza-bar">
+            <div class="fortaleza-fill" [style.width.%]="(fortaleza/3)*100" [style.background]="getFortalezaColor()"></div>
+          </div>
+          <span class="fortaleza-label" [style.color]="getFortalezaColor()">{{ getFortalezaLabel() }}</span>
+        </div>
+        <div class="field-hint" *ngIf="!errores.password && password.length === 0">
+          Usa mayúsculas y números para una contraseña más segura
+        </div>
+      </div>
+
+      <!-- Confirmar contraseña -->
+      <div class="form-field">
+        <div class="campo-wrapper" [class.campo-error]="errores.confirmar" [class.campo-ok]="errores.confirmar === null">
+          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
+          <div class="campo-inner">
+            <label class="campo-label">Confirmar contraseña</label>
+            <input
+              class="campo-input"
+              [type]="mostrarConfirmar ? 'text' : 'password'"
+              [(ngModel)]="confirmarPassword"
+              placeholder="Repite tu contraseña"
+              (input)="validarConfirmar()"
+              (keydown.enter)="registrarse()">
+          </div>
+          <button class="toggle-btn" (click)="toggleConfirmar()">
+            <ion-icon [name]="mostrarConfirmar ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+        <div class="field-error" *ngIf="errores.confirmar">{{ errores.confirmar }}</div>
+      </div>
+
+      <!-- Error general -->
+      <div class="error-message" *ngIf="errorMensaje">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ errorMensaje }}</span>
+      </div>
+
+      <!-- Éxito -->
+      <div class="success-message" *ngIf="exitoMensaje">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        <span>{{ exitoMensaje }}</span>
+      </div>
+
+      <!-- Botón registro -->
+      <ion-button
+        expand="block"
+        class="login-btn"
+        (click)="registrarse()"
+        [disabled]="enviando || !formularioValido()">
+        <ion-spinner *ngIf="enviando" name="crescent"></ion-spinner>
+        <span *ngIf="!enviando">Crear cuenta</span>
+      </ion-button>
+
+      <!-- Enlace al login -->
+      <div class="form-footer">
+        <span>¿Ya tienes cuenta?</span>
+        <a class="footer-link" (click)="irLogin()">Iniciar sesión</a>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

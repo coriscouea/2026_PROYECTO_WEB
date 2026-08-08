@@ -85,4 +85,8 @@ export class LoginPage {
       this.cargando = false;
     }
   }
+
+  irRegistro() {
+    this.router.navigate(['/registro'])
+  }
 }
