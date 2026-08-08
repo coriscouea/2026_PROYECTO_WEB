@@ -6,72 +6,112 @@
 // Header
 .header-toolbar {
   --background: #0D1B2A;
-  --color: #ffffff;
-  padding: 4px 0;
+  --color     : #ffffff;
+  padding     : 4px 0;
 }
 
 .header-logo {
-  width: 34px;
-  height: 34px;
-  background: linear-gradient(135deg, #4FC3F7, #0288D1);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
+  width          : 36px;
+  height         : 36px;
+  background     : linear-gradient(135deg, #4FC3F7, #0288D1);
+  border-radius  : 12px;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 13px;
-  color: #fff;
-  margin-left: 8px;
+  font-weight    : 800;
+  font-size      : 13px;
+  color          : #fff;
+  margin-left    : 8px;
+  box-shadow     : 0 4px 12px rgba(79,195,247,0.3);
 }
 
-.header-title { font-weight: 700; font-size: 17px; }
-.logout-btn { --color: rgba(255,255,255,0.6); }
-.tickets-content { --background: #F8FAFC; }
+.header-title { font-weight: 700; font-size: 18px; }
+.logout-btn   { --color: rgba(255,255,255,0.5); }
+.notif-btn    { --color: rgba(255,255,255,0.8); }
 
+// Badge notificaciones
+.notif-wrapper {
+  position       : relative;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+}
+
+.notif-badge {
+  position     : absolute;
+  top          : -6px;
+  right        : -6px;
+  background   : #EF4444;
+  color        : #fff;
+  font-size    : 9px;
+  font-weight  : 700;
+  width        : 16px;
+  height       : 16px;
+  border-radius: 50%;
+  display      : flex;
+  align-items  : center;
+  justify-content: center;
+}
+
+// Contenido
+.tickets-content { --background: #F0F4F8; }
+
+// Filtros
 .filter-container {
-  padding: 14px 16px 8px;
-  background: #fff;
-  border-bottom: 1px solid #E8ECF0;
+  padding      : 12px 16px 10px;
+  background   : #0D1B2A;
+  border-bottom: none;
 }
 
 .custom-segment {
-  --background: #F1F5F9;
-  border-radius: 12px;
-  padding: 3px;
+  --background: rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding      : 3px;
 }
 
 .custom-segment ion-segment-button {
-  --border-radius: 10px;
-  --color: #94A3B8;
-  --color-checked: #fff;
-  --background-checked: #0288D1;
-  --indicator-color: transparent;
-  font-size: 12px;
-  font-weight: 600;
-  min-height: 34px;
+  --border-radius     : 12px;
+  --color             : rgba(255,255,255,0.5);
+  --color-checked     : #0D1B2A;
+  --background-checked: #fff;
+  --indicator-color   : transparent;
+  font-size           : 12px;
+  font-weight         : 600;
+  min-height          : 36px;
 }
 
+// Contador
 .tickets-count {
-  padding: 10px 16px 4px;
-  font-size: 12px;
-  color: #94A3B8;
-  font-weight: 500;
+  padding    : 12px 16px 4px;
+  font-size  : 12px;
+  color      : #94A3B8;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
+// Lista
 .tickets-list {
-  padding: 8px 16px 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding        : 8px 16px 80px;
+  display        : flex;
+  flex-direction : column;
+  gap            : 10px;
 }
 
+// Tarjeta
 .ticket-card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
-  border-left: 4px solid #E2E8F0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  cursor: pointer;
+  background   : #fff;
+  border-radius: 16px;
+  padding      : 16px;
+  border-left  : 4px solid #E2E8F0;
+  box-shadow   : 0 2px 12px rgba(0,0,0,0.06);
+  cursor       : pointer;
+  transition   : transform 0.15s, box-shadow 0.15s;
+}
+
+.ticket-card:active {
+  transform : scale(0.98);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
 .ticket-card.prioridad-alta  { border-left-color: #EF4444; }
@@ -79,23 +119,25 @@
 .ticket-card.prioridad-baja  { border-left-color: #10B981; }
 
 .card-top {
-  display: flex;
+  display        : flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
+  align-items    : center;
+  margin-bottom  : 8px;
 }
 
 .ticket-num {
-  font-size: 11px;
-  color: #94A3B8;
-  font-weight: 600;
+  font-size  : 11px;
+  color      : #94A3B8;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .estado-badge {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
+  font-size    : 10px;
+  font-weight  : 700;
+  padding      : 4px 12px;
   border-radius: 20px;
+  letter-spacing: 0.3px;
 }
 
 .estado-pendiente  { background: #FEF3C7; color: #D97706; }
@@ -103,27 +145,27 @@
 .estado-finalizado { background: #D1FAE5; color: #059669; }
 
 .ticket-titulo {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin-bottom: 10px;
-  line-height: 1.4;
+  font-size    : 14px;
+  font-weight  : 600;
+  color        : #1a1a2e;
+  margin-bottom: 12px;
+  line-height  : 1.4;
 }
 
 .card-bottom {
-  display: flex;
+  display    : flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap        : 6px;
+  flex-wrap  : wrap;
 }
 
 .chip {
-  font-size: 10px;
-  padding: 3px 10px;
+  font-size    : 10px;
+  padding      : 4px 10px;
   border-radius: 20px;
-  background: #F1F5F9;
-  color: #64748B;
-  font-weight: 500;
+  background   : #F1F5F9;
+  color        : #64748B;
+  font-weight  : 600;
 }
 
 .chip-alta  { background: #FEF2F2; color: #EF4444; }
@@ -131,58 +173,34 @@
 .chip-baja  { background: #F0FDF4; color: #10B981; }
 
 .ticket-fecha {
-  font-size: 10px;
-  color: #CBD5E1;
+  font-size  : 10px;
+  color      : #CBD5E1;
   margin-left: auto;
 }
 
+// Empty state
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
   justify-content: center;
-  padding: 60px 24px;
-  color: #CBD5E1;
+  padding        : 80px 24px;
+  color          : #CBD5E1;
 }
 
 .empty-state ion-icon { font-size: 56px; margin-bottom: 16px; }
-.empty-state h3 { font-size: 16px; font-weight: 700; color: #94A3B8; margin-bottom: 6px; }
-.empty-state p  { font-size: 13px; text-align: center; }
+.empty-state h3       { font-size: 16px; font-weight: 700; color: #94A3B8; margin-bottom: 6px; }
+.empty-state p        { font-size: 13px; text-align: center; }
 
+// Loading
 .loading-state {
-  display: flex;
+  display        : flex;
   justify-content: center;
-  padding: 60px 0;
+  padding        : 60px 0;
 }
 
+// FAB
 .fab-btn {
-  --background: linear-gradient(135deg, #4FC3F7, #0288D1);
+  --background: linear-gradient(135deg, #0288D1, #4FC3F7);
   --box-shadow: 0 4px 16px rgba(2,136,209,0.4);
 }
-
-/* Conteo Notificaciones */
-
-.notif-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.notif-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: #EF4444;
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.notif-btn { --color: rgba(255,255,255,0.8); }

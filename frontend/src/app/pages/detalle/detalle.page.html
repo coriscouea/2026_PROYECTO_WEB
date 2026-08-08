@@ -72,7 +72,7 @@
       <!-- Badges de estado, categoría y prioridad -->
       <div class="badges-row">
         <span class="estado-badge" [class]="'estado-' + ticket.estado">
-          {{ ticket.estado | titlecase }}
+          {{ ticket.estado.replace('_' , ' ') | titlecase }}
         </span>
         <span class="chip">{{ getCategoriaLabel(ticket.id_categoria) }}</span>
         <span class="chip" [class]="'chip-' + ticket.prioridad">

@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import {
-  IonButton, IonIcon, IonSpinner, IonCheckbox
+  IonContent,IonButton, IonIcon, IonSpinner, IonCheckbox
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -29,7 +29,7 @@ import { AuthService } from '../../services/auth';
   imports: [
     CommonModule,
     FormsModule,
-    IonButton, IonIcon, IonSpinner, IonCheckbox
+    IonContent, IonButton, IonIcon, IonSpinner, IonCheckbox
   ]
 })
 export class LoginPage {

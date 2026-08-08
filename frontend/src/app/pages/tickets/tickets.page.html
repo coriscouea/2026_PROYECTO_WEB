@@ -77,7 +77,7 @@
       <div class="card-top">
         <span class="ticket-num">#{{ ticket.id_ticket }}</span>
         <span class="estado-badge" [class]="'estado-' + ticket.estado">
-          {{ ticket.estado | titlecase }}
+          {{ ticket.estado.replace('_', ' ') | titlecase }}
         </span>
       </div>
 
