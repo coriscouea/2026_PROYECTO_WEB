@@ -1,0 +1,155 @@
+// =============================================================
+// metricas.page.scss — Estilos del Dashboard de Métricas
+// HelpDesk Web | Feature 012 · Métricas Básicas
+// =============================================================
+
+.header-toolbar {
+  --background: #0D1B2A;
+  --color     : #ffffff;
+}
+
+.back-btn     { --color: #4FC3F7; }
+.header-title { font-weight: 700; font-size: 16px; }
+.metricas-content { --background: #F0F4F8; }
+
+.loading-state {
+  display        : flex;
+  justify-content: center;
+  padding        : 60px 0;
+}
+
+.seccion-titulo {
+  font-size     : 11px;
+  font-weight   : 700;
+  color         : #64748B;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding       : 16px 16px 8px;
+}
+
+// Tarjetas de resumen
+.cards-row {
+  display              : grid;
+  grid-template-columns: 1fr 1fr;
+  gap                  : 10px;
+  padding              : 0 16px;
+}
+
+.stat-card {
+  background   : #fff;
+  border-radius: 16px;
+  padding      : 16px;
+  box-shadow   : 0 2px 8px rgba(0,0,0,0.06);
+  display      : flex;
+  flex-direction: column;
+  align-items  : center;
+  gap          : 6px;
+}
+
+.stat-icon  { font-size: 24px; }
+.stat-valor {
+  font-size  : 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+.stat-label {
+  font-size : 11px;
+  color     : #94A3B8;
+  font-weight: 500;
+}
+
+.stat-card.pendiente  .stat-valor { color: #D97706; }
+.stat-card.proceso    .stat-valor { color: #2563EB; }
+.stat-card.finalizado .stat-valor { color: #059669; }
+.stat-card.total      .stat-valor { color: #0288D1; }
+
+// Tiempo promedio
+.tiempo-card {
+  background   : #fff;
+  border-radius: 16px;
+  padding      : 20px;
+  margin       : 0 16px;
+  box-shadow   : 0 2px 8px rgba(0,0,0,0.06);
+  text-align   : center;
+  border-left  : 4px solid #0288D1;
+}
+
+.tiempo-valor {
+  font-size  : 48px;
+  font-weight: 800;
+  color      : #0288D1;
+  line-height: 1;
+}
+
+.tiempo-label {
+  font-size  : 13px;
+  color      : #64748B;
+  margin-top : 6px;
+  font-weight: 500;
+}
+
+.tiempo-hint {
+  font-size : 11px;
+  color     : #CBD5E1;
+  margin-top: 4px;
+}
+
+// Listas con barras
+.lista-card {
+  background   : #fff;
+  border-radius: 16px;
+  padding      : 14px 16px;
+  margin       : 0 16px 8px;
+  box-shadow   : 0 2px 8px rgba(0,0,0,0.06);
+  display      : flex;
+  flex-direction: column;
+  gap          : 12px;
+}
+
+.lista-item {
+  display    : flex;
+  align-items: center;
+  gap        : 10px;
+}
+
+.lista-nombre {
+  font-size  : 12px;
+  font-weight: 600;
+  color      : #1a1a2e;
+  width      : 80px;
+  flex-shrink: 0;
+}
+
+.barra-container {
+  flex         : 1;
+  height       : 8px;
+  background   : #F1F5F9;
+  border-radius: 4px;
+  overflow     : hidden;
+}
+
+.barra-fill {
+  height       : 100%;
+  background   : linear-gradient(90deg, #0288D1, #4FC3F7);
+  border-radius : 4px;
+  transition   : width 0.5s ease;
+}
+
+.barra-fill.tecnico {
+  background: linear-gradient(90deg, #7C3AED, #A78BFA);
+}
+
+.lista-valor {
+  font-size  : 13px;
+  font-weight: 800;
+  color      : #0288D1;
+  width      : 24px;
+  text-align : right;
+}
+
+.empty-lista {
+  font-size : 12px;
+  color     : #CBD5E1;
+  text-align: center;
+  padding   : 8px 0;
+}

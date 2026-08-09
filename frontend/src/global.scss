@@ -51,6 +51,13 @@ ion-menu .menu-toolbar {
 
 ion-menu ion-content {
   --background: #0D1B2A;
+    display        : flex;
+    flex-direction : column;
+}
+
+ion-menu .menu-nav {
+  flex: 1;
+  overflow-y: auto;
 }
 
 ion-menu .menu-header {
@@ -162,4 +169,76 @@ ion-menu .sidebar-divider {
   height    : 1px;
   background: rgba(255,255,255,0.06);
   margin    : 8px 20px;
+}
+
+
+ion-menu .user-info {
+  flex    : 1;
+  min-width: 0;
+}
+
+ion-menu .user-nombre {
+  color        : #ffffff;
+  font-size    : 13px;
+  font-weight  : 700;
+  white-space  : nowrap;
+  overflow     : hidden;
+  text-overflow: ellipsis;
+}
+
+ion-menu .user-email {
+  color        : rgba(255,255,255,0.45);
+  font-size    : 10px;
+  margin-top   : 2px;
+  white-space  : nowrap;
+  overflow     : hidden;
+  text-overflow: ellipsis;
+}
+
+ion-menu .rol-chip {
+  display      : inline-block;
+  font-size    : 10px;
+  font-weight  : 600;
+  color        : #4FC3F7;
+  margin-top   : 4px;
+  background   : rgba(79,195,247,0.1);
+  padding      : 2px 8px;
+  border-radius: 20px;
+}
+
+ion-menu ion-footer {
+  --background: #0D1B2A;
+  background  : #0D1B2A;
+}
+
+ion-menu .user-profile-bottom {
+  display      : flex;
+  align-items  : center;
+  gap          : 12px;
+  padding      : 14px 16px;
+  background   : #0D1B2A;
+  border-top   : 1px solid rgba(255,255,255,0.08);
+}
+
+ion-menu .user-nombre {
+  color      : #ffffff;
+  font-size  : 13px;
+  font-weight: 700;
+}
+
+ion-menu .user-email {
+  color    : rgba(255,255,255,0.45);
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+ion-menu .rol-chip {
+  display      : inline-block;
+  font-size    : 10px;
+  font-weight  : 600;
+  color        : #4FC3F7;
+  background   : rgba(79,195,247,0.1);
+  padding      : 2px 8px;
+  border-radius: 20px;
+  margin-top   : 4px;
 }

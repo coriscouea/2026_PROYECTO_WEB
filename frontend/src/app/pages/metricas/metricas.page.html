@@ -1,0 +1,110 @@
+<!-- =============================================================
+  metricas.page.html — Dashboard de Métricas
+  HelpDesk Web | Feature 012 · Métricas Básicas
+  =============================================================
+  Responsabilidad: muestra indicadores clave del sistema
+  para el administrador. Solo accesible con rol admin.
+  ============================================================= -->
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="header-toolbar">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title class="header-title">Dashboard</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="metricas-content">
+
+  <!-- Cargando -->
+  <div class="loading-state" *ngIf="cargando">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <div *ngIf="!cargando">
+
+    <!-- -----------------------------------------------------
+      Tarjetas de resumen por estado
+    ------------------------------------------------------ -->
+    <div class="seccion-titulo">Resumen de tickets</div>
+
+    <div class="cards-row">
+
+      <div class="stat-card pendiente">
+        <div class="stat-icon">🕐</div>
+        <div class="stat-valor">{{ resumen.pendiente }}</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+
+      <div class="stat-card proceso">
+        <div class="stat-icon">▶</div>
+        <div class="stat-valor">{{ resumen.en_proceso }}</div>
+        <div class="stat-label">En proceso</div>
+      </div>
+
+      <div class="stat-card finalizado">
+        <div class="stat-icon">✅</div>
+        <div class="stat-valor">{{ resumen.finalizado }}</div>
+        <div class="stat-label">Finalizados</div>
+      </div>
+
+      <div class="stat-card total">
+        <div class="stat-icon">📋</div>
+        <div class="stat-valor">{{ resumen.total }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+
+    </div>
+
+    <!-- -----------------------------------------------------
+      Tiempo promedio de resolución
+    ------------------------------------------------------ -->
+    <div class="seccion-titulo">Tiempo promedio de resolución</div>
+
+    <div class="tiempo-card">
+      <div class="tiempo-valor">{{ tiempoResolucion.promedio_horas }}</div>
+      <div class="tiempo-label">horas promedio por ticket</div>
+      <div class="tiempo-hint">Calculado sobre tickets finalizados</div>
+    </div>
+
+    <!-- -----------------------------------------------------
+      Tickets por categoría
+    ------------------------------------------------------ -->
+    <div class="seccion-titulo">Por categoría</div>
+
+    <div class="lista-card">
+      <div class="lista-item" *ngFor="let c of porCategoria">
+        <div class="lista-nombre">{{ c.categoria }}</div>
+        <div class="barra-container">
+          <div class="barra-fill" [style.width.%]="getPorcentaje(c.total, resumen.total)"></div>
+        </div>
+        <div class="lista-valor">{{ c.total }}</div>
+      </div>
+      <div class="empty-lista" *ngIf="porCategoria.length === 0">Sin datos</div>
+    </div>
+
+    <!-- -----------------------------------------------------
+      Tickets por técnico
+    ------------------------------------------------------ -->
+    <div class="seccion-titulo">Por técnico</div>
+
+    <div class="lista-card">
+      <div class="lista-item" *ngFor="let t of porTecnico">
+        <div class="lista-nombre">{{ t.tecnico }}</div>
+        <div class="barra-container">
+          <div class="barra-fill tecnico" [style.width.%]="getPorcentaje(t.total, resumen.total)"></div>
+        </div>
+        <div class="lista-valor">{{ t.total }}</div>
+      </div>
+      <div class="empty-lista" *ngIf="porTecnico.length === 0">
+        Ningún ticket tiene técnico asignado aún
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

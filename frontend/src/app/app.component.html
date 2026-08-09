@@ -16,13 +16,13 @@
   <ion-menu contentId="main-content" side="start">
     <ion-header>
       <ion-toolbar class="menu-toolbar">
+
+        <!-- Logo y Título-->
         <div class="menu-header">
           <div class="menu-logo">HD</div>
-          <div>
-            <div class="menu-title">HelpDesk Web</div>
-            <div class="menu-subtitle">Panel de navegación</div>
-          </div>
+          <div class="menu-brand">HelpDesk Web</div>          
         </div>
+
       </ion-toolbar>
     </ion-header>
 
@@ -41,7 +41,7 @@
 
         <div class="tree-children" *ngIf="expanded['activos']">
 
-          <!-- Pendiente -->
+        <!-- Pendiente -->
           <div class="tree-node" (click)="toggleSection('pendiente')">
             <ion-icon name="time-outline" class="node-icon"></ion-icon>
             <span>Pendiente</span>
@@ -123,16 +123,38 @@
         </div>
       </div>
 
-      <!-- Gestión -->
-      <div class="sidebar-divider"></div>
+      <!-- Solo admin -->
+      <ng-container *ngIf="esAdmin()">
+        <div class="sidebar-divider"></div>
 
-      <div class="tree-section">
-        <div class="tree-root" (click)="irUsuarios()">
-          <ion-icon name="people-outline" class="tree-icon"></ion-icon>
-          <span>Gestión de usuarios</span>
+        <div class="tree-section">
+          <div class="tree-root" (click)="irUsuarios()">
+            <ion-icon name="people-outline" class="tree-icon"></ion-icon>
+            <span>Gestión de usuarios</span>
+          </div>
+        </div>
+
+        <div class="tree-section">
+          <div class="tree-root" (click)="irMetricas()">
+            <ion-icon name="bar-chart-outline" class="tree-icon"></ion-icon>
+            <span>Dashboard</span>
+          </div>
+        </div>
+      </ng-container>  
+</ion-content>
+
+    <!-- Perfil del usuario — fijo en la parte inferior -->
+    <ion-footer class="menu-footer">
+      <div class="user-profile-bottom">
+        <div class="user-info">
+          <div class="user-nombre">{{ nombre }}</div>
+          <div class="user-email">{{ email }}</div>
+          <div class="user-rol">
+            <span class="rol-chip">{{ getRolLabel() }}</span>
+          </div>
         </div>
       </div>
-    </ion-content>
+    </ion-footer>
   </ion-menu>
 
   <!-- Router outlet principal -->

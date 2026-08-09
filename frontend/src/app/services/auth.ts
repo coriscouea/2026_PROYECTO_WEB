@@ -30,6 +30,15 @@ export class AuthService {
     const datos = response.data.datos;
     await Preferences.set({ key: 'access_token', value: datos.access_token });
     await Preferences.set({ key: 'refresh_token', value: datos.refresh_token });
+    
+    // Guardar email del usuario
+    await Preferences.set({key: 'email', value: email});
+
+    // Obtener nombre del payload JWT
+    const payload = JSON.parse(atob(datos.access_token.split('.')[1]));
+    await Preferences.set({key: 'rol', value: payload.rol});
+    await Preferences.set({ key: 'nombre', value: email.split('@')[0] });
+    
     return datos;
   }
 
@@ -80,6 +89,40 @@ export class AuthService {
     if (!token) return 0;
     const payload = JSON.parse(atob(token.split('.')[1]));
     return parseInt(payload.sub) || 0;
-  }  
+  }
+  
+  // -----------------------------------------------------------
+  // Obtener nombre del usuario desde Preferences
+  // -----------------------------------------------------------
+
+  async getNombre(): Promise<string> {
+    const result = await Preferences.get({ key: 'nombre' });
+    return result.value || '';
+  }
+
+  async getEmail(): Promise<string> {
+    const result = await Preferences.get({ key: 'email' });
+    return result.value || '';
+  }
+
+  // -----------------------------------------------------------
+  // Obtener perfil completo del usuario autenticado
+  // -----------------------------------------------------------
+  
+  async obtenerPerfil(): Promise<any> {
+    const token = await this.getToken();
+    const payload = JSON.parse(atob(token!.split('.')[1]));
+    const idUsuario = payload.sub;
+    
+    const response = await axios.get(
+      `${this.apiUrl}/api/v1/usuarios/${idUsuario}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    const usuario = response.data.datos;
+    await Preferences.set({ key: 'nombre', value: usuario.nombre });
+    return usuario;
+  }
+  
 }
 

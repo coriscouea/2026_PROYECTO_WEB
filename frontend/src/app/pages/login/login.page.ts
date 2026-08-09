@@ -72,6 +72,7 @@ export class LoginPage {
 
     try {
       await this.authService.login(this.email, this.password);
+      await this.authService.obtenerPerfil();
       this.router.navigate(['/tickets']);
     } catch (error: any) {
       if (error.response?.status === 401) {
