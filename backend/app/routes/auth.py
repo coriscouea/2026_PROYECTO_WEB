@@ -6,7 +6,7 @@
 # login y renovación de token. No requieren autenticación previa.
 # =============================================================
 
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, status, Request, HTTPException
 from app.core.limiter import limiter
 from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
@@ -14,6 +14,7 @@ from app.database import get_db
 from app.schemas.usuario import UsuarioCreate, UsuarioResponse
 from app.schemas.response import RespuestaExito
 from app.services.auth_svc import svc_registro, svc_login, svc_refresh
+from app.middleware.auth import get_current_user
 from pydantic import BaseModel
 # -------------------------------------------------------------
 # Router — agrupa todos los endpoints de auth bajo /api/v1/auth
@@ -90,4 +91,28 @@ def refresh(
     return RespuestaExito(
         datos=resultado,
         mensaje="Token renovado correctamente"
+    )
+
+# -------------------------------------------------------------
+# GET /auth/me — Perfil del usuario autenticado
+# Accesible para cualquier rol autenticado
+# Devuelve los datos del usuario sin exponer el password
+# -------------------------------------------------------------
+
+@router.get("/me", status_code=status.HTTP_200_OK)
+def obtener_perfil(
+    db          : Session = Depends(get_db),
+    current_user: dict    = Depends(get_current_user)
+):
+    from app.repository.usuario_repo import obtener_usuario
+    id_usuario = int(current_user.get("sub"))
+    usuario    = obtener_usuario(db, id_usuario)
+    if not usuario:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+    return RespuestaExito(
+        datos  = UsuarioResponse.model_validate(usuario),
+        mensaje= "Perfil obtenido correctamente"
     )

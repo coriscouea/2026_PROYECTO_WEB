@@ -5,7 +5,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import {
   IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar,
   IonContent, IonIcon, IonFooter, MenuController
@@ -48,6 +48,12 @@ export class AppComponent implements OnInit {
       checkmarkCircleOutline, archiveOutline, listOutline,
       chevronDown, chevronForward, peopleOutline, barChartOutline
     });
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.actualizarRol();
+      }
+    });
   }
 
   nombre  : string = '';
@@ -66,6 +72,8 @@ export class AppComponent implements OnInit {
 
     async actualizarRol() {
       this.rol = await this.authService.getRol();
+      this.nombre = await this.authService.getNombre();
+      this.email = await this.authService.getEmail();
     }
 
     esAdmin(): boolean {

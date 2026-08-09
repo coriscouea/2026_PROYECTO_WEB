@@ -108,21 +108,22 @@ export class AuthService {
   // -----------------------------------------------------------
   // Obtener perfil completo del usuario autenticado
   // -----------------------------------------------------------
-  
+
   async obtenerPerfil(): Promise<any> {
     const token = await this.getToken();
-    const payload = JSON.parse(atob(token!.split('.')[1]));
-    const idUsuario = payload.sub;
-    
+    if (!token) return;
+
     const response = await axios.get(
-      `${this.apiUrl}/api/v1/usuarios/${idUsuario}`,
+      `${this.apiUrl}/auth/me`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    
+
     const usuario = response.data.datos;
     await Preferences.set({ key: 'nombre', value: usuario.nombre });
+    await Preferences.set({ key: 'email',  value: usuario.email  });
+    await Preferences.set({ key: 'rol',    value: usuario.id_rol.toString() });
+
     return usuario;
   }
-  
 }
 
