@@ -1,0 +1,16 @@
+{
+  "name": "HelpDesk Web",
+  "short_name": "HelpDesk",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D1B2A",
+  "theme_color": "#0288D1",
+  "description": "Sistema de Gestión de Soporte Técnico",
+  "icons": [
+    {
+      "src": "assets/icon/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
