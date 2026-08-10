@@ -106,12 +106,27 @@ export class TicketService {
       throw error;
     }
   }
+  
   async actualizarTicket(id: number, datos: any): Promise<any> {
     try {
       const headers = await this.getHeaders();
       const response = await axios.patch(
         `${this.apiUrl}/api/v1/tickets/${id}`,
         datos,
+        { headers }
+      );
+      return response.data.datos;
+    } catch (error: any) {
+      if (error.response?.status === 401) await this.handle401();
+      throw error;
+    }
+  }
+
+  async desactivarTicket(id: number): Promise<any> {
+    try {
+      const headers  = await this.getHeaders();
+      const response = await axios.delete(
+        `${this.apiUrl}/api/v1/tickets/${id}`,
         { headers }
       );
       return response.data.datos;

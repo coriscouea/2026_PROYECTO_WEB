@@ -53,8 +53,6 @@ export class TicketsPage implements OnInit {
     addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline });
   }
 
-  
-
   async ngOnInit() {
     this.rol          = await this.authService.getRol();
     this.tituloHeader = this.getTituloHeader();

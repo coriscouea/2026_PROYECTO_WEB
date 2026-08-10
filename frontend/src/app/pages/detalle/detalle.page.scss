@@ -286,3 +286,16 @@
   p { font-size: 13px; }
 }
 
+/* Desactivar Ticket */
+
+.delete-btn {
+  background: #FEF2F2;
+  color     : #EF4444;
+  border    : 1.5px solid #FECACA;
+  flex      : 1;
+}
+
+.delete-btn:hover {
+  background: #EF4444;
+  color     : #fff;
+}

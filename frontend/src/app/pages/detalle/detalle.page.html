@@ -106,7 +106,7 @@
       Solo visible para técnico, mesa_ayuda y admin
       Solo visible cuando el ticket está activo
     ---------------------------------------------------- -->
-    <div class="section-card acciones-card" *ngIf="puedeActuar() && ticket.activo">
+    <div class="section-card acciones-card" *ngIf="ticket.activo && (puedeActuar() || rol === 'admin')">
 
       <!-- Tomar ticket — solo si no tiene técnico asignado -->
       <button class="accion-btn tomar-btn"
@@ -126,6 +126,12 @@
         <span *ngIf="!actualizando">{{ getLabelSiguienteEstado() }}</span>
       </button>
 
+      <!-- Desactivar ticket — solo admin -->
+      <button class="accion-btn delete-btn" *ngIf="rol === 'admin'"
+        (click)="desactivarTicket()" [disabled]="actualizando">
+        <ion-icon name="trash-outline"></ion-icon>
+        Desactivar ticket
+      </button>
     </div>
 
     <!-- ---------------------------------------------------
@@ -183,6 +189,7 @@
           <ion-icon name="send"></ion-icon>
         </button>
       </div>
+
     </div>
 
   </div>

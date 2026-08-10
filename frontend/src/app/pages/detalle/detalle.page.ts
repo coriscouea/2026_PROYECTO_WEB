@@ -12,7 +12,7 @@ import {
   IonBackButton, IonSpinner, IonIcon
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { send, personAdd, checkmarkCircle, playCircle } from 'ionicons/icons';
+import { send, personAdd, checkmarkCircle, playCircle, trashOutline } from 'ionicons/icons';
 import { TicketService } from '../../services/ticket';
 import { AuthService } from '../../services/auth';
 
@@ -42,10 +42,11 @@ export class DetallePage implements OnInit {
 
   constructor(
     private route        : ActivatedRoute,
+    private router       : Router,
     private ticketService: TicketService,
     private authService  : AuthService
   ) {
-    addIcons({ send, personAdd, checkmarkCircle, playCircle });
+    addIcons({ send, personAdd, checkmarkCircle, playCircle, trashOutline });
   }
 
   async ngOnInit() {
@@ -178,5 +179,18 @@ export class DetallePage implements OnInit {
       ticket_cerrado     : '🔒 Ticket cerrado'
     };
     return labels[tipo] || tipo;
+  }
+
+  async desactivarTicket() {
+    if (!confirm('¿Desactivar este ticket? Esta acción no se puede deshacer.')) return;
+    this.actualizando = true;
+    try {
+      await this.ticketService.desactivarTicket(this.idTicket);
+      this.router.navigate(['/tickets']);
+    } catch (error) {
+      console.error('Error desactivando ticket:', error);
+    } finally {
+      this.actualizando = false;
+    }
   }
 }
