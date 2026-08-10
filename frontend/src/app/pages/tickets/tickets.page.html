@@ -1,34 +1,33 @@
 <!-- =============================================================
-  tickets.page.html — Bandeja de Tickets
+  tickets.page.html — Bandeja de Tickets con Dashboard por Rol
   HelpDesk Web | Feature 014 · Frontend Tickets
   =============================================================
-  Responsabilidad: muestra la lista de tickets del usuario
-  autenticado filtrada por rol. Permite navegar al detalle,
-  crear un nuevo ticket y acceder a notificaciones.
+  Responsabilidad: muestra dashboard personalizado según el rol
+  del usuario autenticado con tarjetas resumen y lista de tickets.
   ============================================================= -->
 
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
 
-    <!-- Botón Hamburguesa -->
-    <!-- Logo -->
+    <!-- Botón hamburguesa + Logo -->
     <ion-buttons slot="start">
       <ion-menu-button class="menu-btn" color="light"></ion-menu-button>
-      <div class="header-logo">HD</div>
+      <div class="header-logo">
+        <ion-icon name="headset-outline"></ion-icon>
+      </div>
     </ion-buttons>
 
-    <!-- Título dinámico según rol -->
     <ion-title class="header-title">{{ tituloHeader }}</ion-title>
 
-    <!-- Acciones del header -->
+    <!-- Notificaciones y logout -->
     <ion-buttons slot="end">
       <ion-button (click)="irNotificaciones()" class="notif-btn">
         <div class="notif-wrapper">
           <ion-icon name="notifications-outline"></ion-icon>
           <span class="notif-badge" *ngIf="conteoNotificaciones > 0">
-            {{conteoNotificaciones}}
+            {{ conteoNotificaciones }}
           </span>
-        </div> 
+        </div>
       </ion-button>
       <ion-button (click)="cerrarSesion()" class="logout-btn">
         <ion-icon name="log-out-outline"></ion-icon>
@@ -40,86 +39,111 @@
 
 <ion-content class="tickets-content">
 
-  <!-- -----------------------------------------------------
-    Filtros de estado — activos, todos, inactivos
-    Llama a cambiarFiltro() al cambiar la selección
-  ------------------------------------------------------ -->
-  <div class="filter-container">
-    <ion-segment [(ngModel)]="filtroActual" (ionChange)="cambiarFiltro()" class="custom-segment">
-      <ion-segment-button value="activos">
-        <ion-label>Activos</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="todos">
-        <ion-label>Todos</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="inactivos">
-        <ion-label>Inactivos</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </div>
-
-  <!-- -----------------------------------------------------
-    Contador de tickets encontrados
-  ------------------------------------------------------ -->
-  <div class="tickets-count" *ngIf="!cargando">
-    <span>{{ tickets.length }} ticket{{ tickets.length !== 1 ? 's' : '' }}</span>
-  </div>
-
-  <!-- -----------------------------------------------------
-    Lista de tarjetas de tickets
-    Borde izquierdo según prioridad: rojo/amarillo/verde
-    Clic navega al detalle del ticket
-  ------------------------------------------------------ -->
-  <div class="tickets-list" *ngIf="!cargando && tickets.length > 0">
-    <div class="ticket-card"
-      *ngFor="let ticket of tickets"
-      [class]="'prioridad-' + ticket.prioridad"
-      (click)="verDetalle(ticket.id_ticket)">
-
-      <div class="card-top">
-        <span class="ticket-num">#{{ ticket.id_ticket }}</span>
-        <span class="estado-badge" [class]="'estado-' + ticket.estado">
-          {{ ticket.estado.replace('_', ' ') | titlecase }}
-        </span>
-      </div>
-
-      <div class="ticket-titulo">{{ ticket.titulo }}</div>
-
-      <div class="card-bottom">
-        <span class="chip">{{ getCategoriaLabel(ticket.id_categoria) }}</span>
-        <span class="chip prioridad-chip" [class]="'chip-' + ticket.prioridad">
-          {{ ticket.prioridad | titlecase }}
-        </span>
-        <span class="ticket-fecha">{{ ticket.fecha_creacion | date:'dd/MM/yy' }}</span>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- -----------------------------------------------------
-    Estado vacío — no hay tickets con el filtro actual
-  ------------------------------------------------------ -->
-  <div class="empty-state" *ngIf="!cargando && tickets.length === 0">
-    <ion-icon name="clipboard-outline"></ion-icon>
-    <h3>Sin tickets</h3>
-    <p>No hay tickets {{ filtroActual }} por el momento</p>
-  </div>
-
-  <!-- -----------------------------------------------------
-    Indicador de carga mientras se obtienen los tickets
-  ------------------------------------------------------ -->
+  <!-- Cargando -->
   <div class="loading-state" *ngIf="cargando">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
   </div>
 
-  <!-- -----------------------------------------------------
-    FAB — botón flotante para crear ticket nuevo
-    Solo visible para usuarios con permiso de crear
-  ------------------------------------------------------ -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button class="fab-btn" (click)="crearTicket()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <div *ngIf="!cargando">
+
+    <!-- -----------------------------------------------------
+      Sección de bienvenida con nombre del usuario
+    ------------------------------------------------------ -->
+    <div class="welcome-section">
+      <div class="welcome-text">
+        <h2>Bienvenido, {{ nombre }}</h2>
+        <p>{{ getSubtitulo() }}</p>
+      </div>
+      <button class="nuevo-ticket-btn" (click)="crearTicket()">
+        <ion-icon name="add"></ion-icon>
+        Nuevo Ticket
+      </button>
+    </div>
+
+    <!-- -----------------------------------------------------
+      Tarjetas de resumen por estado
+    ------------------------------------------------------ -->
+    <div class="resumen-cards">
+      <div class="resumen-card" (click)="filtrarPorEstado('')">
+        <div class="card-valor">{{ resumen.total }}</div>
+        <div class="card-label">Total</div>
+        <div class="card-icon">📋</div>
+      </div>
+      <div class="resumen-card pendiente" (click)="filtrarPorEstado('pendiente')">
+        <div class="card-valor">{{ resumen.pendiente }}</div>
+        <div class="card-label">Pendientes</div>
+        <div class="card-icon">🕐</div>
+      </div>
+      <div class="resumen-card proceso" (click)="filtrarPorEstado('en_proceso')">
+        <div class="card-valor">{{ resumen.en_proceso }}</div>
+        <div class="card-label">En proceso</div>
+        <div class="card-icon">▶</div>
+      </div>
+      <div class="resumen-card finalizado" (click)="filtrarPorEstado('finalizado')">
+        <div class="card-valor">{{ resumen.finalizado }}</div>
+        <div class="card-label">Finalizados</div>
+        <div class="card-icon">✅</div>
+      </div>
+    </div>
+
+    <!-- -----------------------------------------------------
+      Filtros de estado
+    ------------------------------------------------------ -->
+    <div class="filter-container">
+      <ion-segment [(ngModel)]="filtroActual" (ionChange)="cambiarFiltro()" class="custom-segment">
+        <ion-segment-button value="activos">
+          <ion-label>Activos</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="todos">
+          <ion-label>Todos</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="inactivos">
+          <ion-label>Inactivos</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Contador -->
+    <div class="tickets-count">
+      {{ tickets.length }} ticket{{ tickets.length !== 1 ? 's' : '' }}
+    </div>
+
+    <!-- -----------------------------------------------------
+      Lista de tickets
+    ------------------------------------------------------ -->
+    <div class="tickets-list" *ngIf="tickets.length > 0">
+      <div class="ticket-card"
+        *ngFor="let ticket of tickets"
+        [class]="'prioridad-' + ticket.prioridad"
+        (click)="verDetalle(ticket.id_ticket)">
+
+        <div class="card-top">
+          <span class="ticket-num">#{{ ticket.id_ticket }}</span>
+          <span class="estado-badge" [class]="'estado-' + ticket.estado">
+            {{ ticket.estado.replace('_', ' ') | titlecase }}
+          </span>
+        </div>
+
+        <div class="ticket-titulo">{{ ticket.titulo }}</div>
+
+        <div class="card-bottom">
+          <span class="chip">{{ getCategoriaLabel(ticket.id_categoria) }}</span>
+          <span class="chip" [class]="'chip-' + ticket.prioridad">
+            {{ ticket.prioridad | titlecase }}
+          </span>
+          <span class="ticket-fecha">{{ ticket.fecha_creacion | date:'dd/MM/yy' }}</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sin tickets -->
+    <div class="empty-state" *ngIf="tickets.length === 0">
+      <ion-icon name="clipboard-outline"></ion-icon>
+      <h3>Sin tickets</h3>
+      <p>No hay tickets {{ filtroActual }} por el momento</p>
+    </div>
+
+  </div>
 
 </ion-content>

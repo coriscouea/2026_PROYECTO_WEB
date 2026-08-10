@@ -209,3 +209,111 @@
 .menu-btn {
   --color: rgba(255,255,255,0.8);
 }
+
+// Bienvenida
+.welcome-section {
+  display        : flex;
+  justify-content: space-between;
+  align-items    : center;
+  padding        : 16px 16px 8px;
+  gap            : 12px;
+}
+
+.welcome-text h2 {
+  font-size  : 18px;
+  font-weight: 800;
+  color      : #1a1a2e;
+  margin     : 0 0 4px;
+}
+
+.welcome-text p {
+  font-size: 12px;
+  color    : #94A3B8;
+  margin   : 0;
+}
+
+.nuevo-ticket-btn {
+  display      : flex;
+  align-items  : center;
+  gap          : 6px;
+  background   : linear-gradient(135deg, #0288D1, #4FC3F7);
+  color        : #fff;
+  border       : none;
+  border-radius: 12px;
+  padding      : 10px 16px;
+  font-size    : 12px;
+  font-weight  : 700;
+  cursor       : pointer;
+  white-space  : nowrap;
+  box-shadow   : 0 4px 12px rgba(2,136,209,0.3);
+  flex-shrink  : 0;
+}
+
+.nuevo-ticket-btn ion-icon { font-size: 16px; }
+
+// Tarjetas resumen
+.resumen-cards {
+  display              : grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap                  : 8px;
+  padding              : 8px 16px 12px;
+}
+
+.resumen-card {
+  background   : #fff;
+  border-radius: 14px;
+  padding      : 12px 10px;
+  text-align   : center;
+  box-shadow   : 0 2px 8px rgba(0,0,0,0.06);
+  cursor       : pointer;
+  position     : relative;
+  overflow     : hidden;
+  transition   : transform 0.15s;
+}
+
+.resumen-card:active { transform: scale(0.97); }
+
+.card-valor {
+  font-size  : 24px;
+  font-weight: 800;
+  color      : #0288D1;
+  line-height: 1;
+}
+
+.resumen-card.pendiente  .card-valor { color: #D97706; }
+.resumen-card.proceso    .card-valor { color: #2563EB; }
+.resumen-card.finalizado .card-valor { color: #059669; }
+
+.card-label {
+  font-size  : 9px;
+  color      : #94A3B8;
+  font-weight: 600;
+  margin-top : 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.card-icon {
+  font-size : 18px;
+  position  : absolute;
+  top       : 8px;
+  right     : 8px;
+  opacity   : 0.3;
+}
+
+// Header logo con ícono
+.header-logo {
+  width          : 34px;
+  height         : 34px;
+  background     : linear-gradient(135deg, #4FC3F7, #0288D1);
+  border-radius  : 10px;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  margin-left    : 4px;
+}
+
+.header-logo ion-icon {
+  font-size: 18px;
+  color    : #fff;
+}
