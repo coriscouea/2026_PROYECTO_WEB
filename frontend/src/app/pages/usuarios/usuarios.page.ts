@@ -9,10 +9,10 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonBackButton, IonSpinner, IonIcon
+  IonBackButton, IonSpinner, IonIcon, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trashOutline, peopleOutline } from 'ionicons/icons';
+import { trashOutline, peopleOutline, personAddOutline } from 'ionicons/icons';
 import { UsuarioService } from '../../services/usuario';
 
 @Component({
@@ -23,19 +23,35 @@ import { UsuarioService } from '../../services/usuario';
   imports    : [
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-    IonBackButton, IonSpinner, IonIcon
+    IonBackButton, IonSpinner, IonIcon, IonButton
   ]
 })
 export class UsuariosPage implements OnInit {
 
-  usuarios: any[]   = [];
-  cargando: boolean = false;
+  usuarios          : any[]   = [];
+  cargando          : boolean = false;
+  mostrarFormulario : boolean = false;
+  creando           : boolean = false;
+  errorMensaje      : string = '';
+
+  // Campos del formulario
+
+  nuevoNombre   : string = '';
+  nuevoEmail    : string = '';
+  nuevoPassword : string = '';
+  nuevoRol      : number = 1;
+
+  errores     : any = {
+    nombre    : '',
+    email     : '',
+    password  : ''
+  };
 
   constructor(
     private usuarioService: UsuarioService,
     private router        : Router
   ) {
-    addIcons({ trashOutline, peopleOutline });
+    addIcons({ trashOutline, peopleOutline, personAddOutline });
   }
 
   async ngOnInit() {
@@ -65,6 +81,61 @@ export class UsuariosPage implements OnInit {
       4: 'Admin'
     };
     return roles[idRol] || 'Desconocido';
+  }
+  
+  cerrarFormulario(){
+    this.mostrarFormulario  = false;
+    this.nuevoNombre        = '';
+    this.nuevoEmail         = '';
+    this.nuevoPassword      = '';
+    this.nuevoRol           = 1;
+    this.errorMensaje       = '';
+    this.errores            = {nombre: '', email: '', password: ''};
+  }
+  
+  validarFormulario(): boolean {
+    let valido = true;
+    this.errores = {nombre: '', email: '', password: ''};
+
+    if (!this.nuevoNombre || this.nuevoNombre.length < 3) {
+      this.errores.nombre = 'El nommbre debe tener al menos 3 carcteres';
+      valido = false;
+    }
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!this.nuevoEmail || !regex.test(this.nuevoEmail)){
+    this.errores.email = 'Ingresa un correo valido';
+    valido = false;
+  }
+  if (!this.nuevoPassword || this.nuevoPassword.length < 8){
+    this.errores.password = 'La contraseña debe tener al menos 8 caracteres';
+    valido = false;
+    }
+    return valido;
+  }
+
+  async crearUsuario() {
+    if (!this.validarFormulario()) return;
+
+    this.creando      = true;
+    this.errorMensaje = '';
+    try {
+      await this.usuarioService.crearUsuario({
+        nombre  : this.nuevoNombre.trim(),
+        email   : this.nuevoEmail.trim(),
+        password: this.nuevoPassword,
+        id_rol  : Number(this.nuevoRol)
+      });
+      this.cerrarFormulario();
+      await this.cargarUsuarios();
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        this.errores.email = 'Este correo ya está registrado';
+      } else {
+        this.errorMensaje = 'Error al crear el usuario. Intenta de nuevo.';
+      }
+    } finally {
+      this.creando = false;
+    }
   }
 
   async cambiarRol(usuario: any) {

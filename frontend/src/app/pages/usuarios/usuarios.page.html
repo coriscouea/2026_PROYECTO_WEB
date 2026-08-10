@@ -10,17 +10,81 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
 
-    <!-- Botón volver -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
     </ion-buttons>
 
     <ion-title class="header-title">Usuarios</ion-title>
 
+    <!-- Botón nuevo usuario -->
+    <ion-buttons slot="end">
+      <ion-button (click)="mostrarFormulario = true" class="nuevo-btn">
+        <ion-icon name="person-add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="usuarios-content">
+
+  <!-- -----------------------------------------------------
+    Modal crear usuario
+  ------------------------------------------------------ -->
+  <div class="modal-overlay" *ngIf="mostrarFormulario" (click)="cerrarFormulario()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Nuevo Usuario</h2>
+        <button class="modal-close" (click)="cerrarFormulario()">✕</button>
+      </div>
+
+      <!-- Nombre -->
+      <div class="form-field">
+        <label class="field-label">Nombre completo *</label>
+        <input class="field-input" type="text" [(ngModel)]="nuevoNombre" placeholder="Juan Pérez">
+        <div class="field-error" *ngIf="errores.nombre">{{ errores.nombre }}</div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-field">
+        <label class="field-label">Correo electrónico *</label>
+        <input class="field-input" type="email" [(ngModel)]="nuevoEmail" placeholder="juan@empresa.com">
+        <div class="field-error" *ngIf="errores.email">{{ errores.email }}</div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-field">
+        <label class="field-label">Contraseña *</label>
+        <input class="field-input" type="password" [(ngModel)]="nuevoPassword" placeholder="Mínimo 8 caracteres">
+        <div class="field-error" *ngIf="errores.password">{{ errores.password }}</div>
+      </div>
+
+      <!-- Rol -->
+      <div class="form-field">
+        <label class="field-label">Rol *</label>
+        <select class="field-input" [(ngModel)]="nuevoRol">
+          <option value="1">Usuario</option>
+          <option value="2">Técnico</option>
+          <option value="3">Mesa de Ayuda</option>
+          <option value="4">Admin</option>
+        </select>
+      </div>
+
+      <!-- Error general -->
+      <div class="error-message" *ngIf="errorMensaje">{{ errorMensaje }}</div>
+
+      <!-- Botones -->
+      <div class="modal-actions">
+        <button class="btn-cancelar" (click)="cerrarFormulario()">Cancelar</button>
+        <button class="btn-crear" (click)="crearUsuario()" [disabled]="creando">
+          <span *ngIf="!creando">Crear usuario</span>
+          <span *ngIf="creando">Creando...</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- Cargando -->
   <div class="loading-state" *ngIf="cargando">
@@ -32,7 +96,6 @@
 
     <div class="usuario-card" *ngFor="let u of usuarios">
 
-      <!-- Avatar y datos principales -->
       <div class="card-left">
         <div class="avatar" [class]="'rol-' + u.id_rol">
           {{ u.nombre.charAt(0).toUpperCase() }}
@@ -51,27 +114,20 @@
         </div>
       </div>
 
-      <!-- Acciones -->
       <div class="card-actions">
-
-        <!-- Cambiar rol -->
         <select class="rol-select" [(ngModel)]="u.id_rol" (change)="cambiarRol(u)">
           <option value="1">Usuario</option>
           <option value="2">Técnico</option>
           <option value="3">Mesa Ayuda</option>
           <option value="4">Admin</option>
         </select>
-
-        <!-- Desactivar -->
         <button class="delete-btn" *ngIf="u.activo" (click)="desactivarUsuario(u)">
           <ion-icon name="trash-outline"></ion-icon>
         </button>
-
       </div>
 
     </div>
 
-    <!-- Sin usuarios -->
     <div class="empty-state" *ngIf="usuarios.length === 0">
       <ion-icon name="people-outline"></ion-icon>
       <h3>Sin usuarios</h3>

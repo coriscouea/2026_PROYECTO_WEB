@@ -93,4 +93,23 @@ export class UsuarioService {
       throw error;
     }
   }
+  // -----------------------------------------------------------
+  // Crear usuario — solo admin
+  // -----------------------------------------------------------
+  async crearUsuario(datos: any): Promise<any> {
+    try {
+      const headers  = await this.getHeaders();
+      const response = await axios.post(
+        `${this.apiUrl}/api/v1/usuarios`,
+        datos,
+        { headers }
+      );
+      return response.data.datos;
+    } catch (error: any) {
+      if (error.response?.status === 401) await this.handle401();
+      throw error;
+    }
+  }
+
 }
+
