@@ -13,7 +13,8 @@ import {
   IonSpinner, IonFab, IonFabButton, IonMenuButton, MenuController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { logOutOutline, add, clipboardOutline, notificationsOutline, headsetOutline } from 'ionicons/icons';
+import { logOutOutline, add, clipboardOutline, notificationsOutline,
+flashOffOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
 import { NotificacionService } from '../../services/notificacion';
@@ -53,7 +54,7 @@ export class TicketsPage implements OnInit {
     private route               : ActivatedRoute,
     private menuCtrl            : MenuController
   ) {
-    addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline, headsetOutline });
+    addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline, flashOffOutline });
   }
 
   async ngOnInit() {
@@ -75,6 +76,7 @@ export class TicketsPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.nombre = await this.authService.getNombre();
     if (!this.estadoFiltro && !this.prioridadFiltro) {
       this.cargarTickets();
     }

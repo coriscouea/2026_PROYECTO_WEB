@@ -14,9 +14,10 @@ import {
 
 import { addIcons } from 'ionicons';
 import { 
-  helpCircle, eye, eyeOff, alertCircle,
+  eye, eyeOff, alertCircle,
   mailOutline, lockClosedOutline, 
-  eyeOutline, eyeOffOutline, alertCircleOutline 
+  eyeOutline, eyeOffOutline, alertCircleOutline,
+  flashOffOutline 
 } from 'ionicons/icons';
 
 import { AuthService } from '../../services/auth';
@@ -46,9 +47,9 @@ export class LoginPage {
     private router     : Router
   ) {
     addIcons({ 
-      helpCircle, eye, eyeOff, alertCircle,
+      eye, eyeOff, alertCircle,
       mailOutline, lockClosedOutline, eyeOutline,
-      eyeOffOutline, alertCircleOutline
+      eyeOffOutline, alertCircleOutline, flashOffOutline
     });
   }
 

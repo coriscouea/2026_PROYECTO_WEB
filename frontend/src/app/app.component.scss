@@ -21,7 +21,7 @@ ion-menu {
   padding    : 4px 0;
 }
 
-.menu-logo {
+ion-menu .menu-logo {
   width          : 42px;
   height         : 42px;
   background     : linear-gradient(135deg, #4FC3F7, #0288D1);
@@ -29,11 +29,13 @@ ion-menu {
   display        : flex;
   align-items    : center;
   justify-content: center;
-  font-weight    : 800;
-  font-size      : 15px;
-  color          : #fff;
   flex-shrink    : 0;
   box-shadow     : 0 4px 12px rgba(79,195,247,0.3);
+}
+
+.logo-emoji {
+  font-size: 32px;
+  line-height: 1;
 }
 
 .menu-title {

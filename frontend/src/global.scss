@@ -82,6 +82,11 @@ ion-menu .menu-logo {
   box-shadow     : 0 4px 12px rgba(79,195,247,0.3);
 }
 
+ion-menu .menu-logo ion-icon {
+  font-size: 22px;
+  color    : #fff;  // ← debe ser blanco
+}
+
 ion-menu .menu-title {
   color      : #fff;
   font-size  : 15px;
