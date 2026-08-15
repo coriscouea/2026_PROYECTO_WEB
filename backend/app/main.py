@@ -12,12 +12,14 @@ from fastapi import FastAPI, HTTPException                              # clase 
 from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from contextlib import asynccontextmanager                             # Importar asynccontextmanager para manejar el ciclo de vida de la aplicación
+from contextlib import asynccontextmanager                              # Importar asynccontextmanager para manejar el ciclo de vida de la aplicación
 from dotenv import load_dotenv
 import os
 
 from app.database import engine, Base                                   # motor de conexión y clase base de modelos
 from app.core.logging_config import logger                              # Importar el logger configurado para logging estructurado
+from app.models.solicitudes_reset import SolicitudReset
+
 from slowapi.errors import RateLimitExceeded
 from app.core.limiter import limiter
 from app.core.config import settings                                    # Importar la configuración centralizada

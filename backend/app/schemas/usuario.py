@@ -76,6 +76,11 @@ class UsuarioUpdate(BaseModel):
         description = "Nuevo rol del usuario — solo admin puede cambiarlo"
     )
 
+    password : Optional[str] = Field(
+        None,
+        min_length=8, description="NUeva contraseña - se hashea automáticamente"
+        )
+
 # -------------------------------------------------------------
 # UsuarioResponse — schema de salida al consultar usuarios
 # NUNCA incluye el campo password

@@ -13,6 +13,7 @@ from app.schemas.usuario import UsuarioCreate, UsuarioUpdate
 from app.models.usuario import Usuario
 from app.models.roles import Rol
 from app.models.sucursales import Sucursal
+from app.core.security import hash_password
 from app.repository.usuario_repo import (
     crear_usuario,
     listar_usuarios,
@@ -151,6 +152,13 @@ def svc_actualizar_usuario(db: Session, id_usuario: int, datos: UsuarioUpdate) -
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="El rol especificado no existe"
             )
+    # ---------------------------------------------------------
+    # Si viene password lo hashea antes de guardar
+    # Nunca se almacena en texto plano
+    # ---------------------------------------------------------
+    
+    if datos.password:
+        datos.password = hash_password(datos.password)
         
     return actualizar_usuario(db, usuario, datos)
 

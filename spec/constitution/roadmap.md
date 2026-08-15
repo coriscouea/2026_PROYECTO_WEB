@@ -19,29 +19,26 @@ _Features completadas, en orden de implementación._
 11. **010 · Comentarios** — CRUD de comentarios por ticket, ordenados por fecha ascendente, con autor y timestamp.
 12. **011 · Notificaciones avanzadas** — marcar como leída, contar no leídas, listar solo pendientes.
 13. **012 · Métricas básicas** — tickets abiertos/cerrados, por categoría, por técnico, tiempo promedio de resolución. Calculado en la API. Revisión posterior: corregido bug de filtro (`estado == True` → `activo == True`) que rompía el conteo por estado/categoría/técnico.
+14. **013 · Frontend login** — glassmorphism oscuro, JWT en Capacitor Preferences, enter para login, registro con validaciones UX y barra de fortaleza.
+15. **014 · Frontend tickets** — bandeja con dashboard por rol, detalle con historial+comentarios, crear ticket, cambiar estado, tomar ticket, desactivar ticket (admin), sidebar árbol de navegación, gestión de usuarios, dashboard de métricas.
+16. **015 · PWA y despliegue** — ionic build --prod, manifest.webmanifest, instalable en PC (Edge) y Android vía WiFi, script iniciar_helpdesk.bat.
+17. **016 · Índices y N+1** — revisión de consultas SQLAlchemy con joinedload/selectinload.
+18. **017 · Redis y caché distribuida** — caché de consultas repetitivas y colas con Celery.
+19. **019 · Logging estructurado** — niveles INFO/WARNING/ERROR en main.py y middleware/auth.py, lifespan handler.
+20. **020 · Configuración centralizada** — pydantic-settings en core/config.py, reemplaza os.getenv().
 
 ## Siguiente 🔜
 
 _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
-_Semanas 10-12 — backend completo antes de tocar frontend._
-
-14. **019 · Logging estructurado** — reemplazar prints por logging con niveles INFO/WARNING/ERROR.
-15. **020 · Configuración centralizada** — clase Settings de Pydantic que centralice todas las variables de entorno.
-16. **Sanitización HTML real** — reemplazar los `.strip()` en tickets/usuarios/comentarios por una sanitización real (ej. `bleach`) que cumpla lo que 005/006/010 ya dan por hecho.
-17. **Validación de formato de email** — `UsuarioCreate.email` es `str` plano; falta `EmailStr` o regex para cumplir el criterio de "formato válido" de 006/007.
 
 ## Backlog / ideas 💡
 
-_Sin comprometer ni ordenar del todo. Ideas que respetan la constitución._
-
-_Semanas 12-16 — frontend, calidad y despliegue._
+_Opcionales para versiones futuras._
 
 - **021 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
 - **022 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
 - **023 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
-- **016 · Índices y N+1** — revisión de consultas SQLAlchemy con joinedload/selectinload.
-- **017 · Redis y caché distribuida** — caché de consultas repetitivas y colas con Celery.
 - **018 · Encriptación extremo a extremo** — HTTPS/TLS en producción.
 
 ## Plan de frontend (detalle)
