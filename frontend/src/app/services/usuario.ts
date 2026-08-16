@@ -111,5 +111,41 @@ export class UsuarioService {
     }
   }
 
-}
 
+
+  // -----------------------------------------------------------
+  // Listar solicitudes de reset pendientes
+  // -----------------------------------------------------------
+
+  async listarSolicitudes(): Promise<any[]> {
+    try {
+      const headers  = await this.getHeaders();
+      const response = await axios.get(
+        `${this.apiUrl}/api/v1/solicitudes`,
+        { headers }
+      );
+      return response.data.datos;
+    } catch (error: any) {
+      if (error.response?.status === 401) await this.handle401();
+      throw error;
+    }
+  }
+
+  // -----------------------------------------------------------
+  // Marcar solicitud como atendida
+  // -----------------------------------------------------------
+  async atenderSolicitud(id: number): Promise<any> {
+    try {
+      const headers  = await this.getHeaders();
+      const response = await axios.patch(
+        `${this.apiUrl}/api/v1/solicitudes/${id}/atender`,
+        {},
+        { headers }
+      );
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 401) await this.handle401();
+      throw error;
+    }
+  }
+}

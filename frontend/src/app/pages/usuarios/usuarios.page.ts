@@ -12,7 +12,7 @@ import {
   IonBackButton, IonSpinner, IonIcon, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { trashOutline, peopleOutline, personAddOutline } from 'ionicons/icons';
+import { trashOutline, peopleOutline, personAddOutline, keyOutline } from 'ionicons/icons';
 import { UsuarioService } from '../../services/usuario';
 
 @Component({
@@ -41,6 +41,17 @@ export class UsuariosPage implements OnInit {
   nuevoPassword : string = '';
   nuevoRol      : number = 1;
 
+  // propiedades cambio de contraseña
+
+  mostrarCambioPassword: boolean = false;
+  usuarioSeleccionado  : any     = null;
+  nuevaPassword        : string  = '';
+  errorPassword        : string  = '';
+  cambiandoPassword    : boolean = false;
+  mostrarNuevaPassword : boolean = false;
+
+  solicitudes: any[] = [];
+
   errores     : any = {
     nombre    : '',
     email     : '',
@@ -51,15 +62,17 @@ export class UsuariosPage implements OnInit {
     private usuarioService: UsuarioService,
     private router        : Router
   ) {
-    addIcons({ trashOutline, peopleOutline, personAddOutline });
+    addIcons({ trashOutline, peopleOutline, personAddOutline, keyOutline });
   }
 
   async ngOnInit() {
     await this.cargarUsuarios();
+    await this.cargarSolicitudes();
   }
 
   ionViewWillEnter() {
     this.cargarUsuarios();
+    this.cargarSolicitudes();
   }
 
   async cargarUsuarios() {
@@ -110,6 +123,13 @@ export class UsuariosPage implements OnInit {
     this.errores.password = 'La contraseña debe tener al menos 8 caracteres';
     valido = false;
     }
+
+  // password solo se valida si se ingresó
+
+  if (this.nuevoPassword && this.nuevoPassword.length < 8) {
+    this.errores.password = 'La contraseña debe tener al menos 8 caracteres';
+    valido = false;
+  }
     return valido;
   }
 
@@ -119,24 +139,28 @@ export class UsuariosPage implements OnInit {
     this.creando      = true;
     this.errorMensaje = '';
     try {
-      await this.usuarioService.crearUsuario({
-        nombre  : this.nuevoNombre.trim(),
-        email   : this.nuevoEmail.trim(),
-        password: this.nuevoPassword,
-        id_rol  : Number(this.nuevoRol)
-      });
-      this.cerrarFormulario();
-      await this.cargarUsuarios();
-    } catch (error: any) {
-      if (error.response?.status === 409) {
-        this.errores.email = 'Este correo ya está registrado';
-      } else {
-        this.errorMensaje = 'Error al crear el usuario. Intenta de nuevo.';
+      const datos: any = {
+            nombre: this.nuevoNombre.trim(),
+            email : this.nuevoEmail.trim(),
+            id_rol: Number(this.nuevoRol)
+          };
+          if (this.nuevoPassword) {
+            datos.password = this.nuevoPassword;
+          }
+          await this.usuarioService.crearUsuario(datos);
+
+          this.cerrarFormulario();
+          await this.cargarUsuarios();
+        } catch (error: any) {
+          if (error.response?.status === 409) {
+            this.errores.email = 'Este correo ya está registrado';
+          } else {
+            this.errorMensaje = 'Error al crear el usuario. Intenta de nuevo.';
+          }
+        } finally {
+          this.creando = false;
+        }
       }
-    } finally {
-      this.creando = false;
-    }
-  }
 
   async cambiarRol(usuario: any) {
     try {
@@ -155,6 +179,66 @@ export class UsuariosPage implements OnInit {
       await this.cargarUsuarios();
     } catch (error) {
       console.error('Error desactivando usuario:', error);
+    }
+  }
+
+  // cambio de contraseña
+
+  abrirCambioPassword(usuario: any) {
+    this.usuarioSeleccionado  = usuario;
+    this.nuevaPassword        = '';
+    this.errorPassword        = '';
+    this.mostrarNuevaPassword = false;
+    this.mostrarCambioPassword = true;
+  }
+
+  cerrarCambioPassword() {
+    this.mostrarCambioPassword = false;
+    this.usuarioSeleccionado   = null;
+    this.nuevaPassword         = '';
+    this.errorPassword         = '';
+  }
+
+  async cambiarPassword() {
+    if (!this.nuevaPassword || this.nuevaPassword.length < 8) {
+      this.errorPassword = 'La contraseña debe tener al menos 8 caracteres';
+      return;
+    }
+
+    this.cambiandoPassword = true;
+    this.errorPassword     = '';
+
+    try {
+      await this.usuarioService.actualizarUsuario(
+        this.usuarioSeleccionado.id_usuario,
+        { password: this.nuevaPassword }
+      );
+      alert(`✅ Contraseña actualizada correctamente.\n\nRecuerda comunicar la nueva contraseña a ${this.usuarioSeleccionado.nombre} por WhatsApp de Mesa de Ayuda.`);
+      this.cerrarCambioPassword();
+    } catch (error) {
+      this.errorPassword = 'Error al cambiar la contraseña. Intenta de nuevo.';
+    } finally {
+      this.cambiandoPassword = false;
+    }
+  }
+
+  // solicitud de cambio de contraseña
+  
+  async cargarSolicitudes() {
+    try {
+      this.solicitudes = await this.usuarioService.listarSolicitudes();
+    } catch (error) {
+      this.solicitudes = [];
+    }
+  }
+
+  async atenderSolicitud(solicitud: any) {
+    try {
+      await this.usuarioService.atenderSolicitud(solicitud.id_solicitud);
+      alert(`✅ Solicitud atendida.\n\nRecuerda comunicar la nueva contraseña a ${solicitud.nombre} por WhatsApp de Mesa de Ayuda.`);
+      await this.cargarSolicitudes();
+    } catch (error) {
+      console.error('Error atendiendo solicitud:', error);
     }
   }
 }

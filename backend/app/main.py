@@ -43,6 +43,7 @@ from app.routes.historial import router as historial_router             # Import
 from app.routes.comentarios import router as comentarios_router         # Importar el router de comentarios
 from app.routes.notificaciones import router as notificaciones_router   # Importar el router de notificaciones
 from app.routes.metricas import router as metricas_router               # Importar el router de métricas
+from app.routes.solicitudes import router as solicitudes_router         # Importar el rooter de solicitudes de contraseñas
 
 load_dotenv()
 
@@ -160,6 +161,7 @@ app.include_router(historial_router)
 app.include_router(comentarios_router)
 app.include_router(notificaciones_router)
 app.include_router(metricas_router)
+app.include_router(solicitudes_router)
 
 # -------------------------------------------------------------
 # Endpoint raíz de verificación

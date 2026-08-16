@@ -299,3 +299,134 @@
 }
 
 .nuevo-btn { --color: rgba(255,255,255,0.8); }
+
+// Botón cambiar contraseña
+
+.key-btn {
+  width          : 36px;
+  height         : 36px;
+  border-radius  : 10px;
+  background     : #EFF8FF;
+  border         : 1.5px solid #BFDBFE;
+  color          : #0288D1;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  cursor         : pointer;
+  font-size      : 16px;
+}
+
+.key-btn:hover {
+  background: #0288D1;
+  color     : #fff;
+}
+
+// Usuario seleccionado en modal
+.usuario-seleccionado {
+  display    : flex;
+  align-items: center;
+  gap        : 12px;
+  padding    : 12px;
+  background : #F8FAFC;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+// Campo wrapper modal
+.campo-wrapper-modal {
+  display      : flex;
+  align-items  : center;
+  border       : 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  overflow     : hidden;
+  background   : #F8FAFC;
+}
+
+.campo-wrapper-modal .field-input {
+  border       : none;
+  border-radius: 0;
+  background   : transparent;
+  flex         : 1;
+}
+
+.toggle-password {
+  background: none;
+  border    : none;
+  padding   : 0 12px;
+  cursor    : pointer;
+  font-size : 16px;
+}
+
+.field-hint {
+  font-size : 11px;
+  color     : #94A3B8;
+  margin-top: 4px;
+  padding   : 0 2px;
+}
+
+// Solicitudes de reset
+
+.solicitudes-section {
+  margin       : 12px 16px;
+  background   : #FFFBEB;
+  border       : 1.5px solid #FCD34D;
+  border-radius: 14px;
+  padding      : 14px;
+}
+
+.solicitudes-title {
+  display    : flex;
+  align-items: center;
+  gap        : 8px;
+  font-size  : 13px;
+  font-weight: 700;
+  color      : #D97706;
+  margin-bottom: 12px;
+
+  ion-icon { font-size: 16px; }
+}
+
+.solicitud-item {
+  display        : flex;
+  justify-content: space-between;
+  align-items    : center;
+  padding        : 10px 0;
+  border-bottom  : 1px solid #FDE68A;
+  gap            : 12px;
+}
+
+.solicitud-item:last-child { border-bottom: none; }
+
+.solicitud-info { flex: 1; }
+
+.solicitud-nombre {
+  font-size  : 13px;
+  font-weight: 600;
+  color      : #1a1a2e;
+}
+
+.solicitud-email {
+  font-size : 11px;
+  color     : #94A3B8;
+  margin-top: 2px;
+}
+
+.solicitud-fecha {
+  font-size : 10px;
+  color     : #CBD5E1;
+  margin-top: 2px;
+}
+
+.btn-atender {
+  background   : #D97706;
+  color        : #fff;
+  border       : none;
+  border-radius: 8px;
+  padding      : 8px 14px;
+  font-size    : 12px;
+  font-weight  : 700;
+  cursor       : pointer;
+  white-space  : nowrap;
+}
+
+.btn-atender:hover { background: #B45309; }

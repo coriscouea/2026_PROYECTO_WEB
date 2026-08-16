@@ -26,6 +26,29 @@
   </ion-toolbar>
 </ion-header>
 
+  <!-- -----------------------------------------------------
+    Sección de solicitudes de reset pendientes
+    Solo visible cuando hay solicitudes pendientes
+  ------------------------------------------------------ -->
+  
+  <div class="solicitudes-section" *ngIf="solicitudes.length > 0">
+    <div class="solicitudes-title">
+      <ion-icon name="key-outline"></ion-icon>
+      Solicitudes de restablecimiento ({{ solicitudes.length }})
+    </div>
+
+    <div class="solicitud-item" *ngFor="let s of solicitudes">
+      <div class="solicitud-info">
+        <div class="solicitud-nombre">{{ s.nombre }}</div>
+        <div class="solicitud-email">{{ s.email }}</div>
+        <div class="solicitud-fecha">{{ s.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+      </div>
+      <button class="btn-atender" (click)="atenderSolicitud(s)">
+        Atender
+      </button>
+    </div>
+  </div>
+
 <ion-content class="usuarios-content">
 
   <!-- -----------------------------------------------------
@@ -121,6 +144,12 @@
           <option value="3">Mesa Ayuda</option>
           <option value="4">Admin</option>
         </select>
+
+        <!-- Botón cambiar contraseña -->
+        <button class="key-btn" (click)="abrirCambioPassword(u)">
+          <ion-icon name="key-outline"></ion-icon>
+        </button>
+
         <button class="delete-btn" *ngIf="u.activo" (click)="desactivarUsuario(u)">
           <ion-icon name="trash-outline"></ion-icon>
         </button>
@@ -133,6 +162,52 @@
       <h3>Sin usuarios</h3>
     </div>
 
+  </div>
+  
+  <!-- Modal cambiar contraseña -->
+  <div class="modal-overlay" *ngIf="mostrarCambioPassword" (click)="cerrarCambioPassword()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Cambiar contraseña</h2>
+        <button class="modal-close" (click)="cerrarCambioPassword()">✕</button>
+      </div>
+
+      <div class="usuario-seleccionado">
+        <div class="avatar" [class]="'rol-' + usuarioSeleccionado?.id_rol">
+          {{ usuarioSeleccionado?.nombre?.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <div class="usuario-nombre">{{ usuarioSeleccionado?.nombre }}</div>
+          <div class="usuario-email">{{ usuarioSeleccionado?.email }}</div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Nueva contraseña *</label>
+        <div class="campo-wrapper-modal">
+          <input
+            class="field-input"
+            [type]="mostrarNuevaPassword ? 'text' : 'password'"
+            [(ngModel)]="nuevaPassword"
+            placeholder="Mínimo 8 caracteres">
+          <button class="toggle-password" (click)="mostrarNuevaPassword = !mostrarNuevaPassword">
+            {{ mostrarNuevaPassword ? '👁' : '🙈' }}
+          </button>
+        </div>
+        <div class="field-hint">Esta contraseña se comunicará al usuario por WhatsApp de Mesa de Ayuda</div>
+        <div class="field-error" *ngIf="errorPassword">{{ errorPassword }}</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancelar" (click)="cerrarCambioPassword()">Cancelar</button>
+        <button class="btn-crear" (click)="cambiarPassword()" [disabled]="cambiandoPassword">
+          <span *ngIf="!cambiandoPassword">Cambiar contraseña</span>
+          <span *ngIf="cambiandoPassword">Cambiando...</span>
+        </button>
+      </div>
+
+    </div>
   </div>
 
 </ion-content>
