@@ -91,4 +91,9 @@ export class LoginPage {
   irRegistro() {
     this.router.navigate(['/registro'])
   }
+
+
+  irOlvidoPassword() {
+    this.router.navigate(['/olvido-password']);
+  }
 }

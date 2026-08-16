@@ -45,5 +45,9 @@ export const routes: Routes = [
   {
     path: 'metricas',
     loadComponent: () => import('./pages/metricas/metricas.page').then( m => m.MetricasPage)
+  },
+  {
+    path: 'olvido-password',
+    loadComponent: () => import('./pages/olvido-password/olvido-password.page').then( m => m.OlvidoPasswordPage)
   }
 ];

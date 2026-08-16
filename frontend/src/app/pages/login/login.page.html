@@ -1,105 +1,167 @@
 <!-- =============================================================
-  login.page.html — Pantalla de Login
+  login.page.html — Pantalla de Login Dividida
   HelpDesk Web | Feature 013 · Frontend Login
-  =============================================================
-  Responsabilidad: permite al usuario autenticarse con email
-  y contraseña. Guarda los tokens JWT en Capacitor Preferences
-  y redirige a la bandeja de tickets al iniciar sesión.
   ============================================================= -->
 
 <ion-content class="login-content">
-  <div class="login-container">
+  <div class="login-wrapper">
+    <div class="login-card">
 
-    <!-- -----------------------------------------------------
-      Sección de marca — logo, título y bienvenida
-    ------------------------------------------------------ -->
-    <div class="brand-section">
-      <div class="logo-wrapper">
-        <div class="logo-circle">
-          <span class="logo-emoji">⚡</span>
-        </div>
-        <div class="brand-text">
-          <h1>HelpDesk</h1>
-          <span class="badge-web">Web</span>
-        </div>
-      </div>
-      <p class="subtitle">Sistema de Soporte Técnico</p>
-      <div class="divider-line"></div>
-      <p class="welcome-text">Bienvenido de vuelta</p>
-    </div>
+      <!-- ===================================================
+        PANEL IZQUIERDO — Información y servicios
+      ==================================================== -->
+      <div class="left-panel">
 
-    <!-- -----------------------------------------------------
-      Formulario de acceso
-      ngSubmit maneja tanto clic en botón como Enter
-    ------------------------------------------------------ -->
-    <div class="login-form">
-
-      <!-- Campo email -->
-      <div class="form-field">
-        <div class="campo-wrapper">
-          <ion-icon name="mail-outline" class="field-icon"></ion-icon>
-          <div class="campo-inner">
-            <label class="campo-label">Correo electrónico</label>
-            <input
-              class="campo-input"
-              type="email"
-              [(ngModel)]="email"
-              placeholder="usuario@empresa.com"
-              autocomplete="email">
+        <div class="logo-area">
+          <div class="logo-circle">⚡</div>
+          <div class="logo-text">
+            <h1>HelpDesk</h1>
+            <span class="badge-web">Web</span>
           </div>
         </div>
-      </div>
 
-      <!-- Campo contraseña -->
-      <div class="form-field">
-        <div class="campo-wrapper">
-          <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
-          <div class="campo-inner">
-            <label class="campo-label">Contraseña</label>
-            <input
-              class="campo-input"
-              [type]="mostrarPassword ? 'text' : 'password'"
-              [(ngModel)]="password"
-              placeholder="••••••••"
-              (keydown.enter)="iniciarSesion()">
+        <div class="servicios-title">Servicios que gestionamos</div>
+
+        <div class="servicios-grid">
+          <div class="servicio-item">
+            <span class="servicio-icon">📊</span>
+            <span class="servicio-text">ERP Dobra</span>
           </div>
-          <button class="toggle-btn" (click)="togglePassword()">
-            <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-          </button>
+          <div class="servicio-item">
+            <span class="servicio-icon">🔧</span>
+            <span class="servicio-text">Soporte técnico</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">🖨️</span>
+            <span class="servicio-text">Impresoras</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">🌐</span>
+            <span class="servicio-text">Redes</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">⚙️</span>
+            <span class="servicio-text">Instalaciones</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">🖥️</span>
+            <span class="servicio-text">Equipos PC</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">🔄</span>
+            <span class="servicio-text">Actualizaciones</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">📡</span>
+            <span class="servicio-text">Navegación</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">🐛</span>
+            <span class="servicio-text">Errores</span>
+          </div>
+          <div class="servicio-item">
+            <span class="servicio-icon">✨</span>
+            <span class="servicio-text">Mejoras</span>
+          </div>
         </div>
-      </div>
 
-      <!-- Opciones adicionales -->
-      <div class="form-options">
-        <div class="remember-item">
-          <ion-checkbox [(ngModel)]="rememberMe" class="remember-check"></ion-checkbox>
-          <span class="remember-label">Mantener sesión</span>
+        <div class="autor">
+          <div class="copyright">© 2026 HelpDesk Web. Todos los derechos reservados.</div>
         </div>
+
       </div>
 
-      <!-- Mensaje de error -->
-      <div class="error-message" *ngIf="errorMensaje">
-        <ion-icon name="alert-circle-outline"></ion-icon>
-        <span>{{ errorMensaje }}</span>
-      </div>
+      <!-- ===================================================
+        PANEL DERECHO — Formulario de login
+      ==================================================== -->
+      <div class="right-panel">
 
-      <!-- Botón de inicio de sesión -->
-      <ion-button
-        expand="block"
-        class="login-btn"
-        (click)="iniciarSesion()"
-        [disabled]="cargando">
-        <ion-spinner *ngIf="cargando" name="crescent"></ion-spinner>
-        <span *ngIf="!cargando">Iniciar sesión</span>
-      </ion-button>
+        <div class="form-title">Bienvenido</div>
+        <div class="form-sub">Ingresa tus credenciales para continuar</div>
 
-      <!-- Enlace al registro -->
-      <div class="form-footer">
-        <span>¿No tienes cuenta?</span>
-        <a class="footer-link" (click)="irRegistro()">Regístrate aquí</a>
+        <!-- Email -->
+        <div class="campo">
+          <label class="campo-label">Correo electrónico</label>
+          <div class="campo-wrapper">
+            <ion-icon name="mail-outline" class="field-icon"></ion-icon>
+            <div class="campo-inner">
+              <input
+                class="campo-input"
+                type="email"
+                [(ngModel)]="email"
+                placeholder="usuario@empresa.com"
+                autocomplete="email">
+            </div>
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="campo">
+          <label class="campo-label">Contraseña</label>
+          <div class="campo-wrapper">
+            <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
+            <div class="campo-inner">
+              <input
+                class="campo-input"
+                [type]="mostrarPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                placeholder="••••••••"
+                (keydown.enter)="iniciarSesion()">
+            </div>
+            <button class="toggle-btn" (click)="togglePassword()">
+              <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mantener sesión -->
+        <div class="form-options">
+          <div class="remember-item">
+            <ion-checkbox [(ngModel)]="rememberMe" class="remember-check"></ion-checkbox>
+            <span class="remember-label">Mantener sesión</span>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-message" *ngIf="errorMensaje">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ errorMensaje }}</span>
+        </div>
+
+        <!-- Botón login -->
+        <ion-button
+          expand="block"
+          class="login-btn"
+          (click)="iniciarSesion()"
+          [disabled]="cargando">
+          <ion-spinner *ngIf="cargando" name="crescent"></ion-spinner>
+          <span *ngIf="!cargando">Iniciar sesión</span>
+        </ion-button>
+
+        <div class="divider"><span>o</span></div>
+
+        <!-- Links -->
+        <div class="bottom-links">
+          <div class="bottom-link" (click)="irOlvidoPassword()">
+            <div class="link-icon">🔑</div>
+            <div class="link-text">
+              <div class="link-title">¿Olvidaste tu contraseña?</div>
+              <div class="link-sub">Solicita un restablecimiento</div>
+            </div>
+            <span class="link-arrow">›</span>
+          </div>
+          <div class="bottom-link" (click)="irRegistro()">
+            <div class="link-icon">👤</div>
+            <div class="link-text">
+              <div class="link-title">¿Usuario nuevo?</div>
+              <div class="link-sub">Regístrate aquí</div>
+            </div>
+            <span class="link-arrow">›</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
-
   </div>
 </ion-content>
