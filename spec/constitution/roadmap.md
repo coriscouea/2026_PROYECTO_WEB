@@ -26,6 +26,7 @@ _Features completadas, en orden de implementación._
 18. **017 · Redis y caché distribuida** — caché de consultas repetitivas y colas con Celery.
 19. **019 · Logging estructurado** — niveles INFO/WARNING/ERROR en main.py y middleware/auth.py, lifespan handler.
 20. **020 · Configuración centralizada** — pydantic-settings en core/config.py, reemplaza os.getenv().
+021. **021** Reset password Tabla solicitudes_reset, endpoint solicitar-reset, panel admin, cambio password
 
 ## Siguiente 🔜
 
@@ -36,10 +37,12 @@ _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
 _Opcionales para versiones futuras._
 
-- **021 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
-- **022 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
-- **023 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
-- **018 · Encriptación extremo a extremo** — HTTPS/TLS en producción.
+- **022 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
+- **023 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
+- **024 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
+- **025 · HTTPS/TLS** — certificado SSL para producción real.
+- **026 · Redis y caché distribuida** — caché de consultas repetitivas.
+- **027 · Índices profundos** — revisión profunda de consultas SQLAlchemy.
 
 ## Plan de frontend (detalle)
 

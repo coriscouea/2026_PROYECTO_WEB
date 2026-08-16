@@ -1,6 +1,6 @@
 # Misión
 
-_Define la razón de ser del proyecto. Es la referencia que decide si una feature "encaja" o no._
+Las empresas con múltiples sucursales gestionan sus requerimientos de soporte técnico mediante canales informales: correos, WhatsApp, llamadas telefónicas. Esto genera pérdida de trazabilidad, duplicación de esfuerzos, tiempos de respuesta inconsistentes y ausencia de métricas para la toma de decisiones.
 
 ## Qué construimos
 
@@ -26,9 +26,21 @@ HelpDesk Web es una aplicación móvil PWA que centraliza los requerimientos de 
 - **Una sola base de código** — el mismo frontend Ionic sirve para Android, iOS y PWA sin duplicar desarrollo.
 - **Spec antes que código** — ninguna feature se implementa sin su especificación aprobada (SDD).
 
+## Servicios que cubre
+
+- ERP Dobra — instalación, errores y mejoras
+- Soporte técnico — equipos PC, impresoras, periféricos
+- Redes — conectividad, navegación, configuración
+- Actualizaciones de software
+
 ## Qué NO es
 
 - No es un sistema de chat en tiempo real.
 - No integra directamente con el ERP Dobra Empresarial (por ahora).
 - No reemplaza un sistema ITSM completo (JIRA, ServiceNow).
 - No tiene reportes PDF/Excel en esta versión.
+
+## Autor
+
+**César Risco** — Estudiante de 5to Semestre, Aplicaciones Móviles  
+Universidad Estatal Amazónica, 2026

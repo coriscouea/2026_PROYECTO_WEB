@@ -33,50 +33,72 @@ _Cómo está construido el proyecto y las reglas que todo el código debe respet
 
 ## Comandos
 
-**Backend:**
-- `uvicorn app.main:app --reload` — servidor de desarrollo
-- `uvicorn app.main:app --host 0.0.0.0 --port 8000` — accesible desde la red local (pruebas móvil)
-- `alembic upgrade head` — aplicar migraciones
-- `alembic revision --autogenerate -m "descripcion"` — generar migración
-- `pip install -r requirements.txt` — instalar dependencias
-- `pytest` — ejecutar pruebas automatizadas (feature 022)
+## Backend
 
-**Frontend:**
-- `ionic serve` — servidor de desarrollo web
-- `ionic serve --host 0.0.0.0` — accesible desde celular en red local WiFi
-- `ionic build --prod` — compilar para producción (genera PWA)
-- `npx cap sync` — sincronizar código web con proyectos nativos
-- `npx cap open android` — abrir en Android Studio para generar .apk
-- `npx cap open ios` — abrir en Xcode para generar .ipa (requiere Mac)
+| Componente | Tecnología | Versión | Justificación |
+|---|---|---|---|
+| Lenguaje | Python | 3.11+ | Tipado estático opcional, ecosistema maduro |
+| Framework web | FastAPI | 0.115+ | Async nativo, OpenAPI automático, validación Pydantic |
+| ORM | SQLAlchemy | 2.0 | Eager loading, transacciones ACID, migraciones con Alembic |
+| Migraciones | Alembic | 1.13+ | Control de versiones de esquema con rollback |
+| Base de datos | MySQL | 8.0 InnoDB | Transacciones ACID, FK constraints, integridad referencial |
+| Autenticación | JWT (python-jose HS256) | — | Sin estado, portable entre clientes |
+| Hashing | bcrypt (passlib) | — | Factor de costo ajustable, estándar de la industria |
+| Rate limiting | slowapi | — | Protección contra fuerza bruta por IP |
+| Configuración | pydantic-settings | — | Variables de entorno tipadas con validación |
+| Logging | logging (stdlib) | — | Niveles INFO/WARNING/ERROR, formato estructurado |
+| Servidor WSGI | uvicorn | — | ASGI async, modo reload para desarrollo |
 
-## Despliegue multiplataforma
+## Frontend
 
-Ionic + Capacitor permite generar las tres plataformas desde un único código fuente:
+| Componente | Tecnología | Versión | Justificación |
+|---|---|---|---|
+| Framework | Ionic | 8.8.17 | Componentes UI móvil, PWA nativa |
+| Runtime nativo | Capacitor | 8.5.0 | Acceso a APIs nativas, reemplaza Cordova |
+| Framework JS | Angular | 20.x | Tipado TypeScript, standalone components |
+| CLI | Angular CLI | 20.3.28 | Build, generación, testing |
+| CLI Ionic | Ionic CLI | 7.2.1 | Serve, build, doctor |
+| HTTP Client | Axios | — | Interceptores, manejo de errores consistente |
+| Almacenamiento | @capacitor/preferences | — | Almacenamiento seguro de tokens JWT |
+| Íconos | Ionicons | — | Íconos optimizados para móvil |
 
-```
-Código Ionic (HTML/CSS/JS)
-        ↓
-┌─────────────────────────────────┐
-│     Capacitor (puente nativo)   │
-├──────────┬──────────┬───────────┤
-│ Android  │   iOS    │  PWA/Web  │
-│  .apk    │  .ipa    │           │
-└──────────┴──────────┴───────────┘
-```
+## Entorno de desarrollo
 
-| Plataforma | Herramienta requerida | Resultado |
+| Herramienta | Versión | Uso |
 |---|---|---|
-| PWA / PC | Solo navegador | Instalable desde el browser |
-| Android | Android Studio | Archivo .apk |
-| iOS | Xcode + Mac | Archivo .ipa |
+| Node.js | v24.14.0 LTS | Runtime JavaScript |
+| npm | 11.9.0 | Gestión de paquetes frontend |
+| Python | 3.11+ | Runtime backend |
+| pip | — | Gestión de paquetes backend |
+| Git | — | Control de versiones |
+| VS Code | — | Editor principal |
+| Postman | — | Pruebas de API |
+| Android Studio | — | Emulador Android (API 37.1) |
 
-**Para la defensa universitaria:**
-- PC → navegador normal en la computadora
-- Android → celular con .apk instalado o red local WiFi
-- iOS → simulador Xcode (si se tiene Mac)
+## Despliegue
 
-**Prueba en red local:**
-El celular y la computadora deben estar en la misma red WiFi. El backend corre con `--host 0.0.0.0` y el frontend con `ionic serve --host 0.0.0.0`. El celular accede por la IP local de la computadora.
+| Plataforma | Método | URL |
+|---|---|---|
+| PC (desarrollo) | ionic serve | http://localhost:8100 |
+| PC (producción) | npx serve www -s | http://localhost:8081 |
+| Android emulador | PWA en Chrome | http://10.0.2.2:8081 |
+| Android físico | PWA en Chrome | http://192.168.1.12:8081 |
+| iOS | Chrome DevTools iPhone 14 | Simulación responsive |
+
+## Variables de entorno por destino
+
+```typescript
+// environment.ts — desarrollo
+export const environment = {
+  production: false,
+  apiUrl: 'http://127.0.0.1:8000'
+};
+
+// environment.prod.ts — producción / Android físico
+export const environment = {
+  production: true,
+  apiUrl: 'http://192.168.1.12:8000'
+};
 
 
 ## Modelo de datos
