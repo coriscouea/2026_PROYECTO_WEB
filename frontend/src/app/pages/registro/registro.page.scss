@@ -1,172 +1,180 @@
-// Paleta unificada Glassmorphism - Estilo Arquitectónico Adaptado
+// =============================================================
+// registro.page.scss — Estilos de la pantalla de Registro
+// HelpDesk Web | Feature 013 · Frontend Login
+// =============================================================
+
+// Variables propias del registro — paleta glassmorphism unificada con login
 :host {
-  --bg-gradient: linear-gradient(135deg, #e9b7ce 0%, #c1beea 40%, #a2dedb 100%);
-  --bg-glass: rgba(255, 255, 255, 0.45); 
-  --border-glass: rgba(255, 255, 255, 0.4);
-  
-  --text-main: #2b4c7e;      
-  --text-muted: #577399;     
-  --accent-btn: #2d5a88;     
+  --bg-gradient     : linear-gradient(135deg, #e9b7ce 0%, #c1beea 40%, #a2dedb 100%);
+  --bg-glass        : rgba(255,255,255,0.45);
+  --border-glass    : rgba(255,255,255,0.4);
+  --text-main       : #2b4c7e;
+  --text-muted      : #577399;
+  --accent-btn      : #2d5a88;
   --accent-btn-hover: #1d3d61;
-  --success: #047857; // Verde técnico
-  --danger: #a31d1d;  // Rojo técnico
-  
-  font-family: 'Inter', -apple-system, sans-serif;
+  --success         : #047857;
+  --danger          : #a31d1d;
+
+  font-family: var(--font-family-base);
 }
 
-.login-content {
-  --background: var(--bg-gradient);
-}
+// Fondo degradado pastel compartido con el login
+.login-content { --background: var(--bg-gradient); }
 
+// Contenedor centrado de la tarjeta de registro
 .login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
+  min-height     : 100vh;
+  padding        : var(--space-6);
 }
 
-// Tarjeta translúcida con efecto cristal esmerilado
+// Tarjeta con efecto vidrio esmerilado
 .login-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 440px; 
-  padding: 40px;
-  background: var(--bg-glass);
+  display        : flex;
+  flex-direction : column;
+  width          : 100%;
+  max-width      : 440px;
+  padding        : var(--space-10);
+  background     : var(--bg-glass);
   backdrop-filter: blur(16px) saturate(120%);
   -webkit-backdrop-filter: blur(16px) saturate(120%);
-  border-radius: 16px;
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+  border-radius  : var(--radius-lg);
+  border         : 1px solid var(--border-glass);
+  box-shadow     : 0 12px 40px rgba(0,0,0,0.04);
 }
 
-/* ===================================================
-   SECCIÓN DE MARCA (LOGO INTEGRADO EXACTO)
-   =================================================== */
+// Sección de marca con logo y bienvenida
 .brand-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: 440px;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  text-align     : center;
+  margin-bottom  : var(--space-6);
+  width          : 100%;
+  max-width      : 440px;
 
   .logo-wrapper {
-    display: flex;
+    display       : flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    align-items   : center;
+    width         : 100%;
   }
 
-  // ADAPTACIÓN: Refinamiento de la nueva clase .logo-area provista en tu HTML
+  // Área del logo con ícono y nombre
   .logo-area {
-    display: flex;
+    display       : flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
+    align-items   : center;
+    text-align    : center;
+    gap           : var(--space-2);
 
+    // Círculo contenedor del ícono principal
     .logo-circle {
-      font-size: 24px;
-      background: rgba(255, 255, 255, 0.6);
-      width: 52px;
-      height: 52px;
-      display: flex;
-      align-items: center;
+      font-size      : 24px;
+      background     : rgba(255,255,255,0.6);
+      width          : 52px;
+      height         : 52px;
+      display        : flex;
+      align-items    : center;
       justify-content: center;
-      border-radius: 50%;
-      border: 1px solid var(--border-glass);
-      color: var(--text-main);
+      border-radius  : var(--radius-full);
+      border         : 1px solid var(--border-glass);
+      color          : var(--text-main);
     }
 
     .logo-text {
-      display: flex;
+      display       : flex;
       flex-direction: column;
-      align-items: center;
-      gap: 4px;
+      align-items   : center;
+      gap           : var(--space-1);
 
+      // Nombre de la aplicación
       h1 {
-        font-size: 24px;
-        font-weight: 300; // Tipografía ultra fina y premium
-        color: var(--text-main);
-        margin: 0;
+        font-size     : var(--type-headline-size);
+        font-weight   : var(--font-weight-regular);
+        color         : var(--text-main);
+        margin        : 0;
         letter-spacing: 1px;
       }
 
+      // Badge identificador de versión web
       .badge-web {
-        background: rgba(43, 76, 126, 0.1);
-        color: var(--text-main);
-        font-size: 9px;
-        font-weight: 600;
-        padding: 1px 8px;
-        border-radius: 20px;
+        background    : rgba(43,76,126,0.1);
+        color         : var(--text-main);
+        font-size     : var(--type-caption-size);
+        font-weight   : var(--font-weight-semibold);
+        padding       : 1px var(--space-2);
+        border-radius : var(--radius-full);
         text-transform: uppercase;
         letter-spacing: 1px;
       }
     }
   }
 
+  // Subtítulo del sistema
   .subtitle {
-    font-size: 11px;
-    font-weight: 600;
+    font-size     : var(--type-label-md-size);
+    font-weight   : var(--font-weight-semibold);
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--text-muted);
-    margin: 16px 0 0 0; // Ajustado espacio superior por nueva disposición
+    color         : var(--text-muted);
+    margin        : var(--space-4) 0 0;
   }
 
+  // Línea divisoria decorativa
   .divider-line {
-    width: 40px;
+    width        : 40px;
     border-bottom: 1px solid var(--text-muted);
-    opacity: 0.2;
-    margin: 12px 0;
+    opacity      : 0.2;
+    margin       : var(--space-3) 0;
   }
 
+  // Texto de bienvenida al formulario
   .welcome-text {
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--text-main);
-    margin: 0;
+    font-size     : var(--type-title-lg-size);
+    font-weight   : var(--font-weight-regular);
+    color         : var(--text-main);
+    margin        : 0;
     letter-spacing: 0.5px;
   }
 }
 
-/* ===================================================
-   CAMPOS BASADOS EN LÍNEAS E INTERACCIONES UIX
-   =================================================== */
+// Campo de formulario con estilo de línea inferior
 .form-field {
-  margin-bottom: 20px;
-  width: 100%;
+  margin-bottom: var(--space-5);
+  width        : 100%;
 
-  .campo-label {
-    display: none; // Ocultamos los labels redundantes para dar paso a la estética limpia
-  }
+  // Etiqueta oculta — diseño de línea pura
+  .campo-label { display: none; }
 
+  // Línea inferior que delimita el campo editable
   .campo-wrapper {
-    display: flex;
-    align-items: center;
-    background: transparent;
-    border-bottom: 1px solid var(--text-main); // Solo línea inferior marina
-    border-radius: 0px;
-    padding: 4px 0px;
-    height: 38px;
-    transition: all 0.3s ease;
+    display      : flex;
+    align-items  : center;
+    background   : transparent;
+    border-bottom: 1px solid var(--text-main);
+    border-radius: 0;
+    padding      : var(--space-1) 0;
+    height       : 38px;
+    transition   : all var(--duration-normal) var(--easing-standard);
 
+    // Línea reforzada al recibir foco
     &:focus-within {
       border-bottom-color: var(--accent-btn);
-      box-shadow: 0 1px 0px var(--accent-btn);
+      box-shadow         : 0 1px 0px var(--accent-btn);
     }
 
-    // Feedback instantáneo usando tus directivas [class.campo-error] y [class.campo-ok]
+    // Estado de error — línea y ícono en rojo
     &.campo-error {
       border-bottom-color: var(--danger);
       &:focus-within { box-shadow: 0 1px 0px var(--danger); }
       .field-icon { color: var(--danger); }
     }
 
+    // Estado válido — línea y ícono en verde
     &.campo-ok {
       border-bottom-color: var(--success);
       &:focus-within { box-shadow: 0 1px 0px var(--success); }
@@ -174,167 +182,164 @@
     }
 
     .field-icon {
-      font-size: 15px;
-      color: var(--text-main);
-      margin-right: 12px;
-      transition: color 0.2s;
+      font-size   : 15px;
+      color       : var(--text-main);
+      margin-right: var(--space-3);
+      transition  : color var(--duration-normal) var(--easing-standard);
     }
 
-    .campo-inner {
-      flex: 1;
-    }
+    .campo-inner { flex: 1; }
 
+    // Input transparente sobre la línea inferior
     .campo-input {
-      width: 100%;
-      border: none;
+      width     : 100%;
+      border    : none;
       background: transparent;
-      font-size: 13.5px;
-      color: var(--text-main);
-      outline: none;
+      font-size : var(--type-body-sm-size);
+      color     : var(--text-main);
+      outline   : none;
 
-      &::placeholder {
-        color: var(--text-muted);
-        opacity: 0.6;
-      }
+      &::placeholder { color: var(--text-muted); opacity: 0.6; }
     }
 
+    // Ícono de validación exitosa del campo
     .valid-icon {
-      font-size: 16px;
-      color: var(--success);
-      margin-left: 8px;
+      font-size  : 16px;
+      color      : var(--success);
+      margin-left: var(--space-2);
     }
 
+    // Botón mostrar u ocultar contraseña
     .toggle-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      padding: 2px;
+      background     : transparent;
+      border         : none;
+      cursor         : pointer;
+      display        : flex;
+      align-items    : center;
+      min-width      : var(--touch-target-min);
+      min-height     : var(--touch-target-min);
+      justify-content: center;
 
-      ion-icon {
-        font-size: 16px;
-        color: var(--text-main);
-      }
+      ion-icon { font-size: 16px; color: var(--text-main); }
     }
   }
 }
 
-/* Errores y sugerencias de ayuda */
+// Mensaje de error individual por campo
 .field-error {
-  color: var(--danger);
-  font-size: 11px;
-  margin-top: 5px;
-  font-weight: 500;
+  color      : var(--danger);
+  font-size  : var(--type-label-md-size);
+  margin-top : var(--space-1);
+  font-weight: var(--font-weight-medium);
 }
 
+// Texto de ayuda debajo del campo
 .field-hint {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 5px;
-  opacity: 0.8;
-  line-height: 1.4;
+  font-size  : var(--type-label-md-size);
+  color      : var(--text-muted);
+  margin-top : var(--space-1);
+  opacity    : 0.8;
+  line-height: var(--type-body-md-lh);
 }
 
-/* ===================================================
-   BARRA DE FORTALEZA TÉCNICA (ARQUITECTÓNICA)
-   =================================================== */
+// Indicador visual de fortaleza de la contraseña
 .fortaleza-container {
-  display: flex;
-  align-items: center;
+  display        : flex;
+  align-items    : center;
   justify-content: space-between;
-  gap: 12px;
-  margin-top: 8px;
+  gap            : var(--space-3);
+  margin-top     : var(--space-2);
 
+  // Barra delgada de progreso
   .fortaleza-bar {
-    flex: 1;
-    height: 3px; // Barra ultra fina milimétrica
-    background: rgba(255, 255, 255, 0.4);
+    flex         : 1;
+    height       : 3px;
+    background   : rgba(255,255,255,0.4);
     border-radius: 2px;
-    overflow: hidden;
+    overflow     : hidden;
 
+    // Relleno animado que refleja el nivel de seguridad
     .fortaleza-fill {
-      height: 100%;
-      width: 0;
-      transition: width 0.3s ease, background-color 0.3s ease;
+      height    : 100%;
+      width     : 0;
+      transition: width var(--duration-normal) var(--easing-standard),
+                  background-color var(--duration-normal) var(--easing-standard);
     }
   }
 
+  // Etiqueta que describe el nivel de seguridad
   .fortaleza-label {
-    font-size: 10px;
-    font-weight: 700;
+    font-size     : var(--type-caption-size);
+    font-weight   : var(--font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 }
 
-/* ===================================================
-   MENSAJES DE NOTIFICACIÓN DE ESTADO
-   =================================================== */
-.error-message, .success-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 16px;
-}
-
+// Mensaje de error general del formulario
 .error-message {
-  color: var(--danger);
-  background: rgba(163, 29, 29, 0.08);
-  border: 1px solid rgba(163, 29, 29, 0.15);
+  display      : flex;
+  align-items  : center;
+  gap          : var(--space-2);
+  padding      : var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size    : var(--type-label-lg-size);
+  font-weight  : var(--font-weight-medium);
+  margin-bottom: var(--space-4);
+  color        : var(--danger);
+  background   : rgba(163,29,29,0.08);
+  border       : 1px solid rgba(163,29,29,0.15);
 }
 
+// Mensaje de éxito al completar el registro
 .success-message {
-  color: var(--success);
-  background: rgba(4, 120, 87, 0.08);
-  border: 1px solid rgba(4, 120, 87, 0.15);
+  display      : flex;
+  align-items  : center;
+  gap          : var(--space-2);
+  padding      : var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size    : var(--type-label-lg-size);
+  font-weight  : var(--font-weight-medium);
+  margin-bottom: var(--space-4);
+  color        : var(--success);
+  background   : rgba(4,120,87,0.08);
+  border       : 1px solid rgba(4,120,87,0.15);
 }
 
-/* ===================================================
-   BOTÓN "LOGIN-BTN" COMPACTO Y SÓLIDO
-   =================================================== */
+// Botón principal de creación de cuenta
 .login-btn {
-  --background: var(--accent-btn);
-  --background-hover: var(--accent-btn-hover);
+  --background          : var(--accent-btn);
+  --background-hover    : var(--accent-btn-hover);
   --background-activated: var(--accent-btn);
-  --border-radius: 4px; // Esquinas estructurales de 4px
-  --box-shadow: 0 4px 12px rgba(45, 90, 136, 0.2);
-  font-size: 12px;
-  font-weight: 600;
-  height: 40px;
-  margin: 12px 0 0 0;
-  letter-spacing: 1px;
+  --border-radius       : var(--radius-sm);
+  --box-shadow          : 0 4px 12px rgba(45,90,136,0.2);
+  font-size             : var(--type-label-lg-size);
+  font-weight           : var(--font-weight-semibold);
+  height                : var(--touch-target-min);
+  margin                : var(--space-3) 0 0;
+  letter-spacing        : 1px;
 
-  span {
-    text-transform: uppercase; // "CREAR CUENTA" uniforme
-  }
+  span { text-transform: uppercase; }
 }
 
-/* ===================================================
-   PIE DE PÁGINA / RETORNO AL LOGIN
-   =================================================== */
+// Pie de formulario con enlace al login
 .form-footer {
-  display: flex;
-  align-items: center;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  gap: 6px;
-  margin-top: 24px;
-  font-size: 12px;
-  color: var(--text-muted);
+  gap            : var(--space-1);
+  margin-top     : var(--space-6);
+  font-size      : var(--type-label-lg-size);
+  color          : var(--text-muted);
 
+  // Enlace de retorno al inicio de sesión
   .footer-link {
-    color: var(--text-main);
-    font-weight: 600;
+    color          : var(--text-main);
+    font-weight    : var(--font-weight-semibold);
     text-decoration: underline;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    cursor         : pointer;
+    transition     : opacity var(--duration-normal) var(--easing-standard);
 
-    &:hover {
-      opacity: 0.8;
-    }
+    &:hover { opacity: 0.8; }
   }
 }

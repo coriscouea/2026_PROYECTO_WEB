@@ -4,147 +4,161 @@
 // =============================================================
 
 .header-toolbar {
-  --background: #0D1B2A;
-  --color     : #ffffff;
+  --background: var(--header-bg);
+  --color     : var(--color-text-on-dark);
+  padding     : 4px 0;
 }
 
-.back-btn    { --color: #4FC3F7; }
-.header-title { font-weight: 700; font-size: 16px; }
-.usuarios-content { --background: #F0F4F8; }
+.back-btn      { --color: var(--color-primary-light); }
+.header-title  { font-weight: var(--font-weight-bold); font-size: var(--type-title-md-size); }
+.nuevo-btn     { --color: rgba(255,255,255,0.8); }
+.usuarios-content { --background: var(--color-surface-light); }
 
+// Indicador de carga centrado
 .loading-state {
   display        : flex;
   justify-content: center;
   padding        : 60px 0;
 }
 
+// Lista de tarjetas de usuario
 .usuarios-list {
-  padding: 12px 16px;
-  display: flex;
+  padding       : var(--space-3) var(--app-margin);
+  display       : flex;
   flex-direction: column;
-  gap: 10px;
+  gap           : var(--space-2);
 }
 
+// Tarjeta individual de usuario
 .usuario-card {
-  background   : #fff;
-  border-radius: 16px;
-  padding      : 14px;
-  display      : flex;
-  align-items  : center;
+  background     : var(--card-bg);
+  border-radius  : var(--radius-lg);
+  padding        : var(--space-3);
+  display        : flex;
+  align-items    : center;
   justify-content: space-between;
-  box-shadow   : 0 2px 8px rgba(0,0,0,0.06);
-  gap          : 12px;
+  box-shadow     : var(--shadow-md);
+  gap            : var(--space-3);
 }
 
 .card-left {
-  display    : flex;
+  display   : flex;
   align-items: center;
-  gap        : 12px;
-  flex       : 1;
-  min-width  : 0;
+  gap       : var(--space-3);
+  flex      : 1;
+  min-width : 0;
 }
 
-// Avatar con inicial del nombre
+// Avatar con inicial del nombre del usuario
 .avatar {
   width          : 44px;
   height         : 44px;
-  border-radius  : 14px;
+  border-radius  : var(--radius-md);
   display        : flex;
   align-items    : center;
   justify-content: center;
-  font-weight    : 800;
+  font-weight    : var(--font-weight-extrabold);
   font-size      : 18px;
-  color          : #fff;
+  color          : var(--color-text-on-dark);
   flex-shrink    : 0;
-  background     : #94A3B8;
+  background     : var(--primitive-slate-500);
 }
 
+// Color del avatar según el rol del usuario
 .rol-1 { background: linear-gradient(135deg, #64748B, #94A3B8); }
-.rol-2 { background: linear-gradient(135deg, #0288D1, #4FC3F7); }
+.rol-2 { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); }
 .rol-3 { background: linear-gradient(135deg, #7C3AED, #A78BFA); }
 .rol-4 { background: linear-gradient(135deg, #D97706, #FCD34D); }
 
 .usuario-info { flex: 1; min-width: 0; }
 
+// Nombre completo del usuario
 .usuario-nombre {
-  font-size    : 14px;
-  font-weight  : 600;
-  color        : #1a1a2e;
+  font-size    : var(--type-body-md-size);
+  font-weight  : var(--font-weight-semibold);
+  color        : var(--color-text-primary);
   white-space  : nowrap;
   overflow     : hidden;
   text-overflow: ellipsis;
 }
 
+// Correo electrónico del usuario
 .usuario-email {
-  font-size    : 11px;
-  color        : #94A3B8;
+  font-size    : var(--type-label-md-size);
+  color        : var(--primitive-slate-500);
   margin-top   : 2px;
   white-space  : nowrap;
   overflow     : hidden;
   text-overflow: ellipsis;
 }
 
+// Fila de badges de rol y estado
 .usuario-meta {
-  display    : flex;
-  gap        : 6px;
-  margin-top : 6px;
-  flex-wrap  : wrap;
+  display   : flex;
+  gap       : var(--space-1);
+  margin-top: var(--space-1);
+  flex-wrap : wrap;
 }
 
+// Badge que indica el rol del usuario
 .rol-badge {
-  font-size    : 10px;
-  font-weight  : 700;
+  font-size    : var(--type-caption-size);
+  font-weight  : var(--font-weight-bold);
   padding      : 3px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius-full);
 }
 
-.rol-badge-1 { background: #F1F5F9; color: #64748B; }
-.rol-badge-2 { background: #EFF8FF; color: #0288D1; }
+.rol-badge-1 { background: var(--primitive-slate-100); color: var(--color-text-secondary); }
+.rol-badge-2 { background: #EFF8FF; color: var(--color-primary); }
 .rol-badge-3 { background: #F5F3FF; color: #7C3AED; }
 .rol-badge-4 { background: #FFFBEB; color: #D97706; }
 
+// Chip que indica si el usuario está activo o inactivo
 .estado-chip {
-  font-size    : 10px;
-  font-weight  : 600;
+  font-size    : var(--type-caption-size);
+  font-weight  : var(--font-weight-semibold);
   padding      : 3px 10px;
-  border-radius: 20px;
-  background   : #D1FAE5;
-  color        : #059669;
+  border-radius: var(--radius-full);
+  background   : var(--badge-done-bg);
+  color        : var(--badge-done-text);
 }
 
 .estado-chip.inactivo {
   background: #FEE2E2;
-  color     : #EF4444;
+  color     : var(--color-error);
 }
 
-// Acciones
+// Contenedor de acciones por tarjeta
 .card-actions {
   display    : flex;
   align-items: center;
-  gap        : 8px;
+  gap        : var(--space-2);
   flex-shrink: 0;
 }
 
+// Selector de rol del usuario
 .rol-select {
-  background   : #F1F5F9;
-  border       : 1.5px solid #E2E8F0;
-  border-radius: 10px;
+  background   : var(--primitive-slate-100);
+  border       : 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
   padding      : 6px 10px;
-  font-size    : 12px;
-  color        : #1a1a2e;
+  font-size    : var(--type-label-lg-size);
+  color        : var(--color-text-primary);
   outline      : none;
   cursor       : pointer;
+  min-height   : var(--touch-target-min);
 }
 
-.rol-select:focus { border-color: #0288D1; }
+.rol-select:focus { border-color: var(--color-border-focus); }
 
+// Botón desactivar usuario
 .delete-btn {
-  width          : 36px;
-  height         : 36px;
-  border-radius  : 10px;
+  width          : var(--touch-target-min);
+  height         : var(--touch-target-min);
+  border-radius  : var(--radius-sm);
   background     : #FEF2F2;
   border         : 1.5px solid #FECACA;
-  color          : #EF4444;
+  color          : var(--color-error);
   display        : flex;
   align-items    : center;
   justify-content: center;
@@ -153,162 +167,177 @@
 }
 
 .delete-btn:hover {
-  background: #EF4444;
-  color     : #fff;
+  background: var(--color-error);
+  color     : var(--color-text-on-dark);
 }
 
+// Estado vacío cuando no hay usuarios
 .empty-state {
   display        : flex;
   flex-direction : column;
   align-items    : center;
   justify-content: center;
-  padding        : 60px 24px;
-  color          : #CBD5E1;
+  padding        : 60px var(--app-margin);
+  color          : var(--color-text-placeholder);
 }
 
-.empty-state ion-icon { font-size: 56px; margin-bottom: 16px; }
-.empty-state h3       { font-size: 16px; font-weight: 700; color: #94A3B8; }
+.empty-state ion-icon { font-size: 56px; margin-bottom: var(--space-4); }
+.empty-state h3       { font-size: var(--type-title-md-size); font-weight: var(--font-weight-bold); color: var(--color-text-secondary); }
 
-// Modal crear usuario
+// Superposición del modal de creación
 .modal-overlay {
-  position  : fixed;
-  top       : 0;
-  left      : 0;
-  right     : 0;
-  bottom    : 0;
-  background: rgba(0,0,0,0.5);
-  display   : flex;
-  align-items: center;
+  position       : fixed;
+  top            : 0;
+  left           : 0;
+  right          : 0;
+  bottom         : 0;
+  background     : rgba(0,0,0,0.5);
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  z-index   : 1000;
-  padding   : 20px;
+  z-index        : 1000;
+  padding        : var(--space-5);
 }
 
+// Tarjeta del modal de creación de usuario
 .modal-card {
-  background   : #fff;
-  border-radius: 20px;
-  padding      : 24px;
+  background   : var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding      : var(--space-6);
   width        : 100%;
   max-width    : 420px;
-  box-shadow   : 0 24px 64px rgba(0,0,0,0.3);
+  box-shadow   : var(--shadow-xl);
 }
 
+// Encabezado del modal
 .modal-header {
   display        : flex;
   justify-content: space-between;
   align-items    : center;
-  margin-bottom  : 20px;
+  margin-bottom  : var(--space-5);
 }
 
 .modal-header h2 {
-  font-size  : 18px;
-  font-weight: 700;
-  color      : #1a1a2e;
+  font-size  : var(--type-title-lg-size);
+  font-weight: var(--font-weight-bold);
+  color      : var(--color-text-primary);
 }
 
+// Botón cerrar modal
 .modal-close {
-  background: none;
-  border    : none;
-  font-size : 18px;
-  color     : #94A3B8;
-  cursor    : pointer;
-  padding   : 4px 8px;
-  border-radius: 8px;
+  background   : none;
+  border       : none;
+  font-size    : 18px;
+  color        : var(--primitive-slate-500);
+  cursor       : pointer;
+  padding      : 4px var(--space-2);
+  border-radius: var(--radius-sm);
+  min-width    : var(--touch-target-min);
+  min-height   : var(--touch-target-min);
+  display      : flex;
+  align-items  : center;
+  justify-content: center;
 }
 
-.modal-close:hover { background: #F1F5F9; }
+.modal-close:hover { background: var(--primitive-slate-100); }
 
-.form-field {
-  margin-bottom: 14px;
-}
+// Campo del formulario del modal
+.form-field { margin-bottom: var(--space-3); }
 
+// Etiqueta del campo del formulario
 .field-label {
-  display      : block;
-  font-size    : 11px;
-  font-weight  : 700;
-  color        : #64748B;
+  display       : block;
+  font-size     : var(--type-label-md-size);
+  font-weight   : var(--font-weight-bold);
+  color         : var(--color-text-secondary);
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  margin-bottom : 6px;
+  margin-bottom : var(--space-1);
 }
 
+// Input del formulario del modal
 .field-input {
   width        : 100%;
-  border       : 1.5px solid #E2E8F0;
-  border-radius: 10px;
-  padding      : 10px 14px;
-  font-size    : 14px;
-  color        : #1a1a2e;
-  background   : #F8FAFC;
+  border       : 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding      : var(--space-2) var(--space-3);
+  font-size    : var(--type-body-md-size);
+  color        : var(--color-text-primary);
+  background   : var(--color-surface-input);
   outline      : none;
   font-family  : inherit;
+  min-height   : var(--touch-target-min);
 }
 
-.field-input:focus { border-color: #0288D1; }
+.field-input:focus { border-color: var(--color-border-focus); }
 
+// Mensaje de error por campo
 .field-error {
-  font-size : 11px;
-  color     : #EF4444;
-  margin-top: 4px;
+  font-size : var(--type-label-md-size);
+  color     : var(--color-error);
+  margin-top: var(--space-1);
 }
 
+// Mensaje de error general del modal
 .error-message {
   background   : #FEF2F2;
   border       : 1px solid #FECACA;
-  border-radius: 10px;
-  padding      : 10px 14px;
-  font-size    : 12px;
-  color        : #EF4444;
-  margin-bottom: 14px;
+  border-radius: var(--radius-sm);
+  padding      : var(--space-2) var(--space-3);
+  font-size    : var(--type-label-lg-size);
+  color        : var(--color-error);
+  margin-bottom: var(--space-3);
 }
 
+// Botones de acción del modal
 .modal-actions {
-  display: flex;
-  gap    : 10px;
-  margin-top: 20px;
+  display   : flex;
+  gap       : var(--space-2);
+  margin-top: var(--space-5);
 }
 
+// Botón cancelar del modal
 .btn-cancelar {
   flex         : 1;
-  padding      : 12px;
-  border-radius: 12px;
-  border       : 1.5px solid #E2E8F0;
-  background   : #F8FAFC;
-  color        : #64748B;
-  font-size    : 14px;
-  font-weight  : 600;
+  padding      : var(--space-3);
+  border-radius: var(--radius-md);
+  border       : 1.5px solid var(--color-border);
+  background   : var(--color-surface-input);
+  color        : var(--color-text-secondary);
+  font-size    : var(--type-body-md-size);
+  font-weight  : var(--font-weight-semibold);
   cursor       : pointer;
+  min-height   : var(--touch-target-min);
 }
 
+// Botón crear usuario del modal
 .btn-crear {
   flex         : 2;
-  padding      : 12px;
-  border-radius: 12px;
+  padding      : var(--space-3);
+  border-radius: var(--radius-md);
   border       : none;
-  background   : linear-gradient(135deg, #0288D1, #4FC3F7);
-  color        : #fff;
-  font-size    : 14px;
-  font-weight  : 700;
+  background   : linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color        : var(--color-text-on-dark);
+  font-size    : var(--type-body-md-size);
+  font-weight  : var(--font-weight-bold);
   cursor       : pointer;
-  box-shadow   : 0 4px 12px rgba(2,136,209,0.3);
+  box-shadow   : var(--shadow-primary);
+  min-height   : var(--touch-target-min);
 }
 
 .btn-crear:disabled {
-  opacity: 0.6;
+  opacity: var(--disabled-opacity);
   cursor : not-allowed;
 }
 
-.nuevo-btn { --color: rgba(255,255,255,0.8); }
-
-// Botón cambiar contraseña
-
+// Botón cambiar contraseña del usuario
 .key-btn {
-  width          : 36px;
-  height         : 36px;
-  border-radius  : 10px;
+  width          : var(--touch-target-min);
+  height         : var(--touch-target-min);
+  border-radius  : var(--radius-sm);
   background     : #EFF8FF;
   border         : 1.5px solid #BFDBFE;
-  color          : #0288D1;
+  color          : var(--color-primary);
   display        : flex;
   align-items    : center;
   justify-content: center;
@@ -317,29 +346,29 @@
 }
 
 .key-btn:hover {
-  background: #0288D1;
-  color     : #fff;
+  background: var(--color-primary);
+  color     : var(--color-text-on-dark);
 }
 
-// Usuario seleccionado en modal
+// Usuario seleccionado en el modal de cambio de contraseña
 .usuario-seleccionado {
-  display    : flex;
-  align-items: center;
-  gap        : 12px;
-  padding    : 12px;
-  background : #F8FAFC;
-  border-radius: 12px;
-  margin-bottom: 16px;
+  display      : flex;
+  align-items  : center;
+  gap          : var(--space-3);
+  padding      : var(--space-3);
+  background   : var(--color-surface-input);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
 }
 
-// Campo wrapper modal
+// Wrapper del campo de contraseña con toggle
 .campo-wrapper-modal {
   display      : flex;
   align-items  : center;
-  border       : 1.5px solid #E2E8F0;
-  border-radius: 10px;
+  border       : 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
   overflow     : hidden;
-  background   : #F8FAFC;
+  background   : var(--color-surface-input);
 }
 
 .campo-wrapper-modal .field-input {
@@ -349,84 +378,98 @@
   flex         : 1;
 }
 
+// Botón mostrar u ocultar contraseña
 .toggle-password {
   background: none;
   border    : none;
-  padding   : 0 12px;
+  padding   : 0 var(--space-3);
   cursor    : pointer;
   font-size : 16px;
+  min-width : var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display   : flex;
+  align-items: center;
+  justify-content: center;
 }
 
+// Texto de ayuda debajo del campo
 .field-hint {
-  font-size : 11px;
-  color     : #94A3B8;
-  margin-top: 4px;
+  font-size : var(--type-label-md-size);
+  color     : var(--primitive-slate-500);
+  margin-top: var(--space-1);
   padding   : 0 2px;
 }
 
-// Solicitudes de reset
-
+// Sección de solicitudes de reset pendientes
 .solicitudes-section {
-  margin       : 12px 16px;
+  margin       : var(--space-3) var(--app-margin);
   background   : #FFFBEB;
   border       : 1.5px solid #FCD34D;
-  border-radius: 14px;
-  padding      : 14px;
+  border-radius: var(--radius-lg);
+  padding      : var(--space-3);
 }
 
+// Título de la sección de solicitudes
 .solicitudes-title {
-  display    : flex;
-  align-items: center;
-  gap        : 8px;
-  font-size  : 13px;
-  font-weight: 700;
-  color      : #D97706;
-  margin-bottom: 12px;
+  display      : flex;
+  align-items  : center;
+  gap          : var(--space-2);
+  font-size    : var(--type-body-sm-size);
+  font-weight  : var(--font-weight-bold);
+  color        : #D97706;
+  margin-bottom: var(--space-3);
 
   ion-icon { font-size: 16px; }
 }
 
+// Fila individual de solicitud de reset
 .solicitud-item {
   display        : flex;
   justify-content: space-between;
   align-items    : center;
-  padding        : 10px 0;
+  padding        : var(--space-2) 0;
   border-bottom  : 1px solid #FDE68A;
-  gap            : 12px;
+  gap            : var(--space-3);
+  min-height     : var(--touch-target-min);
 }
 
 .solicitud-item:last-child { border-bottom: none; }
 
 .solicitud-info { flex: 1; }
 
+// Nombre del usuario que solicitó el reset
 .solicitud-nombre {
-  font-size  : 13px;
-  font-weight: 600;
-  color      : #1a1a2e;
+  font-size  : var(--type-body-sm-size);
+  font-weight: var(--font-weight-semibold);
+  color      : var(--color-text-primary);
 }
 
+// Email del usuario que solicitó el reset
 .solicitud-email {
-  font-size : 11px;
-  color     : #94A3B8;
+  font-size : var(--type-label-md-size);
+  color     : var(--primitive-slate-500);
   margin-top: 2px;
 }
 
+// Fecha de la solicitud de reset
 .solicitud-fecha {
-  font-size : 10px;
-  color     : #CBD5E1;
+  font-size : var(--type-caption-size);
+  color     : var(--color-text-placeholder);
   margin-top: 2px;
 }
 
+// Botón para marcar la solicitud como atendida
 .btn-atender {
   background   : #D97706;
-  color        : #fff;
+  color        : var(--color-text-on-dark);
   border       : none;
-  border-radius: 8px;
-  padding      : 8px 14px;
-  font-size    : 12px;
-  font-weight  : 700;
+  border-radius: var(--radius-sm);
+  padding      : var(--space-2) var(--space-3);
+  font-size    : var(--type-label-lg-size);
+  font-weight  : var(--font-weight-bold);
   cursor       : pointer;
   white-space  : nowrap;
+  min-height   : var(--touch-target-min);
 }
 
 .btn-atender:hover { background: #B45309; }

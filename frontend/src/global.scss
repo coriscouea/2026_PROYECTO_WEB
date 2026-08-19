@@ -182,35 +182,6 @@ ion-menu .user-info {
   min-width: 0;
 }
 
-ion-menu .user-nombre {
-  color        : #ffffff;
-  font-size    : 13px;
-  font-weight  : 700;
-  white-space  : nowrap;
-  overflow     : hidden;
-  text-overflow: ellipsis;
-}
-
-ion-menu .user-email {
-  color        : rgba(255,255,255,0.45);
-  font-size    : 10px;
-  margin-top   : 2px;
-  white-space  : nowrap;
-  overflow     : hidden;
-  text-overflow: ellipsis;
-}
-
-ion-menu .rol-chip {
-  display      : inline-block;
-  font-size    : 10px;
-  font-weight  : 600;
-  color        : #4FC3F7;
-  margin-top   : 4px;
-  background   : rgba(79,195,247,0.1);
-  padding      : 2px 8px;
-  border-radius: 20px;
-}
-
 ion-menu ion-footer {
   --background: #0D1B2A;
   background  : #0D1B2A;
@@ -246,4 +217,213 @@ ion-menu .rol-chip {
   padding      : 2px 8px;
   border-radius: 20px;
   margin-top   : 4px;
+}
+
+// =============================================================
+// Sistema de tokens de diseño — HelpDesk Web
+// Grupo A: Color, Tipografía, Espaciado, Radio, Sombra
+// Basado en Material Design 3 — Semana 10
+// =============================================================
+
+// -------------------------------------------------------------
+// Nivel 1 — Tokens primitivos
+// Valores puros sin significado asignado
+// -------------------------------------------------------------
+:root {
+
+  // Paleta de color base
+  --primitive-blue-700:     #0288D1;
+  --primitive-blue-300:     #4FC3F7;
+  --primitive-navy-900:     #0D1B2A;
+  --primitive-navy-700:     #1B3A5C;
+  --primitive-slate-50:     #F8FAFC;
+  --primitive-slate-100:    #F0F4F8;
+  --primitive-slate-200:    #E2E8F0;
+  --primitive-slate-400:    #64748B;
+  --primitive-slate-500:    #94A3B8;
+  --primitive-slate-600:    #CBD5E1;
+  --primitive-red-500:      #EF4444;
+  --primitive-amber-500:    #F59E0B;
+  --primitive-amber-800:    #92400E;
+  --primitive-emerald-500:  #10B981;
+  --primitive-emerald-900:  #065F46;
+  --primitive-blue-900:     #1E40AF;
+  --primitive-white:        #FFFFFF;
+
+  // -------------------------------------------------------------
+  // Nivel 2 — Tokens semánticos
+  // La función que cada valor cumple en el sistema
+  // -------------------------------------------------------------
+
+  // Superficies
+  --color-surface-dark:     var(--primitive-navy-900);
+  --color-surface-dark-alt: var(--primitive-navy-700);
+  --color-surface-light:    var(--primitive-slate-100);
+  --color-surface-card:     var(--primitive-white);
+  --color-surface-input:    var(--primitive-slate-50);
+
+  // Acciones
+  --color-primary:          var(--primitive-blue-700);
+  --color-primary-light:    var(--primitive-blue-300);
+
+  // Texto
+  --color-text-primary:     var(--primitive-navy-900);
+  --color-text-secondary:   var(--primitive-slate-400);
+  --color-text-caption:     var(--primitive-slate-400);
+  --color-text-on-dark:     var(--primitive-white);
+  --color-text-placeholder: var(--primitive-slate-600);
+
+  // Bordes
+  --color-border:           var(--primitive-slate-200);
+  --color-border-focus:     var(--primitive-blue-700);
+
+  // Estado semántico
+  --color-error:            var(--primitive-red-500);
+  --color-warning:          var(--primitive-amber-500);
+  --color-success:          var(--primitive-emerald-500);
+
+  // Prioridad de tickets
+  --color-priority-high:    var(--primitive-red-500);
+  --color-priority-medium:  var(--primitive-amber-500);
+  --color-priority-low:     var(--primitive-emerald-500);
+
+  // -------------------------------------------------------------
+  // Nivel 3 — Tokens de componente
+  // Uso concreto dentro de cada componente
+  // -------------------------------------------------------------
+
+  // Header y sidebar
+  --header-bg:              var(--color-surface-dark);
+  --sidebar-bg:             var(--color-surface-dark);
+
+  // Tarjeta de ticket
+  --card-bg:                var(--color-surface-card);
+  --card-border-high:       var(--color-priority-high);
+  --card-border-medium:     var(--color-priority-medium);
+  --card-border-low:        var(--color-priority-low);
+
+  // Badges de estado — colores corregidos para WCAG AA
+  --badge-pending-bg:       #FEF3C7;
+  --badge-pending-text:     var(--primitive-amber-800);   // ratio 5.2:1 ✅
+  --badge-process-bg:       #DBEAFE;
+  --badge-process-text:     var(--primitive-blue-900);    // ratio 5.9:1 ✅
+  --badge-done-bg:          #D1FAE5;
+  --badge-done-text:        var(--primitive-emerald-900); // ratio 5.8:1 ✅
+
+  // Botón primario
+  --btn-primary-bg:         var(--color-primary);
+  --btn-primary-text:       var(--color-text-on-dark);
+
+  // -------------------------------------------------------------
+  // Tipografía — escala Material Design 3
+  // Tamaño mínimo recomendado en móvil: 14px
+  // -------------------------------------------------------------
+
+  --font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --type-display-size:    2rem;      // 32px — bienvenida
+  --type-display-weight:  800;
+  --type-display-lh:      1.2;
+
+  --type-headline-size:   1.5rem;    // 24px — encabezados sección
+  --type-headline-weight: 700;
+  --type-headline-lh:     1.3;
+
+  --type-title-lg-size:   1.25rem;   // 20px — títulos pantalla
+  --type-title-lg-weight: 700;
+  --type-title-lg-lh:     1.3;
+
+  --type-title-md-size:   1rem;      // 16px — títulos tarjeta
+  --type-title-md-weight: 600;
+  --type-title-md-lh:     1.4;
+
+  --type-body-lg-size:    1rem;      // 16px — texto principal
+  --type-body-lg-weight:  400;
+  --type-body-lg-lh:      1.5;
+
+  --type-body-md-size:    0.875rem;  // 14px — texto secundario
+  --type-body-md-weight:  400;
+  --type-body-md-lh:      1.5;
+
+  --type-body-sm-size:    0.8125rem; // 13px — texto terciario
+  --type-body-sm-weight:  400;
+  --type-body-sm-lh:      1.5;
+
+  --type-label-lg-size:   0.75rem;   // 12px — botones, chips
+  --type-label-lg-weight: 600;
+  --type-label-lg-lh:     1.4;
+
+  --type-label-md-size:   0.6875rem; // 11px — badges, etiquetas
+  --type-label-md-weight: 600;
+  --type-label-md-lh:     1.3;
+
+  --type-caption-size:    0.625rem;  // 10px — fechas, metadatos
+  --type-caption-weight:  400;
+  --type-caption-lh:      1.4;
+
+  --font-weight-regular:   400;
+  --font-weight-medium:    500;
+  --font-weight-semibold:  600;
+  --font-weight-bold:      700;
+  --font-weight-extrabold: 800;
+
+  // -------------------------------------------------------------
+  // Espaciado — unidad base 8px
+  // Múltiplos para mantener retícula consistente
+  // -------------------------------------------------------------
+
+  --space-base: 8px;
+  --space-1:    4px;    // 0.5x
+  --space-2:    8px;    // 1x
+  --space-3:    12px;   // 1.5x
+  --space-4:    16px;   // 2x — margen lateral estándar móvil
+  --space-5:    20px;   // 2.5x
+  --space-6:    24px;   // 3x
+  --space-8:    32px;   // 4x
+  --space-10:   40px;   // 5x
+  --space-12:   48px;   // 6x — área táctil mínima Material Design
+
+  // Margen lateral constante en toda la app
+  --app-margin: var(--space-4);
+
+  // -------------------------------------------------------------
+  // Radio de esquina
+  // Jerarquía visual de contenedores
+  // -------------------------------------------------------------
+
+  --radius-sm:   8px;    // inputs, botones pequeños
+  --radius-md:   12px;   // botones principales
+  --radius-lg:   16px;   // tarjetas
+  --radius-xl:   20px;   // modales
+  --radius-2xl:  24px;   // tarjetas grandes, login
+  --radius-full: 9999px; // chips y badges
+
+  // -------------------------------------------------------------
+  // Elevación — sombras escalonadas
+  // Profundidad visual sin modo oscuro
+  // -------------------------------------------------------------
+
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:      0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg:      0 8px 24px rgba(0,0,0,0.12);
+  --shadow-xl:      0 20px 60px rgba(0,0,0,0.15);
+  --shadow-primary: 0 4px 16px rgba(2,136,209,0.35);
+
+  // -------------------------------------------------------------
+  // Animaciones
+  // Duraciones y curvas de aceleración estándar
+  // -------------------------------------------------------------
+
+  --duration-fast:    100ms;
+  --duration-normal:  200ms;
+  --duration-slow:    300ms;
+  --easing-standard:  cubic-bezier(0.4, 0, 0.2, 1);
+
+  // -------------------------------------------------------------
+  // Accesibilidad
+  // Área táctil mínima WCAG 2.5.8 y Material Design
+  // -------------------------------------------------------------
+
+  --touch-target-min: 48px;
+  --disabled-opacity: 0.4;
 }

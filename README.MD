@@ -6,7 +6,7 @@ Sistema de gestión de soporte técnico multiplataforma desarrollado como proyec
 **Materia:** Aplicaciones Móviles  
 **Metodología:** SDD (Spec-Driven Development)
 
----
+----
 
 ## ¿Qué es HelpDesk Web?
 

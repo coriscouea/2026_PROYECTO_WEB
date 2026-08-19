@@ -4,116 +4,131 @@
 // =============================================================
 
 .header-toolbar {
-  --background: #0D1B2A;
-  --color: #ffffff;
+  --background: var(--header-bg);
+  --color     : var(--color-text-on-dark);
+  padding     : 4px 0;
 }
 
-.back-btn { --color: #4FC3F7; }
-.header-title { font-weight: 700; font-size: 16px; }
-.leer-btn { --color: #4FC3F7; }
-.notif-content { --background: #F8FAFC; }
+.back-btn     { --color: var(--color-primary-light); }
+.header-title { font-weight: var(--font-weight-bold); font-size: var(--type-title-md-size); }
+.leer-btn     { --color: var(--color-primary-light); }
+.notif-content { --background: var(--color-surface-light); }
 
+// Indicador de carga centrado
 .loading-state {
-  display: flex;
+  display        : flex;
   justify-content: center;
-  padding: 60px 0;
+  padding        : 60px 0;
 }
 
+// Lista de notificaciones
 .notif-list {
-  padding: 12px 16px;
-  display: flex;
+  padding       : var(--space-3) var(--app-margin);
+  display       : flex;
   flex-direction: column;
-  gap: 8px;
+  gap           : var(--space-2);
 }
 
+// Tarjeta individual de notificación
 .notif-item {
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  cursor: pointer;
-  position: relative;
+  background   : var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding      : var(--space-3);
+  display      : flex;
+  align-items  : center;
+  gap          : var(--space-3);
+  box-shadow   : var(--shadow-md);
+  cursor       : pointer;
+  position     : relative;
+  transition   : transform var(--duration-fast) var(--easing-standard);
+  min-height   : var(--touch-target-min);
 }
 
+.notif-item:active { transform: scale(0.98); }
+
+// Notificación sin leer — borde y fondo diferenciado
 .notif-item.no-leida {
-  border-left: 4px solid #0288D1;
-  background: #F0F8FF;
+  border-left: 4px solid var(--color-primary);
+  background : #F0F8FF;
 }
 
+// Punto indicador de notificación no leída
 .notif-dot {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #0288D1;
+  position     : absolute;
+  top          : var(--space-3);
+  right        : var(--space-3);
+  width        : 8px;
+  height       : 8px;
+  border-radius: var(--radius-full);
+  background   : var(--color-primary);
 }
 
+// Contenedor del ícono de la notificación
 .notif-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #EFF8FF;
-  display: flex;
-  align-items: center;
+  width          : 40px;
+  height         : 40px;
+  border-radius  : var(--radius-md);
+  background     : #EFF8FF;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  flex-shrink: 0;
+  flex-shrink    : 0;
 
   ion-icon {
     font-size: 20px;
-    color: #0288D1;
+    color    : var(--color-primary);
   }
 }
 
-.notif-body {
-  flex: 1;
-}
+.notif-body { flex: 1; }
 
+// Texto del mensaje de la notificación
 .notif-mensaje {
-  font-size: 13px;
-  font-weight: 500;
-  color: #1a1a2e;
-  line-height: 1.4;
-  margin-bottom: 4px;
+  font-size    : var(--type-body-sm-size);
+  font-weight  : var(--font-weight-medium);
+  color        : var(--color-text-primary);
+  line-height  : var(--type-body-sm-lh);
+  margin-bottom: var(--space-1);
 }
 
+// Fecha de la notificación
 .notif-fecha {
-  font-size: 11px;
-  color: #94A3B8;
+  font-size: var(--type-label-md-size);
+  color    : var(--color-text-secondary);
 }
 
+// Flecha de navegación al ticket
 .notif-arrow {
-  font-size: 20px;
-  color: #CBD5E1;
-  font-weight: 300;
+  font-size  : 20px;
+  color      : var(--color-text-placeholder);
+  font-weight: var(--font-weight-regular);
 }
 
+// Estado vacío cuando no hay notificaciones
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
   justify-content: center;
-  padding: 80px 24px;
-  color: #CBD5E1;
+  padding        : 80px var(--app-margin);
+  color          : var(--color-text-placeholder);
 }
 
 .empty-state ion-icon {
-  font-size: 56px;
-  margin-bottom: 16px;
+  font-size    : 56px;
+  margin-bottom: var(--space-4);
 }
 
+// Título del estado vacío
 .empty-state h3 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #94A3B8;
-  margin-bottom: 6px;
+  font-size    : var(--type-title-md-size);
+  font-weight  : var(--font-weight-bold);
+  color        : var(--color-text-secondary);
+  margin-bottom: var(--space-1);
 }
 
+// Subtítulo del estado vacío
 .empty-state p {
-  font-size: 13px;
+  font-size : var(--type-body-sm-size);
   text-align: center;
 }

@@ -1,383 +1,398 @@
-// Variables con la paleta de colores de tu imagen de referencia
+// =============================================================
+// login.page.scss — Estilos de la pantalla de Login
+// HelpDesk Web | Feature 013 · Frontend Login
+// =============================================================
+
+// Variables propias del login — paleta glassmorphism
 :host {
-  // Degradado de fondo: Violeta pastel a Celeste/Turquesa claro
-  --bg-gradient: linear-gradient(135deg, #e9b7ce 0%, #c1beea 40%, #a2dedb 100%);
-  
-  // Contenedores translúcidos (efecto cristal)
-  --bg-glass: rgba(255, 255, 255, 0.45); 
-  --bg-glass-hover: rgba(255, 255, 255, 0.6);
-  --border-glass: rgba(255, 255, 255, 0.4);
-  
-  // Textos y elementos activos (Mantiene el azul marino del botón de tu imagen)
-  --text-main: #2b4c7e;      
-  --text-muted: #577399;     
-  --accent-btn: #2d5a88;     
+  --bg-gradient     : linear-gradient(135deg, #e9b7ce 0%, #c1beea 40%, #a2dedb 100%);
+  --bg-glass        : rgba(255, 255, 255, 0.45);
+  --bg-glass-hover  : rgba(255, 255, 255, 0.6);
+  --border-glass    : rgba(255, 255, 255, 0.4);
+  --text-main       : #2b4c7e;
+  --text-muted      : #577399;
+  --accent-btn      : #2d5a88;
   --accent-btn-hover: #1d3d61;
-  
-  font-family: 'Inter', -apple-system, sans-serif;
+
+  font-family: var(--font-family-base);
 }
 
+// Fondo degradado pastel de la pantalla de login
 .login-content {
-  // Aplicamos el fondo degradado pastel a toda la pantalla
   --background: var(--bg-gradient);
 }
 
+// Contenedor centrado de la tarjeta principal
 .login-wrapper {
-  display: flex;
-  align-items: center;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
+  min-height     : 100vh;
+  padding        : var(--space-6);
 }
 
-// Tarjeta principal con efecto vidrio esmerilado (Glassmorphism)
+// Tarjeta principal con efecto vidrio esmerilado
 .login-card {
-  display: flex;
-  width: 100%;
-  max-width: 960px;
-  min-height: 600px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px) saturate(120%);
+  display             : flex;
+  width               : 100%;
+  max-width           : 960px;
+  min-height          : 600px;
+  background          : var(--bg-glass);
+  backdrop-filter     : blur(16px) saturate(120%);
   -webkit-backdrop-filter: blur(16px) saturate(120%);
-  border-radius: 16px;
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
+  border-radius       : var(--radius-lg);
+  border              : 1px solid var(--border-glass);
+  box-shadow          : 0 12px 40px rgba(0,0,0,0.04);
+  overflow            : hidden;
 }
 
-/* ===================================================
-   PANEL IZQUIERDO (Información del Servicio)
-   =================================================== */
+// =====================================================
+// PANEL IZQUIERDO — información y servicios
+// =====================================================
+
+// Panel de servicios — oculto en móviles
 .left-panel {
-  flex: 1.1;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
+  flex           : 1.1;
+  padding        : var(--space-10);
+  display        : flex;
+  flex-direction : column;
   justify-content: space-between;
-  border-right: 1px solid var(--border-glass);
-  background: rgba(255, 255, 255, 0.15); // Un toque más oscuro para separar paneles
+  border-right   : 1px solid var(--border-glass);
+  background     : rgba(255,255,255,0.15);
 
-  @media (max-width: 900px) {
-    display: none; // Ocultar en móviles para centrar el login
-  }
+  @media (max-width: 900px) { display: none; }
 }
 
+// Área del logo y nombre de la aplicación
 .logo-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 10px;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  text-align     : center;
+  gap            : var(--space-2);
 
   .logo-circle {
-    font-size: 24px;
-    background: rgba(255, 255, 255, 0.6);
-    width: 52px;
-    height: 52px;
-    display: flex;
-    align-items: center;
+    font-size      : 24px;
+    background     : rgba(255,255,255,0.6);
+    width          : 52px;
+    height         : 52px;
+    display        : flex;
+    align-items    : center;
     justify-content: center;
-    border-radius: 50%;
-    border: 1px solid var(--border-glass);
-    color: var(--text-main);
+    border-radius  : var(--radius-full);
+    border         : 1px solid var(--border-glass);
+    color          : var(--text-main);
   }
 
   .logo-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    display        : flex;
+    flex-direction : column;
+    align-items    : center;
+    gap            : var(--space-1);
 
     h1 {
-      font-size: 24px;
-      font-weight: 300; // Tipografía delgada como "User Login" de tu imagen
-      color: var(--text-main);
-      margin: 0;
+      font-size     : var(--type-headline-size);
+      font-weight   : var(--font-weight-regular);
+      color         : var(--text-main);
+      margin        : 0;
       letter-spacing: 1px;
     }
 
+    // Badge identificador de la versión web
     .badge-web {
-      background: rgba(43, 76, 126, 0.1);
-      color: var(--text-main);
-      font-size: 9px;
-      font-weight: 600;
-      padding: 1px 8px;
-      border-radius: 20px;
+      background    : rgba(43,76,126,0.1);
+      color         : var(--text-main);
+      font-size     : var(--type-caption-size);
+      font-weight   : var(--font-weight-semibold);
+      padding       : 1px var(--space-2);
+      border-radius : var(--radius-full);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
   }
 }
 
+// Título de la sección de servicios
 .servicios-title {
-  font-size: 11px;
-  font-weight: 600;
+  font-size     : var(--type-label-md-size);
+  font-weight   : var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 14px;
-  margin-top: 24px;
+  color         : var(--text-muted);
+  text-align    : center;
+  margin-bottom : var(--space-3);
+  margin-top    : var(--space-6);
 }
 
-// Cuadrícula compacta de servicios en vidrio sutil
+// Cuadrícula de servicios que cubre el sistema
 .servicios-grid {
-  display: grid;
+  display              : grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  max-width: 320px;
-  margin: 0 auto;
-  width: 100%;
+  gap                  : var(--space-2);
+  max-width            : 320px;
+  margin               : 0 auto;
+  width                : 100%;
 
   .servicio-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    display      : flex;
+    align-items  : center;
+    gap          : var(--space-2);
+    padding      : var(--space-2) var(--space-3);
+    background   : rgba(255,255,255,0.3);
+    border       : 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-sm);
+    transition   : all var(--duration-normal) var(--easing-standard);
 
     &:hover {
-      background: rgba(255, 255, 255, 0.5);
+      background  : rgba(255,255,255,0.5);
       border-color: var(--border-glass);
     }
 
-    .servicio-icon {
-      font-size: 12px;
-    }
+    .servicio-icon { font-size: 12px; }
 
+    // Nombre del servicio
     .servicio-text {
-      font-size: 11px;
-      color: var(--text-main);
-      font-weight: 500;
+      font-size  : var(--type-label-md-size);
+      color      : var(--text-main);
+      font-weight: var(--font-weight-medium);
     }
   }
 }
 
+// Sección del autor al pie del panel izquierdo
 .autor {
-  margin-top: 24px;
-  border-top: 1px solid var(--border-glass);
-  padding-top: 16px;
-  text-align: center;
+  margin-top  : var(--space-6);
+  border-top  : 1px solid var(--border-glass);
+  padding-top : var(--space-4);
+  text-align  : center;
 
+  .autor-nombre {
+    font-size  : var(--type-label-lg-size);
+    font-weight: var(--font-weight-bold);
+    color      : var(--text-main);
+  }
+
+  .autor-cargo {
+    font-size : var(--type-label-md-size);
+    color     : var(--text-muted);
+    margin-top: 2px;
+  }
+
+  // Texto de derechos reservados
   .copyright {
-    font-size: 10.5px;
-    color: var(--text-muted);
-    opacity: 0.7;
-    margin-top: 4px;
+    font-size : var(--type-caption-size);
+    color     : var(--text-muted);
+    opacity   : 0.7;
+    margin-top: var(--space-1);
   }
 }
 
-/* ===================================================
-   PANEL DERECHO (Formulario Minimalista de Líneas)
-   =================================================== */
+// =====================================================
+// PANEL DERECHO — formulario de autenticación
+// =====================================================
+
+// Panel con el formulario de login
 .right-panel {
-  flex: 1;
-  padding: 48px;
-  display: flex;
-  flex-direction: column;
+  flex           : 1;
+  padding        : var(--space-12);
+  display        : flex;
+  flex-direction : column;
   justify-content: center;
 
-  @media (max-width: 600px) {
-    padding: 24px;
-  }
+  @media (max-width: 600px) { padding: var(--space-6); }
 }
 
+// Título principal del formulario
 .form-title {
-  font-size: 26px;
-  font-weight: 300; // Estilo limpio y delgado idéntico a tu ejemplo
-  color: var(--text-main);
+  font-size     : var(--type-headline-size);
+  font-weight   : var(--font-weight-regular);
+  color         : var(--text-main);
   letter-spacing: 1px;
-  text-align: center;
+  text-align    : center;
 }
 
+// Subtítulo descriptivo del formulario
 .form-sub {
-  font-size: 12.5px;
-  color: var(--text-muted);
-  margin-top: 4px;
-  margin-bottom: 36px;
-  text-align: center;
+  font-size    : var(--type-label-lg-size);
+  color        : var(--text-muted);
+  margin-top   : var(--space-1);
+  margin-bottom: var(--space-8);
+  text-align   : center;
 }
 
-/* Campos basados en líneas simples (Estilo exacto de tu imagen) */
+// Campo de entrada con estilo de línea inferior
 .campo {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 
-  .campo-label {
-    display: none; // Escondemos el label superior para imitar tu diseño de líneas puras
-  }
+  // Etiqueta oculta — diseño de línea pura
+  .campo-label { display: none; }
 
+  // Línea inferior que indica campo editable
   .campo-wrapper {
-    display: flex;
-    align-items: center;
-    background: transparent; // Sin caja gris de fondo
-    border-bottom: 1px solid var(--text-main); // Solo línea inferior fija
-    border-radius: 0px; 
-    padding: 4px 0px;
-    height: 38px;
-    transition: all 0.3s ease;
+    display      : flex;
+    align-items  : center;
+    background   : transparent;
+    border-bottom: 1px solid var(--text-main);
+    border-radius: 0;
+    padding      : var(--space-1) 0;
+    height       : 38px;
+    transition   : all var(--duration-normal) var(--easing-standard);
 
+    // Línea reforzada al recibir foco
     &:focus-within {
       border-bottom-color: var(--accent-btn);
-      box-shadow: 0 1px 0px var(--accent-btn); // Resalta la línea al escribir
+      box-shadow         : 0 1px 0px var(--accent-btn);
     }
 
     .field-icon {
-      font-size: 15px;
-      color: var(--text-main); // Íconos en azul marino
-      margin-right: 12px;
+      font-size   : 15px;
+      color       : var(--text-main);
+      margin-right: var(--space-3);
     }
 
-    .campo-inner {
-      flex: 1;
-    }
+    .campo-inner { flex: 1; }
 
+    // Input transparente sobre la línea
     .campo-input {
-      width: 100%;
-      border: none;
+      width     : 100%;
+      border    : none;
       background: transparent;
-      font-size: 13.5px;
-      color: var(--text-main);
-      outline: none;
+      font-size : var(--type-body-sm-size);
+      color     : var(--text-main);
+      outline   : none;
 
       &::placeholder {
-        color: var(--text-muted);
+        color  : var(--text-muted);
         opacity: 0.7;
       }
     }
 
+    // Botón mostrar u ocultar contraseña
     .toggle-btn {
       background: transparent;
-      border: none;
-      cursor: pointer;
-      display: flex;
+      border    : none;
+      cursor    : pointer;
+      display   : flex;
       align-items: center;
+      min-width : var(--touch-target-min);
+      min-height: var(--touch-target-min);
+      justify-content: center;
 
       ion-icon {
         font-size: 16px;
-        color: var(--text-main);
+        color    : var(--text-main);
       }
     }
   }
 }
 
-// Opciones de recordar contraseña alineadas horizontalmente
+// Fila de opciones — recordar sesión
 .form-options {
-  margin-bottom: 28px;
+  margin-bottom: var(--space-6);
 
   .remember-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; // Separa el checkbox a la izquierda
-    width: 100%;
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+    width          : 100%;
+    min-height     : var(--touch-target-min);
 
     .remember-check {
-      --size: 13px;
-      --border-radius: 2px;
-      --border-color: var(--text-main);
+      --size                      : 13px;
+      --border-radius             : 2px;
+      --border-color              : var(--text-main);
       --checkbox-background-checked: var(--accent-btn);
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: var(--type-label-lg-size);
+      color    : var(--text-muted);
     }
 
+    // Etiqueta del checkbox recordar sesión
     .remember-label {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      margin-left: 6px;
+      font-size  : var(--type-label-md-size);
+      color      : var(--text-muted);
+      margin-left: var(--space-1);
     }
   }
 }
 
+// Mensaje de error de autenticación
 .error-message {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #a31d1d;
-  font-size: 11.5px;
-  margin-bottom: 16px;
-  font-weight: 500;
+  display      : flex;
+  align-items  : center;
+  gap          : var(--space-1);
+  color        : #a31d1d;
+  font-size    : var(--type-label-md-size);
+  margin-bottom: var(--space-4);
+  font-weight  : var(--font-weight-medium);
 }
 
-/* Botón sólido azul marino idéntico al de tu referencia */
+// Botón principal de inicio de sesión
 .login-btn {
-  --background: var(--accent-btn);
-  --background-hover: var(--accent-btn-hover);
+  --background          : var(--accent-btn);
+  --background-hover    : var(--accent-btn-hover);
   --background-activated: var(--accent-btn);
-  --border-radius: 4px; // Esquinas más rectas y serias
-  --box-shadow: 0 4px 12px rgba(45, 90, 136, 0.2);
-  font-size: 12px;
-  font-weight: 600;
-  height: 40px;
-  margin: 0;
-  letter-spacing: 1px;
+  --border-radius       : var(--radius-sm);
+  --box-shadow          : 0 4px 12px rgba(45,90,136,0.2);
+  font-size             : var(--type-label-lg-size);
+  font-weight           : var(--font-weight-semibold);
+  height                : var(--touch-target-min);
+  margin                : 0;
+  letter-spacing        : 1px;
 
-  span {
-    text-transform: uppercase; // En mayúsculas "LOGIN" igual que tu imagen
-  }
+  span { text-transform: uppercase; }
 }
 
+// Divisor visual entre botón y enlaces
 .divider {
-  display: flex;
+  display    : flex;
   align-items: center;
-  text-align: center;
-  color: var(--border-glass);
-  font-size: 11px;
-  margin: 20px 0;
+  text-align : center;
+  color      : var(--border-glass);
+  font-size  : var(--type-label-md-size);
+  margin     : var(--space-5) 0;
 
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
+  &::before, &::after {
+    content      : '';
+    flex         : 1;
     border-bottom: 1px solid var(--text-muted);
-    opacity: 0.2;
+    opacity      : 0.2;
   }
 
-  span {
-    padding: 0 10px;
-    color: var(--text-muted);
-  }
+  span { padding: 0 var(--space-2); color: var(--text-muted); }
 }
 
-/* Enlaces inferiores limpios y pequeños */
+// Enlaces de recuperación y registro
 .bottom-links {
-  display: flex;
+  display       : flex;
   flex-direction: column;
-  gap: 4px;
+  gap           : var(--space-1);
 
+  // Enlace individual de acción secundaria
   .bottom-link {
-    display: flex;
-    align-items: center;
-    justify-content: center; // Centrado para verse sofisticado
-    padding: 6px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    padding        : var(--space-1);
+    border-radius  : var(--radius-sm);
+    cursor         : pointer;
+    transition     : background var(--duration-normal) var(--easing-standard);
+    min-height     : var(--touch-target-min);
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
+    &:hover { background: rgba(255,255,255,0.25); }
 
-    .link-icon {
-      font-size: 12px;
-      margin-right: 8px;
-    }
+    .link-icon { font-size: 12px; margin-right: var(--space-2); }
 
     .link-text {
+      // Título del enlace con subrayado de acción
       .link-title {
-        font-size: 11.5px;
-        font-weight: 500;
-        color: var(--text-main);
-        text-decoration: underline; // Subrayado sutil de enlace clásico
+        font-size      : var(--type-label-md-size);
+        font-weight    : var(--font-weight-medium);
+        color          : var(--text-main);
+        text-decoration: underline;
       }
-      .link-sub {
-        display: none; // Escondemos subtextos largos para limpiar la vista inferior
-      }
+      .link-sub  { display: none; }
     }
 
-    .link-arrow {
-      display: none; // Eliminamos flechas innecesarias
-    }
+    .link-arrow { display: none; }
   }
 }

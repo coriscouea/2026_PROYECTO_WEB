@@ -4,121 +4,145 @@
 // =============================================================
 
 .header-toolbar {
-  --background: #0D1B2A;
-  --color: #ffffff;
+  --background: var(--header-bg);
+  --color     : var(--color-text-on-dark);
+  padding     : 4px 0;
 }
 
-.back-btn { --color: #4FC3F7; }
-.header-title { font-weight: 700; font-size: 16px; }
-.crear-content { --background: #F8FAFC; }
+.back-btn     { --color: var(--color-primary-light); }
+.header-title { font-weight: var(--font-weight-bold); font-size: var(--type-title-md-size); }
+.crear-content { --background: var(--color-surface-light); }
 
+// Contenedor principal del formulario
 .form-container {
-  padding: 16px;
-  display: flex;
+  padding       : var(--app-margin);
+  display       : flex;
   flex-direction: column;
-  gap: 16px;
+  gap           : var(--space-4);
 }
 
+// Grupo de campo con tarjeta elevada
 .field-group {
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background   : var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding      : var(--space-3);
+  box-shadow   : var(--shadow-md);
 }
 
+// Etiqueta del campo en mayúsculas
 .field-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #64748B;
+  font-size     : var(--type-label-md-size);
+  font-weight   : var(--font-weight-bold);
+  color         : var(--color-text-secondary);
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom : var(--space-2);
+  display       : block;
 }
 
+// Input de texto del formulario
 .field-input {
-  width: 100%;
-  border: 1.5px solid #E2E8F0;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 14px;
-  color: #1a1a2e;
-  background: #F8FAFC;
-  outline: none;
-  font-family: inherit;
-  transition: border-color 0.2s;
+  width        : 100%;
+  border       : 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding      : var(--space-2) var(--space-3);
+  font-size    : var(--type-body-md-size);
+  color        : var(--color-text-primary);
+  background   : var(--color-surface-input);
+  outline      : none;
+  font-family  : inherit;
+  transition   : border-color var(--duration-normal) var(--easing-standard);
+  min-height   : var(--touch-target-min);
 }
 
-.field-input:focus { border-color: #0288D1; }
-.field-input::placeholder { color: #CBD5E1; }
+.field-input:focus         { border-color: var(--color-border-focus); }
+.field-input::placeholder  { color: var(--color-text-placeholder); }
 
+// Textarea para la descripción del ticket
 .field-textarea {
-  resize: none;
-  line-height: 1.6;
+  resize     : none;
+  line-height: var(--type-body-lg-lh);
+  min-height : 100px;
 }
 
+// Contador de caracteres del título
 .field-hint {
-  font-size: 10px;
-  color: #CBD5E1;
+  font-size : var(--type-caption-size);
+  color     : var(--color-text-placeholder);
   text-align: right;
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
+// Fila de opciones seleccionables
 .options-row {
-  display: flex;
-  gap: 8px;
+  display  : flex;
+  gap      : var(--space-2);
   flex-wrap: wrap;
 }
 
+// Botón de opción — categoría o prioridad
 .option-btn {
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  background: #F1F5F9;
-  color: #64748B;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.15s;
+  padding      : var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size    : var(--type-label-lg-size);
+  font-weight  : var(--font-weight-semibold);
+  background   : var(--primitive-slate-100);
+  color        : var(--color-text-secondary);
+  cursor       : pointer;
+  border       : 2px solid transparent;
+  transition   : all var(--duration-fast) var(--easing-standard);
+  min-height   : var(--touch-target-min);
+  display      : flex;
+  align-items  : center;
 }
 
+// Opción de categoría seleccionada
 .option-btn.selected {
-  border-color: #0288D1;
-  background: #EFF8FF;
-  color: #0288D1;
+  border-color: var(--color-primary);
+  background  : #EFF8FF;
+  color       : var(--color-primary);
 }
 
-.option-btn.prioridad-baja.selected  { border-color: #10B981; background: #F0FDF4; color: #10B981; }
-.option-btn.prioridad-media.selected { border-color: #F59E0B; background: #FFFBEB; color: #F59E0B; }
-.option-btn.prioridad-alta.selected  { border-color: #EF4444; background: #FEF2F2; color: #EF4444; }
+// Opciones de prioridad seleccionadas con color semántico
+.option-btn.prioridad-baja.selected  { border-color: var(--color-priority-low);    background: #F0FDF4; color: var(--color-priority-low); }
+.option-btn.prioridad-media.selected { border-color: var(--color-priority-medium); background: #FFFBEB; color: var(--color-priority-medium); }
+.option-btn.prioridad-alta.selected  { border-color: var(--color-priority-high);   background: #FEF2F2; color: var(--color-priority-high); }
 
+// Mensaje de error de validación del formulario
 .error-message {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #EF4444;
+  background   : #FEF2F2;
+  border       : 1px solid #FECACA;
+  border-radius: var(--radius-sm);
+  padding      : var(--space-2) var(--space-3);
+  font-size    : var(--type-body-sm-size);
+  color        : var(--color-error);
 }
 
+// Botón de envío del formulario
 .submit-btn {
-  background: linear-gradient(135deg, #0288D1, #4FC3F7);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  padding: 16px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  width: 100%;
-  display: flex;
-  align-items: center;
+  background     : linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color          : var(--color-text-on-dark);
+  border         : none;
+  border-radius  : var(--radius-lg);
+  padding        : var(--space-4);
+  font-size      : var(--type-body-md-size);
+  font-weight    : var(--font-weight-bold);
+  cursor         : pointer;
+  width          : 100%;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 16px rgba(2,136,209,0.3);
-  letter-spacing: 0.5px;
+  gap            : var(--space-2);
+  box-shadow     : var(--shadow-primary);
+  letter-spacing : 0.5px;
+  min-height     : var(--touch-target-min);
+  transition     : transform var(--duration-fast) var(--easing-standard);
 }
 
+.submit-btn:active   { transform: scale(0.98); }
+
+// Estado deshabilitado del botón de envío
 .submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  opacity: var(--disabled-opacity);
+  cursor : not-allowed;
 }
