@@ -9,8 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel,
-  IonSpinner, IonFab, IonFabButton, IonMenuButton, MenuController
+  IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonFab, IonFabButton, IonMenuButton, MenuController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { logOutOutline, add, clipboardOutline, notificationsOutline,
@@ -18,6 +17,10 @@ flashOffOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
 import { NotificacionService } from '../../services/notificacion';
+
+import { TicketCardComponent } from '../../components/ticket-card/ticket-card.component';
+import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
+import { LoadingStateComponent } from '../../components/loading-state/loading-state.component';
 
 @Component({
   selector   : 'app-tickets',
@@ -28,7 +31,7 @@ import { NotificacionService } from '../../services/notificacion';
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
     IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel,
-    IonSpinner, IonMenuButton
+    IonMenuButton, TicketCardComponent, EmptyStateComponent, LoadingStateComponent
   ]
 })
 export class TicketsPage implements OnInit {

@@ -92,10 +92,10 @@
 
 // Lista
 .tickets-list {
-  padding        : 8px 16px 80px;
-  display        : flex;
-  flex-direction : column;
-  gap            : 10px;
+  padding       : var(--space-2) var(--app-margin) var(--space-10);
+  display       : flex;
+  flex-direction: column;
+  gap           : var(--space-2);
 }
 
 // Tarjeta

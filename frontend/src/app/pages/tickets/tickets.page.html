@@ -4,33 +4,40 @@
   =============================================================
   Responsabilidad: muestra dashboard personalizado según el rol
   del usuario autenticado con tarjetas resumen y lista de tickets.
+  Ensambla los componentes del catálogo de la Semana 10.
   ============================================================= -->
 
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
 
-    <!-- Botón hamburguesa + Logo -->
+    <!-- Botón hamburguesa para abrir el sidebar -->
     <ion-buttons slot="start">
       <ion-menu-button class="menu-btn" color="light"></ion-menu-button>
       <div class="header-logo">
-        <span class="logo-emoji">🧑🏻‍💻</span>
+        <span>⚡</span>
       </div>
     </ion-buttons>
 
     <ion-title class="header-title">{{ tituloHeader }}</ion-title>
 
-    <!-- Notificaciones y logout -->
+    <!-- Notificaciones y cierre de sesión -->
     <ion-buttons slot="end">
-      <ion-button (click)="irNotificaciones()" class="notif-btn">
+      <ion-button
+        (click)="irNotificaciones()"
+        class="notif-btn"
+        [attr.aria-label]="'Notificaciones — ' + conteoNotificaciones + ' sin leer'">
         <div class="notif-wrapper">
-          <ion-icon name="notifications-outline"></ion-icon>
+          <ion-icon name="notifications-outline" aria-hidden="true"></ion-icon>
           <span class="notif-badge" *ngIf="conteoNotificaciones > 0">
             {{ conteoNotificaciones }}
           </span>
         </div>
       </ion-button>
-      <ion-button (click)="cerrarSesion()" class="logout-btn">
-        <ion-icon name="log-out-outline"></ion-icon>
+      <ion-button
+        (click)="cerrarSesion()"
+        class="logout-btn"
+        aria-label="Cerrar sesión">
+        <ion-icon name="log-out-outline" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -39,15 +46,13 @@
 
 <ion-content class="tickets-content">
 
-  <!-- Cargando -->
-  <div class="loading-state" *ngIf="cargando">
-    <ion-spinner name="crescent" color="primary"></ion-spinner>
-  </div>
+  <!-- Componente de carga — Situación 1 -->
+  <app-loading-state [cargando]="cargando"></app-loading-state>
 
   <div *ngIf="!cargando">
 
     <!-- -----------------------------------------------------
-      Sección de bienvenida con nombre del usuario
+      Sección de bienvenida con nombre del usuario y rol
     ------------------------------------------------------ -->
     <div class="welcome-section">
       <div class="welcome-text">
@@ -55,39 +60,39 @@
         <p>{{ getSubtitulo() }}</p>
       </div>
       <button class="nuevo-ticket-btn" (click)="crearTicket()">
-        <ion-icon name="add"></ion-icon>
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
         Nuevo Ticket
       </button>
     </div>
 
     <!-- -----------------------------------------------------
-      Tarjetas de resumen por estado
+      Tarjetas de resumen — clicables para filtrar por estado
     ------------------------------------------------------ -->
     <div class="resumen-cards">
       <div class="resumen-card" (click)="filtrarPorEstado('')">
         <div class="card-valor">{{ resumen.total }}</div>
         <div class="card-label">Total</div>
-        <div class="card-icon">📋</div>
+        <div class="card-icon" aria-hidden="true">📋</div>
       </div>
       <div class="resumen-card pendiente" (click)="filtrarPorEstado('pendiente')">
         <div class="card-valor">{{ resumen.pendiente }}</div>
         <div class="card-label">Pendientes</div>
-        <div class="card-icon">🕐</div>
+        <div class="card-icon" aria-hidden="true">🕐</div>
       </div>
       <div class="resumen-card proceso" (click)="filtrarPorEstado('en_proceso')">
         <div class="card-valor">{{ resumen.en_proceso }}</div>
         <div class="card-label">En proceso</div>
-        <div class="card-icon">▶</div>
+        <div class="card-icon" aria-hidden="true">▶</div>
       </div>
       <div class="resumen-card finalizado" (click)="filtrarPorEstado('finalizado')">
         <div class="card-valor">{{ resumen.finalizado }}</div>
         <div class="card-label">Finalizados</div>
-        <div class="card-icon">✅</div>
+        <div class="card-icon" aria-hidden="true">✅</div>
       </div>
     </div>
 
     <!-- -----------------------------------------------------
-      Filtros de estado
+      Filtros de estado — activos, todos, inactivos
     ------------------------------------------------------ -->
     <div class="filter-container">
       <ion-segment [(ngModel)]="filtroActual" (ionChange)="cambiarFiltro()" class="custom-segment">
@@ -103,46 +108,38 @@
       </ion-segment>
     </div>
 
-    <!-- Contador -->
+    <!-- Contador de tickets encontrados -->
     <div class="tickets-count">
       {{ tickets.length }} ticket{{ tickets.length !== 1 ? 's' : '' }}
     </div>
 
     <!-- -----------------------------------------------------
-      Lista de tickets
+      Lista de tickets — usa TicketCardComponent del catálogo
+      Situación 2 — éxito con datos
     ------------------------------------------------------ -->
     <div class="tickets-list" *ngIf="tickets.length > 0">
-      <div class="ticket-card"
+      <app-ticket-card
         *ngFor="let ticket of tickets"
-        [class]="'prioridad-' + ticket.prioridad"
-        (click)="verDetalle(ticket.id_ticket)">
-
-        <div class="card-top">
-          <span class="ticket-num">#{{ ticket.id_ticket }}</span>
-          <span class="estado-badge" [class]="'estado-' + ticket.estado">
-            {{ ticket.estado.replace('_', ' ') | titlecase }}
-          </span>
-        </div>
-
-        <div class="ticket-titulo">{{ ticket.titulo }}</div>
-
-        <div class="card-bottom">
-          <span class="chip">{{ getCategoriaLabel(ticket.id_categoria) }}</span>
-          <span class="chip" [class]="'chip-' + ticket.prioridad">
-            {{ ticket.prioridad | titlecase }}
-          </span>
-          <span class="ticket-fecha">{{ ticket.fecha_creacion | date:'dd/MM/yy' }}</span>
-        </div>
-
-      </div>
+        [idTicket]="ticket.id_ticket"
+        [titulo]="ticket.titulo"
+        [estado]="ticket.estado"
+        [prioridad]="ticket.prioridad"
+        [categoriaLabel]="getCategoriaLabel(ticket.id_categoria)"
+        [fecha]="ticket.fecha_creacion"
+        (cardClick)="verDetalle($event)">
+      </app-ticket-card>
     </div>
 
-    <!-- Sin tickets -->
-    <div class="empty-state" *ngIf="tickets.length === 0">
-      <ion-icon name="clipboard-outline"></ion-icon>
-      <h3>Sin tickets</h3>
-      <p>No hay tickets {{ filtroActual }} por el momento</p>
-    </div>
+    <!-- -----------------------------------------------------
+      Estado vacío — usa EmptyStateComponent del catálogo
+      Situación 3 — éxito sin datos
+    ------------------------------------------------------ -->
+    <app-empty-state
+      *ngIf="tickets.length === 0"
+      icono="clipboard-outline"
+      titulo="Sin tickets"
+      [subtitulo]="'No hay tickets ' + filtroActual + ' por el momento'">
+    </app-empty-state>
 
   </div>
 
