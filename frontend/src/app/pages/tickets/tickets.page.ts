@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonFab, IonFabButton, IonMenuButton, MenuController
+  IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonFab, IonFabButton, IonMenuButton, MenuController, ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { logOutOutline, add, clipboardOutline, notificationsOutline,
@@ -17,10 +17,12 @@ flashOffOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
 import { NotificacionService } from '../../services/notificacion';
+import { ErrorService, ErrorTraducido } from '../../services/error';
 
 import { TicketCardComponent } from '../../components/ticket-card/ticket-card.component';
 import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
 import { LoadingStateComponent } from '../../components/loading-state/loading-state.component';
+import { ErrorStateComponent } from '../../components/error-state/error-state.component';
 
 @Component({
   selector   : 'app-tickets',
@@ -31,7 +33,8 @@ import { LoadingStateComponent } from '../../components/loading-state/loading-st
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
     IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel,
-    IonMenuButton, TicketCardComponent, EmptyStateComponent, LoadingStateComponent
+    IonMenuButton, TicketCardComponent, EmptyStateComponent, LoadingStateComponent,
+    ErrorStateComponent
   ]
 })
 export class TicketsPage implements OnInit {
@@ -45,6 +48,7 @@ export class TicketsPage implements OnInit {
   estadoFiltro        : string  = '';
   prioridadFiltro     : string  = '';
   conteoNotificaciones: number  = 0;
+  errorActual         : ErrorTraducido | null = null;  
 
   // Resumen para las tarjetas del dashboard
   resumen = { total: 0, pendiente: 0, en_proceso: 0, finalizado: 0 };
@@ -55,7 +59,9 @@ export class TicketsPage implements OnInit {
     private notificacionService : NotificacionService,
     private router              : Router,
     private route               : ActivatedRoute,
-    private menuCtrl            : MenuController
+    private menuCtrl            : MenuController,
+    private errorService        : ErrorService,
+    private toastCtrl           : ToastController 
   ) {
     addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline, flashOffOutline });
   }
@@ -96,8 +102,21 @@ export class TicketsPage implements OnInit {
     return titulos[this.rol] || 'Tickets';
   }
 
+  // Método para mostrar toast
+
+  async mostrarToast(mensaje: string, color: string = 'success') {
+    const toast = await this.toastCtrl.create({
+      message : mensaje,
+      duration: 2000,
+      position: 'bottom',
+      color   : color
+    });
+    await toast.present();
+  }
+
   async cargarTickets() {
     this.cargando = true;
+    this.errorActual = null;
     try {
       // Cargar todos para calcular resumen
       const todosActivos = await this.ticketService.listarTickets('activos', 1, 100);
@@ -124,11 +143,19 @@ export class TicketsPage implements OnInit {
       }
 
       this.tickets = tickets;
-    } catch (error) {
-      console.error('Error cargando tickets:', error);
+    } catch (error: any) {
+      this.errorActual = this.errorService.traducir(error);
+      if(error?.response?.status === 401){
+        await this.authService.logout();
+        this.router.navigate(['/login']);
+      }
     } finally {
       this.cargando = false;
     }
+  }
+
+  volverATickets() {
+    this.router.navigate(['/tickets']);
   }
 
   cambiarFiltro() {

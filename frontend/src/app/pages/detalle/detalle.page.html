@@ -127,8 +127,11 @@
       </button>
 
       <!-- Desactivar ticket — solo admin -->
-      <button class="accion-btn delete-btn" *ngIf="rol === 'admin'"
-        (click)="desactivarTicket()" [disabled]="actualizando">
+      <button class="accion-btn delete-btn" 
+        *ngIf="rol === 'admin'"
+        (click)="desactivarTicket()" 
+        [disabled]="actualizando"
+        aria-label="Desactivar este ticket">
         <ion-icon name="trash-outline"></ion-icon>
         Desactivar ticket
       </button>
@@ -185,8 +188,9 @@
           (keyup.enter)="enviarComentario()">
         <button class="send-btn"
           (click)="enviarComentario()"
-          [disabled]="!nuevoComentario.trim()">
-          <ion-icon name="send"></ion-icon>
+          [disabled]="!nuevoComentario.trim()"
+          aria-label="Enviar comentario">
+          <ion-icon name="send" aria-hidden="true"></ion-icon>
         </button>
       </div>
 

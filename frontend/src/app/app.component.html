@@ -32,8 +32,10 @@
 
       <!-- Activos -->
       <div class="tree-section">
-        <div class="tree-root" (click)="toggleSection('activos')">
-          <ion-icon name="folder-open-outline" class="tree-icon"></ion-icon>
+        <div class="tree-root" (click)="toggleSection('activos')"
+          role="button"
+          aria-label="Expandir tickets activos">
+          <ion-icon name="folder-open-outline" class="tree-icon" aria-hidden="true"></ion-icon>
           <span>Activos</span>
           <ion-icon
             [name]="expanded['activos'] ? 'chevron-down' : 'chevron-forward'"
@@ -44,8 +46,10 @@
         <div class="tree-children" *ngIf="expanded['activos']">
 
         <!-- Pendiente -->
-          <div class="tree-node" (click)="toggleSection('pendiente')">
-            <ion-icon name="time-outline" class="node-icon"></ion-icon>
+          <div class="tree-node" (click)="toggleSection('pendiente')"
+            role="button"
+            aria-label="Expandir tickets pendientes">
+            <ion-icon name="time-outline" class="node-icon" aria-hidden="true"></ion-icon>
             <span>Pendiente</span>
             <ion-icon
               [name]="expanded['pendiente'] ? 'chevron-down' : 'chevron-forward'"
@@ -53,20 +57,28 @@
             </ion-icon>
           </div>
           <div class="tree-leaves" *ngIf="expanded['pendiente']">
-            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'pendiente', 'alta')">
+            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'pendiente', 'alta')"
+            role="button"
+            aria-label="Ver tickets activos pendientes de prioridad alta">
               🔴 Alta
             </div>
-            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'pendiente', 'media')">
+            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'pendiente', 'media')"
+            role="button"
+            aria-label="Ver tickets activos pendientes de prioridad media">
               🟡 Media
             </div>
-            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'pendiente', 'baja')">
+            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'pendiente', 'baja')"
+            role="button"
+            aria-label="Ver tickets activos pendientes de prioridad baja">
               🟢 Baja
             </div>
           </div>
 
           <!-- En proceso -->
-          <div class="tree-node" (click)="toggleSection('en_proceso')">
-            <ion-icon name="play-circle-outline" class="node-icon"></ion-icon>
+          <div class="tree-node" (click)="toggleSection('en_proceso')"
+            role="button"
+            aria-label="Expandir tickets en proceso">
+            <ion-icon name="play-circle-outline" class="node-icon" aria-hidden="true"></ion-icon>
             <span>En proceso</span>
             <ion-icon
               [name]="expanded['en_proceso'] ? 'chevron-down' : 'chevron-forward'"
@@ -74,20 +86,28 @@
             </ion-icon>
           </div>
           <div class="tree-leaves" *ngIf="expanded['en_proceso']">
-            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'en_proceso', 'alta')">
+            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'en_proceso', 'alta')"
+            role="button"
+            aria-label="Ver tickets activos en proceso de prioridad alta ">
               🔴 Alta
             </div>
-            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'en_proceso', 'media')">
+            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'en_proceso', 'media')"
+            role="button"
+            aria-label="Ver tickets activos en proceso de prioridad media">
               🟡 Media
             </div>
-            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'en_proceso', 'baja')">
+            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'en_proceso', 'baja')"
+            role="button"
+            aria-label="Ver tickets activos en proceso de prioridad baja">
               🟢 Baja
             </div>
           </div>
 
           <!-- Finalizado -->
-          <div class="tree-node" (click)="toggleSection('finalizado')">
-            <ion-icon name="checkmark-circle-outline" class="node-icon"></ion-icon>
+          <div class="tree-node" (click)="toggleSection('finalizado')"
+            role="button"
+            aria-label="Expandir tickets finalizado">
+            <ion-icon name="checkmark-circle-outline" class="node-icon" aria-hidden="true"></ion-icon>
             <span>Finalizado</span>
             <ion-icon
               [name]="expanded['finalizado'] ? 'chevron-down' : 'chevron-forward'"
@@ -95,13 +115,19 @@
             </ion-icon>
           </div>
           <div class="tree-leaves" *ngIf="expanded['finalizado']">
-            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'finalizado', 'alta')">
+            <div class="tree-leaf alta" (click)="filtrarTickets('activos', 'finalizado', 'alta')"
+            role="button"
+            aria-label="Ver tickets activos finalizado de prioridad alta">
               🔴 Alta
             </div>
-            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'finalizado', 'media')">
+            <div class="tree-leaf media" (click)="filtrarTickets('activos', 'finalizado', 'media')"
+            role="button"
+            aria-label="Ver tickets activos finalizado de prioridad media">
               🟡 Media
             </div>
-            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'finalizado', 'baja')">
+            <div class="tree-leaf baja" (click)="filtrarTickets('activos', 'finalizado', 'baja')"
+            role="button"
+            aria-label="Ver tickets activos finalizado de prioridad baja">
               🟢 Baja
             </div>
           </div>
@@ -111,16 +137,20 @@
 
       <!-- Inactivos -->
       <div class="tree-section">
-        <div class="tree-root" (click)="filtrarTickets('inactivos', '', '')">
-          <ion-icon name="archive-outline" class="tree-icon"></ion-icon>
+        <div class="tree-root" (click)="filtrarTickets('inactivos', '', '')"
+          role="button"
+          aria-label="Expandir tickets inactivos">
+          <ion-icon name="archive-outline" class="tree-icon" aria-hidden="true"></ion-icon>
           <span>Inactivos</span>
         </div>
       </div>
 
       <!-- Todos -->
       <div class="tree-section">
-        <div class="tree-root" (click)="filtrarTickets('todos', '', '')">
-          <ion-icon name="list-outline" class="tree-icon"></ion-icon>
+        <div class="tree-root" (click)="filtrarTickets('todos', '', '')"
+          role="button"
+          aria-label="Expandir tickets todos">
+          <ion-icon name="list-outline" class="tree-icon" aria-hidden="true"></ion-icon>
           <span>Todos los tickets</span>
         </div>
       </div>

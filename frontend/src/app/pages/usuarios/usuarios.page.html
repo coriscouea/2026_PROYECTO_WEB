@@ -18,8 +18,11 @@
 
     <!-- Botón nuevo usuario -->
     <ion-buttons slot="end">
-      <ion-button (click)="mostrarFormulario = true" class="nuevo-btn">
-        <ion-icon name="person-add-outline"></ion-icon>
+      <ion-button  
+        (click)="mostrarFormulario = true" 
+        class="nuevo-btn"
+        aria-label="Crear nuevo usuario">
+        <ion-icon name="person-add-outline" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -59,7 +62,9 @@
 
       <div class="modal-header">
         <h2>Nuevo Usuario</h2>
-        <button class="modal-close" (click)="cerrarFormulario()">✕</button>
+        <button class="modal-close" 
+          (click)="cerrarFormulario()"
+          aria-label="Cerrar formulario">✕</button>
       </div>
 
       <!-- Nombre -->
@@ -146,11 +151,16 @@
         </select>
 
         <!-- Botón cambiar contraseña -->
-        <button class="key-btn" (click)="abrirCambioPassword(u)">
-          <ion-icon name="key-outline"></ion-icon>
+        <button class="key-btn" 
+          (click)="abrirCambioPassword(u)"
+          [attr.aria-label]="'Cambiar contraseña de ' + u.nombre">
+          <ion-icon name="key-outline" aria-hidden="true"></ion-icon>
         </button>
 
-        <button class="delete-btn" *ngIf="u.activo" (click)="desactivarUsuario(u)">
+        <button class="delete-btn" 
+          *ngIf="u.activo" 
+          (click)="desactivarUsuario(u)"
+          [attr.aria-label]="'Desactivar usuario ' + u.nombre">
           <ion-icon name="trash-outline"></ion-icon>
         </button>
       </div>

@@ -9,11 +9,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonBackButton, IonSpinner, IonIcon, IonButton
+  IonBackButton, IonSpinner, IonIcon, IonButton, ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { trashOutline, peopleOutline, personAddOutline, keyOutline } from 'ionicons/icons';
 import { UsuarioService } from '../../services/usuario';
+import { ErrorService } from '../../services/error';
 
 @Component({
   selector   : 'app-usuarios',
@@ -60,7 +61,9 @@ export class UsuariosPage implements OnInit {
 
   constructor(
     private usuarioService: UsuarioService,
-    private router        : Router
+    private router        : Router,
+    private toastCtrl   : ToastController,
+    private errorService: ErrorService
   ) {
     addIcons({ trashOutline, peopleOutline, personAddOutline, keyOutline });
   }
@@ -162,13 +165,26 @@ export class UsuariosPage implements OnInit {
         }
       }
 
+  // Método toast reutilizable
+  async mostrarToast(mensaje: string, color: string = 'success') {
+    const toast = await this.toastCtrl.create({
+      message : mensaje,
+      duration: 2000,
+      position: 'bottom',
+      color   : color
+    });
+    await toast.present();
+  }
+
   async cambiarRol(usuario: any) {
     try {
       await this.usuarioService.actualizarUsuario(usuario.id_usuario, {
         id_rol: Number(usuario.id_rol)
       });
-    } catch (error) {
-      console.error('Error cambiando rol:', error);
+      await this.mostrarToast('✅ Rol actualizado correctamente');
+    } catch (error: any) {
+      const err = this.errorService.traducir(error);
+      await this.mostrarToast(err.mensaje, 'danger');
     }
   }
 
@@ -235,10 +251,11 @@ export class UsuariosPage implements OnInit {
   async atenderSolicitud(solicitud: any) {
     try {
       await this.usuarioService.atenderSolicitud(solicitud.id_solicitud);
-      alert(`✅ Solicitud atendida.\n\nRecuerda comunicar la nueva contraseña a ${solicitud.nombre} por WhatsApp de Mesa de Ayuda.`);
+      await this.mostrarToast('✅ Solicitud atendida — comunica la nueva contraseña por WhatsApp de Mesa de Ayuda');
       await this.cargarSolicitudes();
-    } catch (error) {
-      console.error('Error atendiendo solicitud:', error);
+    } catch (error: any) {
+    const err = this.errorService.traducir(error);
+    await this.mostrarToast(err.mensaje, 'danger');
     }
   }
 }

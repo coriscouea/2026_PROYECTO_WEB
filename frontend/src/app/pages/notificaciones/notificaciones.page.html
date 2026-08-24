@@ -19,8 +19,11 @@
 
     <!-- Marcar todas como leídas -->
     <ion-buttons slot="end">
-      <ion-button (click)="marcarTodasLeidas()" class="leer-btn" *ngIf="notificaciones.length > 0">
-        <ion-icon name="checkmark-done-outline"></ion-icon>
+      <ion-button (click)="marcarTodasLeidas()" 
+        class="leer-btn" 
+        *ngIf="notificaciones.length > 0"
+        aria-label="Marcar todas las notificaciones como leidas">
+        <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -48,7 +51,11 @@
       (click)="verTicket(n)">
 
       <!-- Punto indicador de no leída -->
-      <div class="notif-dot" *ngIf="!n.leida"></div>
+      <div class="notif-dot" 
+        *ngIf="!n.leida"
+        role="img"
+        aria-label="No leida">
+      </div>
 
       <!-- Ícono del tipo de notificación -->
       <div class="notif-icon">

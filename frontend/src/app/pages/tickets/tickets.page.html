@@ -50,97 +50,107 @@
   <app-loading-state [cargando]="cargando"></app-loading-state>
 
   <div *ngIf="!cargando">
+  
+    <!--Situación 4 - Error con reintento -->
+    <app-error-state
+      *ngIf="errorActual"
+      [error]="errorActual"
+      (reintentar)="cargarTickets()"
+      (volver)="volverATickets()">
+    </app-error-state>
 
-    <!-- -----------------------------------------------------
-      Sección de bienvenida con nombre del usuario y rol
-    ------------------------------------------------------ -->
-    <div class="welcome-section">
-      <div class="welcome-text">
-        <h2>Bienvenido, {{ nombre }}</h2>
-        <p>{{ getSubtitulo() }}</p>
+    <div *ngIf="!errorActual">
+
+      <!-- -----------------------------------------------------
+        Sección de bienvenida con nombre del usuario y rol
+      ------------------------------------------------------ -->
+      <div class="welcome-section">
+        <div class="welcome-text">
+          <h2>Bienvenido, {{ nombre }}</h2>
+          <p>{{ getSubtitulo() }}</p>
+        </div>
+        <button class="nuevo-ticket-btn" (click)="crearTicket()">
+          <ion-icon name="add" aria-hidden="true"></ion-icon>
+          Nuevo Ticket
+        </button>
       </div>
-      <button class="nuevo-ticket-btn" (click)="crearTicket()">
-        <ion-icon name="add" aria-hidden="true"></ion-icon>
-        Nuevo Ticket
-      </button>
-    </div>
 
-    <!-- -----------------------------------------------------
-      Tarjetas de resumen — clicables para filtrar por estado
-    ------------------------------------------------------ -->
-    <div class="resumen-cards">
-      <div class="resumen-card" (click)="filtrarPorEstado('')">
-        <div class="card-valor">{{ resumen.total }}</div>
-        <div class="card-label">Total</div>
-        <div class="card-icon" aria-hidden="true">📋</div>
+      <!-- -----------------------------------------------------
+        Tarjetas de resumen — clicables para filtrar por estado
+      ------------------------------------------------------ -->
+      <div class="resumen-cards">
+        <div class="resumen-card" (click)="filtrarPorEstado('')">
+          <div class="card-valor">{{ resumen.total }}</div>
+          <div class="card-label">Total</div>
+          <div class="card-icon" aria-hidden="true">📋</div>
+        </div>
+        <div class="resumen-card pendiente" (click)="filtrarPorEstado('pendiente')">
+          <div class="card-valor">{{ resumen.pendiente }}</div>
+          <div class="card-label">Pendientes</div>
+          <div class="card-icon" aria-hidden="true">🕐</div>
+        </div>
+        <div class="resumen-card proceso" (click)="filtrarPorEstado('en_proceso')">
+          <div class="card-valor">{{ resumen.en_proceso }}</div>
+          <div class="card-label">En proceso</div>
+          <div class="card-icon" aria-hidden="true">▶</div>
+        </div>
+        <div class="resumen-card finalizado" (click)="filtrarPorEstado('finalizado')">
+          <div class="card-valor">{{ resumen.finalizado }}</div>
+          <div class="card-label">Finalizados</div>
+          <div class="card-icon" aria-hidden="true">✅</div>
+        </div>
       </div>
-      <div class="resumen-card pendiente" (click)="filtrarPorEstado('pendiente')">
-        <div class="card-valor">{{ resumen.pendiente }}</div>
-        <div class="card-label">Pendientes</div>
-        <div class="card-icon" aria-hidden="true">🕐</div>
+
+      <!-- -----------------------------------------------------
+        Filtros de estado — activos, todos, inactivos
+      ------------------------------------------------------ -->
+      <div class="filter-container">
+        <ion-segment [(ngModel)]="filtroActual" (ionChange)="cambiarFiltro()" class="custom-segment">
+          <ion-segment-button value="activos">
+            <ion-label>Activos</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="todos">
+            <ion-label>Todos</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="inactivos">
+            <ion-label>Inactivos</ion-label>
+          </ion-segment-button>
+        </ion-segment>
       </div>
-      <div class="resumen-card proceso" (click)="filtrarPorEstado('en_proceso')">
-        <div class="card-valor">{{ resumen.en_proceso }}</div>
-        <div class="card-label">En proceso</div>
-        <div class="card-icon" aria-hidden="true">▶</div>
+
+      <!-- Contador de tickets encontrados -->
+      <div class="tickets-count">
+        {{ tickets.length }} ticket{{ tickets.length !== 1 ? 's' : '' }}
       </div>
-      <div class="resumen-card finalizado" (click)="filtrarPorEstado('finalizado')">
-        <div class="card-valor">{{ resumen.finalizado }}</div>
-        <div class="card-label">Finalizados</div>
-        <div class="card-icon" aria-hidden="true">✅</div>
+
+      <!-- -----------------------------------------------------
+        Lista de tickets — usa TicketCardComponent del catálogo
+        Situación 2 — éxito con datos
+      ------------------------------------------------------ -->
+      <div class="tickets-list" *ngIf="tickets.length > 0">
+        <app-ticket-card
+          *ngFor="let ticket of tickets"
+          [idTicket]="ticket.id_ticket"
+          [titulo]="ticket.titulo"
+          [estado]="ticket.estado"
+          [prioridad]="ticket.prioridad"
+          [categoriaLabel]="getCategoriaLabel(ticket.id_categoria)"
+          [fecha]="ticket.fecha_creacion"
+          (cardClick)="verDetalle($event)">
+        </app-ticket-card>
       </div>
-    </div>
 
-    <!-- -----------------------------------------------------
-      Filtros de estado — activos, todos, inactivos
-    ------------------------------------------------------ -->
-    <div class="filter-container">
-      <ion-segment [(ngModel)]="filtroActual" (ionChange)="cambiarFiltro()" class="custom-segment">
-        <ion-segment-button value="activos">
-          <ion-label>Activos</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="todos">
-          <ion-label>Todos</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="inactivos">
-          <ion-label>Inactivos</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-    </div>
-
-    <!-- Contador de tickets encontrados -->
-    <div class="tickets-count">
-      {{ tickets.length }} ticket{{ tickets.length !== 1 ? 's' : '' }}
-    </div>
-
-    <!-- -----------------------------------------------------
-      Lista de tickets — usa TicketCardComponent del catálogo
-      Situación 2 — éxito con datos
-    ------------------------------------------------------ -->
-    <div class="tickets-list" *ngIf="tickets.length > 0">
-      <app-ticket-card
-        *ngFor="let ticket of tickets"
-        [idTicket]="ticket.id_ticket"
-        [titulo]="ticket.titulo"
-        [estado]="ticket.estado"
-        [prioridad]="ticket.prioridad"
-        [categoriaLabel]="getCategoriaLabel(ticket.id_categoria)"
-        [fecha]="ticket.fecha_creacion"
-        (cardClick)="verDetalle($event)">
-      </app-ticket-card>
-    </div>
-
-    <!-- -----------------------------------------------------
-      Estado vacío — usa EmptyStateComponent del catálogo
-      Situación 3 — éxito sin datos
-    ------------------------------------------------------ -->
-    <app-empty-state
-      *ngIf="tickets.length === 0"
-      icono="clipboard-outline"
-      titulo="Sin tickets"
-      [subtitulo]="'No hay tickets ' + filtroActual + ' por el momento'">
-    </app-empty-state>
-
+      <!-- -----------------------------------------------------
+        Estado vacío — usa EmptyStateComponent del catálogo
+        Situación 3 — éxito sin datos
+      ------------------------------------------------------ -->
+      <app-empty-state
+        *ngIf="tickets.length === 0"
+        icono="clipboard-outline"
+        titulo="Sin tickets"
+        [subtitulo]="'No hay tickets ' + filtroActual + ' por el momento'">
+      </app-empty-state>
+    </div>  
   </div>
 
 </ion-content>

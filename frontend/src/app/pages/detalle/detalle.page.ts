@@ -9,12 +9,13 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-  IonBackButton, IonSpinner, IonIcon
+  IonBackButton, IonSpinner, IonIcon, ToastController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { send, personAdd, checkmarkCircle, playCircle, trashOutline } from 'ionicons/icons';
 import { TicketService } from '../../services/ticket';
 import { AuthService } from '../../services/auth';
+import { ErrorService, ErrorTraducido } from '../../services/error';
 
 @Component({
   selector: 'app-detalle',
@@ -38,13 +39,16 @@ export class DetallePage implements OnInit {
   idTicket            : number  = 0;
   rol                 : string  = '';
   idUsuario           : number  = 0;
-  ticketNoEncontrado  : boolean = false; 
+  ticketNoEncontrado  : boolean = false;
+  errorActual: ErrorTraducido | null = null; 
 
   constructor(
     private route        : ActivatedRoute,
     private router       : Router,
     private ticketService: TicketService,
-    private authService  : AuthService
+    private authService  : AuthService,
+    private toastCtrl     : ToastController,
+    private errorService : ErrorService 
   ) {
     addIcons({ send, personAdd, checkmarkCircle, playCircle, trashOutline });
   }
@@ -88,7 +92,6 @@ export class DetallePage implements OnInit {
     }
   }  
     
-
   // ---------------------------------------------------------
   // Cambiar estado del ticket
   // ---------------------------------------------------------
@@ -96,13 +99,14 @@ export class DetallePage implements OnInit {
   async cambiarEstado(nuevoEstado: string) {
     this.actualizando = true;
     try {
-      this.ticket = await this.ticketService.actualizarTicket(
-        this.idTicket,
+      await this.ticketService.actualizarTicket(this.idTicket,
         { estado: nuevoEstado }
       );
+      await this.mostrarToast('✅ Estado actualizado correctamente');
       await this.cargarDatos();
     } catch (error: any) {
-      console.error('Error cambiando estado:', error);
+      const err = this.errorService.traducir(error);
+      await this.mostrarToast(err.mensaje, 'danger');
     } finally {
       this.actualizando = false;
     }
@@ -115,13 +119,14 @@ export class DetallePage implements OnInit {
   async tomarTicket() {
     this.actualizando = true;
     try {
-      this.ticket = await this.ticketService.actualizarTicket(
-        this.idTicket,
-        { id_tecnico_asignado: this.idUsuario }
+      await this.ticketService.actualizarTicket(this.idTicket,
+        { id_tecnico_asignado: this.ticket.id_usuario }
       );
+      await this.mostrarToast('✅ Ticket tomado correctamente');
       await this.cargarDatos();
-    } catch (error) {
-      console.error('Error asignando técnico:', error);
+    } catch (error: any) {
+      const err = this.errorService.traducir(error);
+      await this.mostrarToast(err.mensaje, 'danger');
     } finally {
       this.actualizando = false;
     }
@@ -157,10 +162,11 @@ export class DetallePage implements OnInit {
     try {
       await this.ticketService.agregarComentario(this.idTicket, this.nuevoComentario);
       this.nuevoComentario = '';
-      this.comentarios = await this.ticketService.obtenerComentarios(this.idTicket);
-      this.historial   = await this.ticketService.obtenerHistorial(this.idTicket);
-    } catch (error) {
-      console.error('Error enviando comentario:', error);
+      await this.mostrarToast('✅ Comentario agregado');
+      await this.cargarDatos();
+    } catch (error: any) {
+      const err = this.errorService.traducir(error);
+      await this.mostrarToast(err.mensaje, 'danger');
     }
   }
 
@@ -192,5 +198,18 @@ export class DetallePage implements OnInit {
     } finally {
       this.actualizando = false;
     }
+  }
+
+
+  // Método toast reutilizable
+
+  async mostrarToast(mensaje: string, color: string = 'success') {
+    const toast = await this.toastCtrl.create({
+      message : mensaje,
+      duration: 2000,
+      position: 'bottom',
+      color   : color
+    });
+    await toast.present();
   }
 }

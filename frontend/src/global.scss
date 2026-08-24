@@ -427,3 +427,103 @@ ion-menu .rol-chip {
   --touch-target-min: 48px;
   --disabled-opacity: 0.4;
 }
+
+// =============================================================
+// Grupo D — Responsivo y Safe Area
+// HelpDesk Web | Semana 10 · Diseño adaptativo
+// =============================================================
+
+// -------------------------------------------------------------
+// Safe area — respeta la muesca, barra de estado e indicador
+// de inicio en dispositivos iOS y Android modernos
+// -------------------------------------------------------------
+ion-header {
+  padding-top: env(safe-area-inset-top);
+}
+
+ion-content {
+  --padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-menu ion-footer {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// -------------------------------------------------------------
+// Breakpoints responsivos
+// Teléfono: hasta 600px — Tableta: 600-840px — PC: >840px
+// -------------------------------------------------------------
+
+// Bandeja de tickets — tarjetas resumen en 2 columnas en móvil
+@media (max-width: 600px) {
+  .resumen-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // Bienvenida apilada en móvil
+  .welcome-section {
+    flex-direction: column;
+    align-items   : flex-start;
+    gap           : var(--space-3);
+  }
+
+  .nuevo-ticket-btn {
+    width          : 100%;
+    justify-content: center;
+  }
+}
+
+// Gestión de usuarios — tarjeta apilada en móvil
+@media (max-width: 600px) {
+  .usuario-card {
+    flex-direction: column;
+    align-items   : flex-start;
+  }
+
+  .card-actions {
+    width          : 100%;
+    justify-content: flex-end;
+  }
+}
+
+// Login — paneles apilados en móvil
+@media (max-width: 900px) {
+  .left-panel { display: none; }
+}
+
+@media (max-width: 600px) {
+  .right-panel { padding: var(--space-6); }
+}
+
+// Métricas — tarjetas en 2 columnas siempre
+@media (max-width: 600px) {
+  .cards-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// -------------------------------------------------------------
+// Diseño adaptativo — sidebar fijo en PC
+// En móvil es drawer, en PC es panel permanente visible
+// -------------------------------------------------------------
+
+@media (min-width: 841px) {
+  ion-menu {
+    --side-max-edge: 280px;
+  }
+}
+
+// -------------------------------------------------------------
+// Orientación landscape — ajustes para teléfono horizontal
+// -------------------------------------------------------------
+
+@media (orientation: landscape) and (max-width: 840px) {
+  .resumen-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .login-card {
+    flex-direction: row;
+    min-height    : auto;
+  }
+}
