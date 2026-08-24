@@ -82,7 +82,11 @@ def svc_crear_comentario(
         id_ticket  = id_ticket,
         id_usuario = id_usuario
     )
-    db.commit()  # confirma el comentario y el evento de historial
+    db.commit()                         # confirma el comentario y el evento de historial
+    db.refresh(comentario)              # recarga el comentario con la relación usuario actualizada
+
+    # Resuelve el nombre del autor desde la relación para incluirlo en la respuesta
+    comentario.nombre_usuario = comentario.usuario.nombre if comentario.usuario else None
 
     return comentario
 
@@ -125,5 +129,10 @@ def svc_listar_comentarios(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes permiso para ver los comentarios de este ticket"
         )
+    comentarios = listar_comentarios(db, id_ticket)
+    
+    # Resuelve el nombre del autor en cada comentario desde la relación precargada
+    for c in comentarios:
+        c.nombre_usuario = c.usuario.nombre if c.usuario else None
 
-    return listar_comentarios(db, id_ticket)
+    return comentarios

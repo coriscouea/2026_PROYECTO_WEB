@@ -31,6 +31,7 @@ class ComentarioResponse(BaseModel):
     id_comentario   : int
     id_ticket       : int
     id_usuario      : int
+    nombre_usuario  : Optional[str] = None                  # Nombre del autor del comentario
     texto           : str
     fecha           : Optional[datetime] = None             # Fecha y hora del comentario, puede ser nula si no se registra
 

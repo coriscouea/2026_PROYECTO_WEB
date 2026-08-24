@@ -6,7 +6,7 @@
 # Los comentarios nunca se eliminan — solo se insertan y consultan.
 # =============================================================
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.comentarios import Comentario
 
 def crear_comentario(
@@ -34,12 +34,13 @@ def crear_comentario(
 def listar_comentarios(db: Session, id_ticket: int) -> list[Comentario]:
 
     # ---------------------------------------------------------
-    # Lista todos los comentarios de un ticket
-    # Ordenados por fecha ASC para hilo natural de conversación
+    # Lista todos los comentarios de un ticket con el autor precargado
+    # joinedload evita el problema N+1 al acceder a comentario.usuario.nombre
     # ---------------------------------------------------------
     
     return (
         db.query(Comentario)
+        .options(joinedload(Comentario.usuario))
         .filter(Comentario.id_ticket == id_ticket)
         .order_by(Comentario.fecha.asc())
         .all()

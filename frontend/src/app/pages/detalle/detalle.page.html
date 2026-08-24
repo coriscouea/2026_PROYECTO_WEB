@@ -173,7 +173,7 @@
 
       <div class="comentario" *ngFor="let c of comentarios">
         <div class="comentario-header">
-          <span class="comentario-autor">Usuario #{{ c.id_usuario }}</span>
+          <span class="comentario-autor">{{c.nombre_usuario || 'Usuario #' + c.id_usuario }}</span>
           <span class="comentario-fecha">{{ c.fecha | date:'dd/MM HH:mm' }}</span>
         </div>
         <div class="comentario-texto">{{ c.texto }}</div>
