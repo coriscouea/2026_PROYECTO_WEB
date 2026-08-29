@@ -219,8 +219,36 @@ def svc_actualizar_ticket(
             nombre_tecnico = tecnico.nombre if tecnico else "Técnico"
         )
 
-    return actualizar_ticket(db, ticket, datos)
+    # ---------------------------------------------------------
+    # Genera notificaciones al cambiar estado del ticket
+    # El que cambia el estado no se notifica a sí mismo
+    # ---------------------------------------------------------
 
+    if datos.estado:
+        from app.repository.notificacion_repo import crear_notificacion
+        from app.repository.usuario_repo import obtener_admin
+
+        ids_a_notificar = set()
+        mensaje = f"El ticket #{id_ticket} cambió de estado a '{datos.estado.value}'"
+
+        # Notificar al dueño del ticket si no es quien cambió el estado
+        if ticket.id_usuario and ticket.id_usuario != id_usuario:
+            ids_a_notificar.add(ticket.id_usuario)
+
+        # Notificar al técnico asignado si no es quien cambió el estado
+        if ticket.id_tecnico_asignado and ticket.id_tecnico_asignado != id_usuario:
+            ids_a_notificar.add(ticket.id_tecnico_asignado)
+
+        # Notificar al admin — siempre, si no es quien cambió el estado
+        admin = obtener_admin(db)
+        if admin and admin.id_usuario != id_usuario:
+            ids_a_notificar.add(admin.id_usuario)
+
+        # Crea una notificación por cada destinatario identificado
+        for id_dest in ids_a_notificar:
+            crear_notificacion(db, id_dest, id_ticket, mensaje)
+
+    return actualizar_ticket(db, ticket, datos)
 
 def svc_desactivar_ticket(db: Session, id_ticket: int, current_user: dict) -> Ticket:
 
