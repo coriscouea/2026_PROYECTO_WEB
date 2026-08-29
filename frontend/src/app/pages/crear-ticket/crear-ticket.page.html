@@ -26,7 +26,7 @@
 
     <!-- -----------------------------------------------------
       Campo: Título del requerimiento
-      Mínimo 5 caracteres, máximo 150
+      Valida al abandonar el campo con (blur)
     ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Título *</div>
@@ -34,13 +34,17 @@
         class="field-input"
         [(ngModel)]="titulo"
         placeholder="Describe brevemente el problema"
-        maxlength="150">
+        maxlength="150"
+        (blur)="validarTitulo()">
       <div class="field-hint">{{ titulo.length }}/150</div>
+      <div class="field-error" *ngIf="errores['titulo']">
+        {{ errores['titulo'] }}
+      </div>
     </div>
 
     <!-- -----------------------------------------------------
       Campo: Descripción detallada del requerimiento
-      Mínimo 10 caracteres
+      Valida al abandonar el campo con (blur)
     ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Descripción *</div>
@@ -48,13 +52,16 @@
         class="field-input field-textarea"
         [(ngModel)]="descripcion"
         placeholder="Explica con detalle el requerimiento..."
-        rows="4">
+        rows="4"
+        (blur)="validarDescripcion()">
       </textarea>
+      <div class="field-error" *ngIf="errores['descripcion']">
+        {{ errores['descripcion'] }}
+      </div>
     </div>
 
     <!-- -----------------------------------------------------
       Selector de categoría — Técnica, Redes o ERP
-      El backend filtra los tickets por categoría según el rol
     ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Categoría *</div>
@@ -62,42 +69,40 @@
         <div class="option-btn"
           *ngFor="let cat of categorias"
           [class.selected]="idCategoria === cat.id"
-          (click)="idCategoria = cat.id">
+          (click)="idCategoria = cat.id; validarCategoria()">
           {{ cat.label }}
         </div>
+      </div>
+      <div class="field-error" *ngIf="errores['categoria']">
+        {{ errores['categoria'] }}
       </div>
     </div>
 
     <!-- -----------------------------------------------------
       Selector de prioridad — Baja, Media o Alta
-      Determina el color del borde izquierdo en la bandeja
     ------------------------------------------------------ -->
     <div class="field-group">
       <div class="field-label">Prioridad *</div>
       <div class="options-row">
         <div class="option-btn prioridad-baja"
           [class.selected]="prioridad === 'baja'"
-          (click)="prioridad = 'baja'">
+          (click)="prioridad = 'baja'; validarPrioridad()">
           🟢 Baja
         </div>
         <div class="option-btn prioridad-media"
           [class.selected]="prioridad === 'media'"
-          (click)="prioridad = 'media'">
+          (click)="prioridad = 'media'; validarPrioridad()">
           🟡 Media
         </div>
         <div class="option-btn prioridad-alta"
           [class.selected]="prioridad === 'alta'"
-          (click)="prioridad = 'alta'">
+          (click)="prioridad = 'alta'; validarPrioridad()">
           🔴 Alta
         </div>
       </div>
-    </div>
-
-    <!-- -----------------------------------------------------
-      Mensaje de error — validaciones del formulario
-    ------------------------------------------------------ -->
-    <div class="error-message" *ngIf="errorMensaje">
-      {{ errorMensaje }}
+      <div class="field-error" *ngIf="errores['prioridad']">
+        {{ errores['prioridad'] }}
+      </div>
     </div>
 
     <!-- -----------------------------------------------------

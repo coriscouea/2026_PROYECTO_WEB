@@ -6,7 +6,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import {
   IonContent,IonButton, IonIcon, IonSpinner, IonCheckbox
@@ -44,7 +44,8 @@ export class LoginPage {
 
   constructor(
     private authService: AuthService,
-    private router     : Router
+    private router     : Router,
+    private route      : ActivatedRoute
   ) {
     addIcons({ 
       eye, eyeOff, alertCircle,
@@ -74,6 +75,9 @@ export class LoginPage {
     try {
       await this.authService.login(this.email, this.password);
       await this.authService.obtenerPerfil();
+
+      // Navega al destino pretendido o a /tickets por defecto
+      const redirectUrl = this.route.snapshot.queryParams['redirect'] || '/tickets';
       this.router.navigate(['/tickets']);
     } catch (error: any) {
       if (error.response?.status === 401) {

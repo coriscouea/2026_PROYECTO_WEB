@@ -146,3 +146,13 @@
   opacity: var(--disabled-opacity);
   cursor : not-allowed;
 }
+
+// Mensaje de error individual por campo
+.field-error {
+  font-size : var(--type-label-md-size);
+  color     : var(--color-error);
+  margin-top: var(--space-1);
+  display   : flex;
+  align-items: center;
+  gap       : var(--space-1);
+}
