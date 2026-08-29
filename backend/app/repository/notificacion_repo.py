@@ -93,3 +93,23 @@ def marcar_todas_leidas(db:Session, id_usuario: int) -> int:
     db.commit()
     return resultado
 
+def crear_notificacion(
+    db          : Session,
+    id_usuario  : int,
+    id_ticket   : int,
+    mensaje     : str
+) -> Notificacion:
+    
+    # Crea una notificación para un usuario sobre un evento del ticket
+    
+    notificacion = Notificacion(
+        id_usuario  = id_usuario,
+        id_ticket   = id_ticket,
+        mensaje     = mensaje,
+        leida       = False
+    )
+
+    db.add(notificacion)
+    db.flush()                              # prepara el INSERT sin confirmar — el commit lo hace el service padre
+    return notificacion
+

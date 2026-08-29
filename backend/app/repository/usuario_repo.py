@@ -116,3 +116,12 @@ def desactivar_usuario(db: Session, usuario: Usuario) -> Usuario:
     db.refresh(usuario)
     return usuario
   
+def obtener_admin(db: Session) -> Usuario | None:
+
+    # Obtiene el primer usuario activo con rol admin (id_rol = 4)
+    # Usado para notificar al administrador en eventos del sistema
+    return (
+        db.query(Usuario)
+        .filter(Usuario.id_rol == 4, Usuario.activo == True)
+        .first()
+    )

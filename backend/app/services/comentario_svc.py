@@ -13,6 +13,8 @@ from app.repository.comentario_repo import crear_comentario, listar_comentarios
 from app.repository.ticket_repo import obtener_ticket
 from app.models.comentarios import Comentario
 from app.services import historial_svc
+from app.repository.notificacion_repo import crear_notificacion
+from app.repository.usuario_repo import obtener_admin
 
 def svc_crear_comentario(
 
@@ -82,6 +84,34 @@ def svc_crear_comentario(
         id_ticket  = id_ticket,
         id_usuario = id_usuario
     )
+
+    # ---------------------------------------------------------
+    # Genera notificaciones según la lógica de roles
+    # El comentador nunca se notifica a sí mismo
+    # ---------------------------------------------------------
+
+    ids_a_notificar = set()
+
+    # Notificar al dueño del ticket si no es quien comentó
+    if ticket.id_usuario and ticket.id_usuario != id_usuario:
+        ids_a_notificar.add(ticket.id_usuario)
+
+    # Notificar al técnico asignado si no es quien comentó
+    if ticket.id_tecnico_asignado and ticket.id_tecnico_asignado != id_usuario:
+        ids_a_notificar.add(ticket.id_tecnico_asignado)
+
+    # Notificar al admin — obtiene el id del admin desde la BD
+
+    admin = obtener_admin(db)
+    if admin and admin.id_usuario != id_usuario:
+        ids_a_notificar.add(admin.id_usuario)
+
+    # Crea una notificación por cada destinatario identificado
+    mensaje = f"Nuevo comentario en el ticket #{id_ticket}"
+    for id_dest in ids_a_notificar:
+        crear_notificacion(db, id_dest, id_ticket, mensaje)
+
+
     db.commit()                         # confirma el comentario y el evento de historial
     db.refresh(comentario)              # recarga el comentario con la relación usuario actualizada
 
