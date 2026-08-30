@@ -231,30 +231,30 @@ def svc_actualizar_ticket(
             nombre_tecnico = tecnico.nombre if tecnico else "Técnico"
         )
 
-    # Notifica al dueño del ticket que un técnico fue asignado
-    from app.repository.notificacion_repo import crear_notificacion
-    from app.repository.usuario_repo import obtener_admin
+        # Notifica al dueño del ticket que un técnico fue asignado
+        from app.repository.notificacion_repo import crear_notificacion
+        from app.repository.usuario_repo import obtener_admin
 
-    ids_a_notificar = set()
-    mensaje = f"Un técnico fue asignado al ticket #{id_ticket}"
+        ids_a_notificar = set()
+        mensaje = f"Un técnico fue asignado al ticket #{id_ticket}"
 
-    # Notificar al dueño del ticket si no es quien tomó el ticket
-    if ticket.id_usuario and ticket.id_usuario != id_usuario:
-        ids_a_notificar.add(ticket.id_usuario)
+        # Notificar al dueño del ticket si no es quien tomó el ticket
+        if ticket.id_usuario and ticket.id_usuario != id_usuario:
+            ids_a_notificar.add(ticket.id_usuario)
 
-    # Notificar al admin si no es quien tomó el ticket
-    admin = obtener_admin(db)
-    if admin and admin.id_usuario != id_usuario:
-        ids_a_notificar.add(admin.id_usuario)
+        # Notificar al admin si no es quien tomó el ticket
+        admin = obtener_admin(db)
+        if admin and admin.id_usuario != id_usuario:
+            ids_a_notificar.add(admin.id_usuario)
 
-    # Crea una notificación por cada destinatario identificado
-    for id_dest in ids_a_notificar:
-        crear_notificacion(db, id_dest, id_ticket, mensaje)
+        # Crea una notificación por cada destinatario identificado
+        for id_dest in ids_a_notificar:
+            crear_notificacion(db, id_dest, id_ticket, mensaje)
 
-    # ---------------------------------------------------------
-    # Genera notificaciones al cambiar estado del ticket
-    # El que cambia el estado no se notifica a sí mismo
-    # ---------------------------------------------------------
+        # ---------------------------------------------------------
+        # Genera notificaciones al cambiar estado del ticket
+        # El que cambia el estado no se notifica a sí mismo
+        # ---------------------------------------------------------
 
     if datos.estado:
         from app.repository.notificacion_repo import crear_notificacion
