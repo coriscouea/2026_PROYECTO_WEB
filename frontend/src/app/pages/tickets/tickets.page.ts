@@ -24,6 +24,8 @@ import { EmptyStateComponent } from '../../components/empty-state/empty-state.co
 import { LoadingStateComponent } from '../../components/loading-state/loading-state.component';
 import { ErrorStateComponent } from '../../components/error-state/error-state.component';
 
+import { EstadoRemoto } from 'src/app/models/estado-remoto';
+
 @Component({
   selector   : 'app-tickets',
   templateUrl: './tickets.page.html',
@@ -39,17 +41,15 @@ import { ErrorStateComponent } from '../../components/error-state/error-state.co
 })
 export class TicketsPage implements OnInit {
 
-  tickets             : any[]   = [];
   filtroActual        : string  = 'activos';
-  cargando            : boolean = false;
   rol                 : string  = '';
   nombre              : string  = '';
   tituloHeader        : string  = 'Mis Tickets';
   estadoFiltro        : string  = '';
   prioridadFiltro     : string  = '';
   conteoNotificaciones: number  = 0;
-  errorActual         : ErrorTraducido | null = null;  
-
+  estadoTickets       : EstadoRemoto<any[]> = EstadoRemoto.cargando();
+  
   // Resumen para las tarjetas del dashboard
   resumen = { total: 0, pendiente: 0, en_proceso: 0, finalizado: 0 };
 
@@ -115,8 +115,8 @@ export class TicketsPage implements OnInit {
   }
 
   async cargarTickets() {
-    this.cargando = true;
-    this.errorActual = null;
+    this.estadoTickets = EstadoRemoto.cargando();
+
     try {
       // Cargar todos para calcular resumen
       const todosActivos = await this.ticketService.listarTickets('activos', 1, 100);
@@ -133,24 +133,27 @@ export class TicketsPage implements OnInit {
       let tickets = await this.ticketService.listarTickets(this.filtroActual, 1, 100);
 
       // Filtro por estado del sidebar
-      if (this.estadoFiltro) {
+      if (this.estadoFiltro) 
         tickets = tickets.filter((t: any) => t.estado === this.estadoFiltro);
-      }
 
       // Filtro por prioridad del sidebar
-      if (this.prioridadFiltro) {
+      if (this.prioridadFiltro)
         tickets = tickets.filter((t: any) => t.prioridad === this.prioridadFiltro);
+
+      if (tickets.length === 0) {
+        this.estadoTickets = EstadoRemoto.vacio();      
+      } else {
+        this.estadoTickets = EstadoRemoto.exito(tickets);
       }
 
-      this.tickets = tickets;
     } catch (error: any) {
-      this.errorActual = this.errorService.traducir(error);
+      const err = this.errorService.traducir(error);
+      this.estadoTickets = EstadoRemoto.error(err.mensaje, err.puedeReintentar);
+
       if(error?.response?.status === 401){
         await this.authService.logout();
         this.router.navigate(['/login']);
       }
-    } finally {
-      this.cargando = false;
     }
   }
 

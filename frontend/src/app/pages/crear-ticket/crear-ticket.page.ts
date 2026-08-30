@@ -32,6 +32,8 @@ import { ErrorService } from '../../services/error';
 })
 export class CrearTicketPage {
 
+  private readonly FORM_KEY = 'crear_ticket_draft';
+
   // Estado efímero — datos del formulario, se pierden al cerrar la pantalla
   titulo      : string = '';
   descripcion : string = '';
@@ -63,7 +65,7 @@ export class CrearTicketPage {
     private ticketService: TicketService,
     private router       : Router,
     private errorService : ErrorService,
-    private toastCtrl   : ToastController
+    private toastCtrl   : ToastController,
   ) {}
 
   // Valida el título al abandonar el campo
@@ -161,6 +163,7 @@ export class CrearTicketPage {
 
       await this.mostrarToast('✅ Ticket creado correctamente');
       this.router.navigate(['/tickets']);
+      await this.limpiarBorrador(); // elimina el borrador tras crear exitosamente
 
     } catch (error: any) {
 
@@ -185,5 +188,44 @@ export class CrearTicketPage {
     } finally {
       this.enviando = false;
     }
+  }
+
+  // Guarda el estado actual del formulario en Preferences
+  async guardarBorrador() {
+    await Preferences.set({
+      key  : this.FORM_KEY,
+      value: JSON.stringify({
+        titulo     : this.titulo,
+        descripcion: this.descripcion,
+        idCategoria: this.idCategoria,
+        prioridad  : this.prioridad
+      })
+    });
+  }
+
+  // Restaura el borrador guardado al entrar a la pantalla
+  async restaurarBorrador() {
+    const result = await Preferences.get({ key: this.FORM_KEY });
+    if (result.value) {
+      const borrador   = JSON.parse(result.value);
+      this.titulo      = borrador.titulo      || '';
+      this.descripcion = borrador.descripcion || '';
+      this.idCategoria = borrador.idCategoria || 0;
+      this.prioridad   = borrador.prioridad   || '';
+    }
+  }
+  // Elimina el borrador al crear el ticket exitosamente
+  async limpiarBorrador() {
+    await Preferences.remove({ key: this.FORM_KEY });
+  }
+
+  // Restaura el borrador al entrar a la pantalla
+  async ionViewWillEnter() {
+    await this.restaurarBorrador();
+  }
+
+  // Guarda el borrador al salir de la pantalla
+  async ionViewWillLeave() {
+    await this.guardarBorrador();
   }
 }

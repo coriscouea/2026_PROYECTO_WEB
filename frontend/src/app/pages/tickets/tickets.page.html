@@ -47,19 +47,24 @@
 <ion-content class="tickets-content">
 
   <!-- Componente de carga — Situación 1 -->
-  <app-loading-state [cargando]="cargando"></app-loading-state>
+  <app-loading-state [cargando]="estadoTickets.tipo === 'cargando'"></app-loading-state>
 
-  <div *ngIf="!cargando">
+  <div *ngIf="estadoTickets.tipo !== 'cargando'">
   
     <!--Situación 4 - Error con reintento -->
     <app-error-state
-      *ngIf="errorActual"
-      [error]="errorActual"
+      *ngIf="estadoTickets.tipo === 'error'"
+      [error]="{
+        mensaje: estadoTickets.tipo === 'error' ? estadoTickets.mensaje : '',
+        detalle: '',
+        puedeReintentar: estadoTickets.tipo === 'error' ? estadoTickets.puedeReintentar : false,
+        accion: 'reintentar'
+      }"
       (reintentar)="cargarTickets()"
       (volver)="volverATickets()">
     </app-error-state>
 
-    <div *ngIf="!errorActual">
+    <div *ngIf="estadoTickets.tipo !== 'error'">
 
       <!-- -----------------------------------------------------
         Sección de bienvenida con nombre del usuario y rol
@@ -120,16 +125,16 @@
 
       <!-- Contador de tickets encontrados -->
       <div class="tickets-count">
-        {{ tickets.length }} ticket{{ tickets.length !== 1 ? 's' : '' }}
+        {{ estadoTickets.tipo === 'exito' ? estadoTickets.datos.length : 0 }} ticket{{ estadoTickets.tipo === 'exito' && estadoTickets.datos.length !== 1 ? 's' : '' }}
       </div>
 
       <!-- -----------------------------------------------------
         Lista de tickets — usa TicketCardComponent del catálogo
         Situación 2 — éxito con datos
       ------------------------------------------------------ -->
-      <div class="tickets-list" *ngIf="tickets.length > 0">
+      <div class="tickets-list" *ngIf="estadoTickets.tipo === 'exito'">
         <app-ticket-card
-          *ngFor="let ticket of tickets"
+          *ngFor="let ticket of estadoTickets.tipo === 'exito' ? estadoTickets.datos : []"
           [idTicket]="ticket.id_ticket"
           [titulo]="ticket.titulo"
           [estado]="ticket.estado"
@@ -145,7 +150,7 @@
         Situación 3 — éxito sin datos
       ------------------------------------------------------ -->
       <app-empty-state
-        *ngIf="tickets.length === 0"
+        *ngIf="estadoTickets.tipo === 'vacio'"
         icono="clipboard-outline"
         titulo="Sin tickets"
         [subtitulo]="'No hay tickets ' + filtroActual + ' por el momento'">
