@@ -85,19 +85,27 @@
       <!-- Metadata del ticket -->
       <div class="info-rows">
         <div class="info-row">
-          <span class="info-label">Creado</span>
+          <span class="info-label">Creado por:</span>
+          <span class="info-value">{{ ticket.nombre_usuario || 'Usuario #' + ticket.id_usuario }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Fecha</span>
           <span class="info-value">{{ ticket.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</span>
         </div>
+
         <div class="info-row">
           <span class="info-label">Técnico</span>
           <span class="info-value" [class.sin-asignar]="!ticket.id_tecnico_asignado">
-            {{ ticket.id_tecnico_asignado ? 'Asignado #' + ticket.id_tecnico_asignado : 'Sin asignar' }}
+            {{ ticket.nombre_tecnico || (ticket.id_tecnico_asignado ? 'Técnico #' + ticket.id_tecnico_asignado : 'Sin asignar')}}
           </span>
         </div>
+
         <div class="info-row" *ngIf="ticket.fecha_actualizacion">
           <span class="info-label">Actualizado</span>
           <span class="info-value">{{ ticket.fecha_actualizacion | date:'dd/MM/yyyy HH:mm' }}</span>
         </div>
+
       </div>
     </div>
 
@@ -110,7 +118,7 @@
 
       <!-- Tomar ticket — solo si no tiene técnico asignado -->
       <button class="accion-btn tomar-btn"
-        *ngIf="!ticket.id_tecnico_asignado"
+        *ngIf="!ticket.id_tecnico_asignado && (rol === 'tecnico' || rol === 'mesa_ayuda' || rol === 'admin')"
         (click)="tomarTicket()"
         [disabled]="actualizando">
         <ion-icon name="person-add"></ion-icon>

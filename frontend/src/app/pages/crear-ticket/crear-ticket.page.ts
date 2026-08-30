@@ -40,6 +40,7 @@ export class CrearTicketPage {
   idCategoria : number = 0;
   prioridad   : string = '';
   enviando    : boolean = false;
+  private ticketGuardado: boolean = false; 
 
   // Errores por campo — mapeados desde validación local y respuesta 422
   errores: Record<string, string> = {
@@ -162,8 +163,10 @@ export class CrearTicketPage {
       });
 
       await this.mostrarToast('✅ Ticket creado correctamente');
+      this.ticketGuardado = true;      // marca que el ticket fue guardado
+      await this.limpiarBorrador();   // elimina el borrador tras crear exitosamente
       this.router.navigate(['/tickets']);
-      await this.limpiarBorrador(); // elimina el borrador tras crear exitosamente
+
 
     } catch (error: any) {
 
@@ -226,6 +229,8 @@ export class CrearTicketPage {
 
   // Guarda el borrador al salir de la pantalla
   async ionViewWillLeave() {
+    if (!this.ticketGuardado){
     await this.guardarBorrador();
+    }
   }
 }

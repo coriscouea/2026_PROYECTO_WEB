@@ -114,6 +114,12 @@ class TicketResponse(BaseModel):                    # nombre de la clase que rep
     fecha_cierre                : Optional[datetime] = None
     activo                      : bool
 
+    # Nombres resueltos desde las relaciones — no vienen del body
+    
+    nombre_usuario              : Optional[str] = None  # Nombre del creador del ticket
+    nombre_tecnico              : Optional[str] = None  # Nombre del técnico asignado
+
+
     # ---------------------------------------------------------
     # model_config: permite que Pydantic lea objetos SQLAlchemy
     # Sin esto, Pydantic no puede convertir el modelo de BD

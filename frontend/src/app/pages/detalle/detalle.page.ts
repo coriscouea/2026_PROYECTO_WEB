@@ -119,8 +119,12 @@ export class DetallePage implements OnInit {
   async tomarTicket() {
     this.actualizando = true;
     try {
+
+    // Obtiene el id del usuario autenticado desde el token
+    const idTecnico = await this.authService.getIdUsuario();
+
       await this.ticketService.actualizarTicket(this.idTicket,
-        { id_tecnico_asignado: this.ticket.id_usuario }
+        { id_tecnico_asignado: idTecnico }
       );
       await this.mostrarToast('✅ Ticket tomado correctamente');
       await this.cargarDatos();

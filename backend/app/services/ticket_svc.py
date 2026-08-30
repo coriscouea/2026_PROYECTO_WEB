@@ -107,7 +107,14 @@ def svc_listar_tickets(db: Session, page: int, limit: int, current_user: dict, f
     rol = current_user.get("rol")
     id_usuario = int(current_user.get("sub"))
 
-    return listar_tickets(db, page, limit, rol, id_usuario, filtro)
+    tickets = listar_tickets(db, page, limit, rol, id_usuario, filtro)
+
+    # Resuelve los nombres desde las relaciones precargadas
+    for ticket in tickets:
+        ticket.nombre_usuario = ticket.solicitante.nombre if ticket.solicitante else None
+        ticket.nombre_tecnico = ticket.tecnico.nombre     if ticket.tecnico      else None
+
+    return tickets
 
 def svc_obtener_ticket(db: Session, id_ticket: int, current_user: dict) -> Ticket:
 
@@ -141,6 +148,11 @@ def svc_obtener_ticket(db: Session, id_ticket: int, current_user: dict) -> Ticke
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes permiso para ver este ticket"
         )
+    
+    # Resuelve los nombres desde las relaciones precargadas
+    ticket.nombre_usuario  = ticket.solicitante.nombre if ticket.solicitante else None
+    ticket.nombre_tecnico  = ticket.tecnico.nombre     if ticket.tecnico      else None
+
     return ticket
 
 def svc_actualizar_ticket(
@@ -219,6 +231,26 @@ def svc_actualizar_ticket(
             nombre_tecnico = tecnico.nombre if tecnico else "Técnico"
         )
 
+    # Notifica al dueño del ticket que un técnico fue asignado
+    from app.repository.notificacion_repo import crear_notificacion
+    from app.repository.usuario_repo import obtener_admin
+
+    ids_a_notificar = set()
+    mensaje = f"Un técnico fue asignado al ticket #{id_ticket}"
+
+    # Notificar al dueño del ticket si no es quien tomó el ticket
+    if ticket.id_usuario and ticket.id_usuario != id_usuario:
+        ids_a_notificar.add(ticket.id_usuario)
+
+    # Notificar al admin si no es quien tomó el ticket
+    admin = obtener_admin(db)
+    if admin and admin.id_usuario != id_usuario:
+        ids_a_notificar.add(admin.id_usuario)
+
+    # Crea una notificación por cada destinatario identificado
+    for id_dest in ids_a_notificar:
+        crear_notificacion(db, id_dest, id_ticket, mensaje)
+
     # ---------------------------------------------------------
     # Genera notificaciones al cambiar estado del ticket
     # El que cambia el estado no se notifica a sí mismo
@@ -279,5 +311,31 @@ def svc_desactivar_ticket(db: Session, id_ticket: int, current_user: dict) -> Ti
         id_ticket  = id_ticket,
         id_usuario = id_usuario
     )
+
+    # Notifica a los involucrados que el ticket fue desactivado
+    from app.repository.notificacion_repo import crear_notificacion
+    from app.repository.usuario_repo import obtener_admin
+
+    ids_a_notificar = set()
+    mensaje = f"El ticket #{id_ticket} fue desactivado"
+
+    # Notificar al dueño del ticket si no es quien desactivó
+    if ticket.id_usuario and ticket.id_usuario != id_usuario:
+        ids_a_notificar.add(ticket.id_usuario)
+
+    # Notificar al técnico asignado si no es quien desactivó
+    if ticket.id_tecnico_asignado and ticket.id_tecnico_asignado != id_usuario:
+        ids_a_notificar.add(ticket.id_tecnico_asignado)
+
+    # Notificar al admin si no es quien desactivó
+    admin = obtener_admin(db)
+    if admin and admin.id_usuario != id_usuario:
+        ids_a_notificar.add(admin.id_usuario)
+
+    # Crea una notificación por cada destinatario identificado
+    for id_dest in ids_a_notificar:
+        crear_notificacion(db, id_dest, id_ticket, mensaje)
+
+    return desactivar_ticket(db, ticket)
 
     return desactivar_ticket(db, ticket)
