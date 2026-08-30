@@ -222,6 +222,12 @@ def svc_actualizar_ticket(
         )
 
     if datos.id_tecnico_asignado and datos.id_tecnico_asignado != ticket.id_tecnico_asignado:
+        if rol not in ["tecnico", "mesa_ayuda", "admin"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Solo técnicos, mesa de ayuda y administradores pueden tomar tickets"
+            )
+        
         from app.repository.usuario_repo import obtener_usuario
         tecnico = obtener_usuario(db, datos.id_tecnico_asignado)
         historial_svc.registrar_tecnico_asignado(
