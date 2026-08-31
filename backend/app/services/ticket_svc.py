@@ -343,5 +343,3 @@ def svc_desactivar_ticket(db: Session, id_ticket: int, current_user: dict) -> Ti
         crear_notificacion(db, id_dest, id_ticket, mensaje)
 
     return desactivar_ticket(db, ticket)
-
-    return desactivar_ticket(db, ticket)

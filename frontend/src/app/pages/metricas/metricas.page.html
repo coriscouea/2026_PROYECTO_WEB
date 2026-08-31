@@ -8,101 +8,172 @@
 
 <ion-header class="ion-no-border">
   <ion-toolbar class="header-toolbar">
-
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tickets" text="" class="back-btn"></ion-back-button>
     </ion-buttons>
-
     <ion-title class="header-title">Dashboard</ion-title>
-
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="metricas-content">
 
-  <!-- Cargando -->
   <div class="loading-state" *ngIf="cargando">
     <ion-spinner name="crescent" color="primary"></ion-spinner>
   </div>
 
-  <div *ngIf="!cargando">
+  <div class="db-container" *ngIf="!cargando">
 
-    <!-- -----------------------------------------------------
-      Tarjetas de resumen por estado
-    ------------------------------------------------------ -->
-    <div class="seccion-titulo">Resumen de tickets</div>
-
-    <div class="cards-row">
-
-      <div class="stat-card pendiente">
-        <div class="stat-icon">🕐</div>
-        <div class="stat-valor">{{ resumen.pendiente }}</div>
-        <div class="stat-label">Pendientes</div>
-      </div>
-
-      <div class="stat-card proceso">
-        <div class="stat-icon">▶</div>
-        <div class="stat-valor">{{ resumen.en_proceso }}</div>
-        <div class="stat-label">En proceso</div>
-      </div>
-
-      <div class="stat-card finalizado">
-        <div class="stat-icon">✅</div>
-        <div class="stat-valor">{{ resumen.finalizado }}</div>
-        <div class="stat-label">Finalizados</div>
-      </div>
-
-      <div class="stat-card total">
-        <div class="stat-icon">📋</div>
-        <div class="stat-valor">{{ resumen.total }}</div>
-        <div class="stat-label">Total</div>
-      </div>
-
-    </div>
-
-    <!-- -----------------------------------------------------
-      Tiempo promedio de resolución
-    ------------------------------------------------------ -->
-    <div class="seccion-titulo">Tiempo promedio de resolución</div>
-
-    <div class="tiempo-card">
-      <div class="tiempo-valor">{{ tiempoResolucion.promedio_horas }}</div>
-      <div class="tiempo-label">horas promedio por ticket</div>
-      <div class="tiempo-hint">Calculado sobre tickets finalizados</div>
-    </div>
-
-    <!-- -----------------------------------------------------
-      Tickets por categoría
-    ------------------------------------------------------ -->
-    <div class="seccion-titulo">Por categoría</div>
-
-    <div class="lista-card">
-      <div class="lista-item" *ngFor="let c of porCategoria">
-        <div class="lista-nombre">{{ c.categoria }}</div>
-        <div class="barra-container">
-          <div class="barra-fill" [style.width.%]="getPorcentaje(c.total, resumen.total)"></div>
+    <!-- ─── Hero KPI — total global ──────────────────────── -->
+    <div class="hero-card">
+      <div>
+        <div class="hero-label">Total de tickets</div>
+        <div class="hero-num">{{ resumenGlobal.total_global }}</div>
+        <div class="hero-sub">
+          {{ resumenGlobal.total_activos }} activos ·
+          {{ resumenGlobal.desactivados }} desactivados
         </div>
-        <div class="lista-valor">{{ c.total }}</div>
       </div>
-      <div class="empty-lista" *ngIf="porCategoria.length === 0">Sin datos</div>
+      <div class="hero-icon">
+        <ion-icon name="pie-chart-outline" aria-hidden="true"></ion-icon>
+      </div>
     </div>
 
-    <!-- -----------------------------------------------------
-      Tickets por técnico
-    ------------------------------------------------------ -->
-    <div class="seccion-titulo">Por técnico</div>
+    <!-- ─── Stats — carga actual (solo activos) ───────────── -->
+    <div class="section-title">Carga actual</div>
+    <div class="stats-row">
+      <div class="stat-card stat-pend">
+        <div class="stat-num">{{ resumenGlobal.pendiente }}</div>
+        <div class="stat-lbl">pendientes</div>
+      </div>
+      <div class="stat-card stat-proc">
+        <div class="stat-num">{{ resumenGlobal.en_proceso }}</div>
+        <div class="stat-lbl">en proceso</div>
+      </div>
+      <div class="stat-card stat-done">
+        <div class="stat-num">{{ resumenGlobal.finalizado }}</div>
+        <div class="stat-lbl">finalizados</div>
+      </div>
+    </div>
 
-    <div class="lista-card">
-      <div class="lista-item" *ngFor="let t of porTecnico">
-        <div class="lista-nombre">{{ t.tecnico }}</div>
-        <div class="barra-container">
-          <div class="barra-fill tecnico" [style.width.%]="getPorcentaje(t.total, resumen.total)"></div>
+    <!-- ─── Donut + Tiempo ────────────────────────────────── -->
+    <div class="donut-row">
+
+      <div class="donut-card">
+        <svg width="90" height="90" viewBox="0 0 70 70">
+          <circle cx="35" cy="35" r="28"
+            fill="none" stroke="#E2E8F0" stroke-width="10"/>
+          <circle cx="35" cy="35" r="28"
+            fill="none" stroke="#EF9F27" stroke-width="10"
+            [attr.stroke-dasharray]="getDonutDash(resumen.pendiente)"
+            [attr.stroke-dashoffset]="getDonutOffset(0)"
+            transform="rotate(-90 35 35)"/>
+          <circle cx="35" cy="35" r="28"
+            fill="none" stroke="#378ADD" stroke-width="10"
+            [attr.stroke-dasharray]="getDonutDash(resumen.en_proceso)"
+            [attr.stroke-dashoffset]="getDonutOffset(resumen.pendiente)"
+            transform="rotate(-90 35 35)"/>
+          <circle cx="35" cy="35" r="28"
+            fill="none" stroke="#639922" stroke-width="10"
+            [attr.stroke-dasharray]="getDonutDash(resumen.finalizado)"
+            [attr.stroke-dashoffset]="getDonutOffset(resumen.pendiente + resumen.en_proceso)"
+            transform="rotate(-90 35 35)"/>
+          <text x="35" y="39"
+            text-anchor="middle"
+            font-size="13"
+            font-weight="600"
+            fill="#1a1a2e">{{ resumen.total }}</text>
+        </svg>
+
+        <div class="donut-legend">
+          <div class="leg-item">
+            <div class="leg-dot" style="background:#EF9F27"></div>
+            <span>Pendiente · {{ getPorcentaje(resumen.pendiente, resumen.total) }}%</span>
+          </div>
+          <div class="leg-item">
+            <div class="leg-dot" style="background:#378ADD"></div>
+            <span>En proceso · {{ getPorcentaje(resumen.en_proceso, resumen.total) }}%</span>
+          </div>
+          <div class="leg-item">
+            <div class="leg-dot" style="background:#639922"></div>
+            <span>Finalizado · {{ getPorcentaje(resumen.finalizado, resumen.total) }}%</span>
+          </div>
+          <div class="leg-item">
+            <div class="leg-dot" style="background:#94A3B8"></div>
+            <span>Desactivados · {{ resumenGlobal.desactivados }}</span>
+          </div>
         </div>
-        <div class="lista-valor">{{ t.total }}</div>
+      </div>
+
+      <div class="tiempo-card">
+        <div class="tiempo-label">Tiempo promedio</div>
+        <div class="tiempo-num">{{ tiempoResolucion.promedio_horas }}h</div>
+        <div class="tiempo-sub">por ticket finalizado</div>
+        <div class="tiempo-alerta" *ngIf="tiempoResolucion.promedio_horas > 48">
+          <ion-icon name="warning-outline" aria-hidden="true"></ion-icon>
+          sobre meta de 48h
+        </div>
+        <div class="tiempo-ok" *ngIf="tiempoResolucion.promedio_horas <= 48">
+          dentro de la meta
+        </div>
+        <div class="tiempo-hist">
+          {{ resumenGlobal.finalizados_historicos }} resueltos en total
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── Por técnico ───────────────────────────────────── -->
+    <div class="section-title">Carga por técnico</div>
+    <div class="section-card">
+      <div class="tec-item" *ngFor="let t of porTecnico; let i = index">
+        <div class="tec-avatar" [style.background]="getAvatarColor(i)">
+          {{ getInicial(t.tecnico) }}
+        </div>
+        <div class="tec-info">
+          <div class="tec-name">{{ t.tecnico }}</div>
+          <div class="tec-bar-wrap">
+            <div class="tec-bar-fill"
+              [style.width]="getPorcentajeMax(t.total) + '%'"
+              [style.background]="getAvatarColor(i)">
+            </div>
+          </div>
+        </div>
+        <div class="tec-count">{{ t.total }}</div>
       </div>
       <div class="empty-lista" *ngIf="porTecnico.length === 0">
-        Ningún ticket tiene técnico asignado aún
+        Sin técnicos asignados aún
       </div>
+    
+
+      <!-- Tickets sin técnico asignado -->
+      <div class="tec-item">
+        <div class="tec-avatar" style="background:#94A3B8">?</div>
+        <div class="tec-info">
+          <div class="tec-name">Sin asignar</div>
+          <div class="tec-bar-wrap">
+            <div class="tec-bar-fill"
+              [style.width]="getPorcentajeMax(resumenGlobal.total_activos - getTotalAsignados()) + '%'"
+              style="background:#94A3B8">
+            </div>
+          </div>
+        </div>
+        <div class="tec-count">{{ resumenGlobal.total_activos - getTotalAsignados() }}</div>
+      </div>
+    </div>
+    
+    <!-- ─── Por categoría ─────────────────────────────────── -->
+    <div class="section-title">Por categoría</div>
+    <div class="section-card">
+      <div class="cat-item" *ngFor="let c of porCategoria">
+        <div class="cat-name">{{ c.categoria }}</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar-fill"
+            [style.width]="getPorcentaje(c.total, resumenGlobal.total_global) + '%'">
+          </div>
+        </div>
+        <div class="cat-count">{{ c.total }}</div>
+      </div>
+      <div class="empty-lista" *ngIf="porCategoria.length === 0">Sin datos</div>
     </div>
 
   </div>

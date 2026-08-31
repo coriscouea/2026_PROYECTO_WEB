@@ -12,7 +12,8 @@ from app.services.metricas_svc import (
     svc_resumen,
     svc_por_categoria,
     svc_por_tecnico,
-    svc_tiempo_resolucion
+    svc_tiempo_resolucion,
+    svc_resumen_global
 )
 
 router = APIRouter(
@@ -81,4 +82,20 @@ def tiempo_resolucion(
     return RespuestaExito(
         datos   = datos,
         mensaje = "Tiempo promedio de resolución"
+    )
+
+# -------------------------------------------------------------
+# GET /api/v1/metricas/resumen-global
+# Resumen completo — activos, inactivos, históricos — solo admin
+# -------------------------------------------------------------
+
+@router.get("/resumen-global", status_code=status.HTTP_200_OK)
+def resumen_global(
+    db: Session = Depends(get_db),
+    _: dict    = Depends(require_roles("admin"))
+):
+    datos = svc_resumen_global(db)
+    return RespuestaExito(
+        datos   = datos,
+        mensaje = "Resumen global del sistema"
     )

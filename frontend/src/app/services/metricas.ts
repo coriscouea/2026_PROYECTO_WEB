@@ -86,4 +86,19 @@ export class MetricasService {
       throw error;
     }
   }
+
+
+  // -----------------------------------------------------------
+  // Resumen global — activos, inactivos e históricos
+  // -----------------------------------------------------------
+  async obtenerResumenGlobal(): Promise<any> {
+    try {
+      const headers  = await this.getHeaders();
+      const response = await axios.get(`${this.apiUrl}/api/v1/metricas/resumen-global`, { headers });
+      return response.data.datos;
+    } catch (error: any) {
+      if (error.response?.status === 401) await this.handle401();
+      throw error;
+    }
+  }
 }

@@ -8,7 +8,8 @@ from app.repository.metricas_repo import (
     total_por_estado,
     total_por_categoria,
     total_por_tecnico,
-    tiempo_promedio_resolucion
+    tiempo_promedio_resolucion,
+    resumen_global
 )
 
 def svc_resumen(db: Session) -> dict:
@@ -51,3 +52,9 @@ def svc_tiempo_resolucion(db: Session) -> dict:
     # ---------------------------------------------------------
 
     return tiempo_promedio_resolucion(db)
+
+def svc_resumen_global(db: Session) -> dict:
+
+    # Devuelve el resumen completo del sistema
+    # Distingue tickets activos, inactivos y finalizados históricos
+    return resumen_global(db)
