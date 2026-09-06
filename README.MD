@@ -305,6 +305,7 @@ backend/.env
 __pycache__/
 *.pyc
 *.pyo
+
 frontend/node_modules/
 frontend/.angular/cache/
 frontend/www/

@@ -26,8 +26,16 @@
 }
 
 .header-title { font-weight: 700; font-size: 18px; }
-.logout-btn   { --color: rgba(255,255,255,0.5); }
-.notif-btn    { --color: rgba(255,255,255,0.8); }
+.logout-btn   { --color: rgba(215, 16, 16, 0.5); }
+.notif-btn    { --color: rgba(34, 190, 99, 0.8); }
+
+.logout-btn ion-icon {
+  font-size: 20px;
+}
+
+.notif-btn ion-icon {
+  font-size: 20px;
+}
 
 // Badge notificaciones
 .notif-wrapper {
