@@ -24,3 +24,6 @@ frontend/node_modules/
 frontend/.angular/cache/
 frontend/dist/
 frontend/www/
+
+# Node modules en la raíz
+/node_modules/

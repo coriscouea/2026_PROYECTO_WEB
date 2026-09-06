@@ -215,12 +215,9 @@ Doble clic en `iniciar_helpdesk.bat` — levanta backend y frontend automáticam
 
 ## Credenciales de prueba
 
-| Email | Password | Rol |
-|---|---|---|
-| admin2@empresa.com | admin12345 | Admin |
-| tecnico@empresa.com | 12345678 | Técnico |
-| prueba@empresa.com | 12345678 | Mesa Ayuda |
-| testfinal@empresa.com | 12345678 | Usuario |
+Las credenciales de las cuentas de prueba (una por rol: Admin, Técnico, Mesa Ayuda, Usuario)
+se gestionan localmente y **no se versionan en el repositorio**. Ver `backend/.env.example`
+para las variables necesarias y crear las cuentas vía `POST /auth/registro` o el seed local.
 
 ---
 
