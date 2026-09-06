@@ -277,12 +277,9 @@ Las notificaciones se crean automáticamente en estos eventos:
 
 ## Credenciales de prueba
 
-| Email | Password | Rol |
-|---|---|---|
-| admin2@empresa.com | admin12345 | admin |
-| tecnico@empresa.com | 12345678 | tecnico |
-| prueba@empresa.com | 12345678 | mesa_ayuda |
-| testfinal@empresa.com | 12345678 | usuario |
+Las credenciales de las cuentas de prueba (una por rol: admin, tecnico, mesa_ayuda, usuario)
+se gestionan localmente y **no se versionan en el repositorio**. Ver `.env.example` para las
+variables necesarias y crear las cuentas vía `POST /auth/registro` o el seed local.
 
 ---
 
