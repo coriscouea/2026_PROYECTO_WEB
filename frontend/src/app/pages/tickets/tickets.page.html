@@ -74,6 +74,15 @@
           <h2>Bienvenido, {{ nombre }}</h2>
           <p>{{ getSubtitulo() }}</p>
         </div>
+        <!-- Indicador de última sincronización — datos pueden estar desactualizados -->
+        <div class="sync-indicator" *ngIf="ultimaSync">
+          <ion-icon name="cloud-done-outline" aria-hidden="true"></ion-icon>
+          Actualizado {{ ultimaSync | date:'dd/MM HH:mm' }}
+        </div>
+        <div class="sync-indicator sync-offline" *ngIf="!ultimaSync">
+          <ion-icon name="cloud-offline-outline" aria-hidden="true"></ion-icon>
+          Sin sincronizar
+        </div>
         <button class="nuevo-ticket-btn" (click)="crearTicket()">
           <ion-icon name="add" aria-hidden="true"></ion-icon>
           Nuevo Ticket

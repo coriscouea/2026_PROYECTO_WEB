@@ -317,3 +317,20 @@
   font-size: 18px;
   color    : #fff;
 }
+
+// Indicador de última sincronización de datos
+.sync-indicator {
+  display    : flex;
+  align-items: center;
+  gap        : var(--space-1);
+  font-size  : var(--type-caption-size);
+  color      : var(--color-text-secondary);
+  margin-top : var(--space-1);
+
+  ion-icon { font-size: 12px; }
+}
+
+// Estado sin sincronización — datos pueden estar desactualizados
+.sync-indicator.sync-offline {
+  color: var(--color-warning);
+}

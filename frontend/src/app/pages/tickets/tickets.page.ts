@@ -13,7 +13,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { logOutOutline, add, clipboardOutline, notificationsOutline,
-flashOffOutline } from 'ionicons/icons';
+flashOffOutline,cloudDoneOutline, cloudOfflineOutline } from 'ionicons/icons';
 import { AuthService } from '../../services/auth';
 import { TicketService } from '../../services/ticket';
 import { NotificacionService } from '../../services/notificacion';
@@ -25,6 +25,9 @@ import { LoadingStateComponent } from '../../components/loading-state/loading-st
 import { ErrorStateComponent } from '../../components/error-state/error-state.component';
 
 import { EstadoRemoto } from 'src/app/models/estado-remoto';
+
+import { SqliteService } from '../../services/sqlite';
+import { Network } from '@capacitor/network';
 
 @Component({
   selector   : 'app-tickets',
@@ -53,6 +56,8 @@ export class TicketsPage implements OnInit {
   // Resumen para las tarjetas del dashboard
   resumen = { total: 0, pendiente: 0, en_proceso: 0, finalizado: 0 };
 
+  ultimaSync: string | null = null;
+
   constructor(
     private ticketService       : TicketService,
     private authService         : AuthService,
@@ -61,12 +66,17 @@ export class TicketsPage implements OnInit {
     private route               : ActivatedRoute,
     private menuCtrl            : MenuController,
     private errorService        : ErrorService,
-    private toastCtrl           : ToastController 
+    private toastCtrl           : ToastController,
+    private sqliteService       : SqliteService 
   ) {
-    addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline, flashOffOutline });
+    addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline, flashOffOutline, cloudDoneOutline, cloudOfflineOutline });
   }
 
   async ngOnInit() {
+
+    // Inicializar SQLite antes de cargar tickets
+    await this.sqliteService.inicializar();
+
     this.rol          = await this.authService.getRol();
     this.nombre       = await this.authService.getNombre();
     this.tituloHeader = this.getTituloHeader();
@@ -114,48 +124,75 @@ export class TicketsPage implements OnInit {
     await toast.present();
   }
 
-  async cargarTickets() {
-    this.estadoTickets = EstadoRemoto.cargando();
+async cargarTickets() {
+  this.estadoTickets = EstadoRemoto.cargando();
 
-    try {
-      // Cargar todos para calcular resumen
-      const todosActivos = await this.ticketService.listarTickets('activos', 1, 100);
+  // Intenta leer desde caché local primero — pantalla nunca vacía
+  const tieneCache = await this.sqliteService.tieneDatos();
+  if (tieneCache) {
+    const ticketsCache = await this.sqliteService.leerTickets(this.filtroActual);
+    this.ultimaSync    = await this.sqliteService.obtenerUltimaSync();
 
-      // Calcular resumen de tarjetas
-      this.resumen = {
-        total     : todosActivos.length,
-        pendiente : todosActivos.filter((t: any) => t.estado === 'pendiente').length,
-        en_proceso: todosActivos.filter((t: any) => t.estado === 'en_proceso').length,
-        finalizado: todosActivos.filter((t: any) => t.estado === 'finalizado').length
-      };
+    let tickets = ticketsCache;
+    if (this.estadoFiltro)    tickets = tickets.filter((t: any) => t.estado    === this.estadoFiltro);
+    if (this.prioridadFiltro) tickets = tickets.filter((t: any) => t.prioridad === this.prioridadFiltro);
 
-      // Cargar tickets según filtro actual
-      let tickets = await this.ticketService.listarTickets(this.filtroActual, 1, 100);
-
-      // Filtro por estado del sidebar
-      if (this.estadoFiltro) 
-        tickets = tickets.filter((t: any) => t.estado === this.estadoFiltro);
-
-      // Filtro por prioridad del sidebar
-      if (this.prioridadFiltro)
-        tickets = tickets.filter((t: any) => t.prioridad === this.prioridadFiltro);
-
-      if (tickets.length === 0) {
-        this.estadoTickets = EstadoRemoto.vacio();      
-      } else {
-        this.estadoTickets = EstadoRemoto.exito(tickets);
-      }
-
-    } catch (error: any) {
-      const err = this.errorService.traducir(error);
-      this.estadoTickets = EstadoRemoto.error(err.mensaje, err.puedeReintentar);
-
-      if(error?.response?.status === 401){
-        await this.authService.logout();
-        this.router.navigate(['/login']);
-      }
+    if (tickets.length > 0) {
+      this.estadoTickets = EstadoRemoto.exito(tickets);
     }
   }
+
+  // Verifica conectividad antes de llamar al backend
+  const status = await Network.getStatus();
+  if (!status.connected) {
+    if (this.estadoTickets.tipo === 'cargando') {
+      this.estadoTickets = EstadoRemoto.vacio();
+    }
+    await this.mostrarToast('Sin conexión — mostrando datos locales', 'warning');
+    return;
+  }
+
+  try {
+    const todosActivos = await this.ticketService.listarTickets('activos', 1, 100);
+
+    this.resumen = {
+      total     : todosActivos.length,
+      pendiente : todosActivos.filter((t: any) => t.estado === 'pendiente').length,
+      en_proceso: todosActivos.filter((t: any) => t.estado === 'en_proceso').length,
+      finalizado: todosActivos.filter((t: any) => t.estado === 'finalizado').length
+    };
+
+    let tickets = await this.ticketService.listarTickets(this.filtroActual, 1, 100);
+
+    if (this.estadoFiltro)    tickets = tickets.filter((t: any) => t.estado    === this.estadoFiltro);
+    if (this.prioridadFiltro) tickets = tickets.filter((t: any) => t.prioridad === this.prioridadFiltro);
+
+    // Guardar en caché local para lectura offline
+    await this.sqliteService.guardarTickets(todosActivos);
+    this.ultimaSync = await this.sqliteService.obtenerUltimaSync();
+
+    if (tickets.length === 0) {
+      this.estadoTickets = EstadoRemoto.vacio();
+    } else {
+      this.estadoTickets = EstadoRemoto.exito(tickets);
+    }
+
+  } catch (error: any) {
+    const err = this.errorService.traducir(error);
+
+    // Si hay caché disponible no mostrar error — solo advertencia
+    if (tieneCache) {
+      await this.mostrarToast('No se pudo actualizar — mostrando datos locales', 'warning');
+    } else {
+      this.estadoTickets = EstadoRemoto.error(err.mensaje, err.puedeReintentar);
+    }
+
+    if (error?.response?.status === 401) {
+      await this.authService.logout();
+      this.router.navigate(['/login']);
+    }
+  }
+}
 
   volverATickets() {
     this.router.navigate(['/tickets']);
@@ -181,6 +218,7 @@ export class TicketsPage implements OnInit {
   }
 
   async cerrarSesion() {
+    await this.sqliteService.limpiarCacheCompleta();
     await this.authService.logout();
     this.router.navigate(['/login']);
   }
@@ -213,3 +251,5 @@ export class TicketsPage implements OnInit {
     this.cargarTickets();
   }
 }
+
+
