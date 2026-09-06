@@ -18,7 +18,10 @@ Cliente multiplataforma PWA construido con Ionic + Capacitor + Angular.
 | @capacitor/preferences | — | Almacenamiento seguro JWT |
 | Ionicons | — | Íconos |
 | Node.js | v24.14.0 | Runtime |
-| npm | 11.9.0 | Gestión de paquetes |
+| npm | 11.9.0 | Gestión de paquetes 
+| capacitor-secure-storage-plugin | 0.13.0 | Tokens JWT cifrados (Keychain/Keystore) |
+| @capacitor/network | 8.0.1 | Detección de conectividad |
+| localforage | 1.10.0 | Caché local IndexedDB |
 
 ---
 
@@ -120,6 +123,17 @@ npx serve www -s -p 8081
 | Android emulador | http://10.0.2.2:8081 | Chrome en emulador |
 | Android físico | http://192.168.1.12:8081 | Chrome en dispositivo |
 | iOS | Chrome DevTools iPhone 14 | Simulación responsive |
+
+---
+
+## Almacenamiento local
+
+| Dato | Mecanismo | Por qué |
+|---|---|---|
+| JWT tokens | SecureStorage (Keychain/Keystore) | Credenciales — cifrado obligatorio |
+| nombre, email, rol | @capacitor/preferences | No sensibles — ajustes de UI |
+| tickets_cache | localforage (IndexedDB) | Colección — requiere filtrado |
+| crear_ticket_draft | @capacitor/preferences | Estado efímero elevado temporalmente |
 
 ---
 
@@ -242,3 +256,14 @@ npx serve www -s -p 8081
 ### HTTP sin cifrar en desarrollo
 **Problema:** Android/iOS bloquean tráfico HTTP en producción.  
 **Estrategia:** Configuración acotada para desarrollo local. En producción real se requiere HTTPS.
+
+## Modo offline
+
+La bandeja implementa caché local con localforage:
+1. Lee desde caché local primero — pantalla nunca vacía
+2. Verifica conectividad con `@capacitor/network`
+3. Si hay conexión: actualiza desde backend + guarda en caché
+4. Si no hay conexión: muestra caché + toast advertencia
+5. Indicador de última sincronización visible
+
+---

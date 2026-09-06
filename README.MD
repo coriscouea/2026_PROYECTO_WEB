@@ -59,8 +59,10 @@ HelpDesk Web centraliza los requerimientos de soporte técnico de una empresa co
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── pages/          # 9 pantallas
-│   │   │   ├── services/       # 5 servicios
-│   │   │   └── guards/         # Guard de autenticación
+│   │   │   ├── services/       # 7 servicios
+│   │   │   ├── components/     # 5 componentes reutilizables
+│   │   │   ├── guards/         # auth-guard con redirectUrl
+│   │   │   └── models/         # EstadoRemoto<T>
 │   │   └── environments/       # Variables por entorno
 │   └── README.md               # Documentación frontend
 ├── spec/                       # Especificaciones SDD
@@ -161,6 +163,20 @@ Doble clic en `iniciar_helpdesk.bat` — levanta backend y frontend automáticam
 
 ---
 
+## Comandos principales
+
+| Comando | Carpeta | Descripción |
+|---|---|---|
+| `uvicorn app.main:app --reload` | backend/ | Servidor desarrollo con recarga |
+| `uvicorn app.main:app --host 0.0.0.0 --port 8000` | backend/ | Servidor producción red local |
+| `ionic serve` | frontend/ | Desarrollo con recarga en caliente |
+| `ionic build --prod` | frontend/ | Build de producción |
+| `npx serve www -s -p 8081` | frontend/ | Servir PWA de producción |
+| `alembic upgrade head` | backend/ | Aplicar migraciones |
+| `ionic capacitor add android` | frontend/ | Agregar plataforma Android |
+
+---
+
 ## Roles del sistema
 
 | Rol | Acceso |
@@ -191,6 +207,9 @@ Doble clic en `iniciar_helpdesk.bat` — levanta backend y frontend automáticam
 | 019 | Logging estructurado INFO/WARNING/ERROR | ✅ |
 | 020 | Configuración centralizada pydantic-settings | ✅ |
 | 021 | Reset contraseña con tabla solicitudes_reset | ✅ |
+| 022 | Sistema de diseño + componentes reutilizables | 10 |
+| 023 | Navegación, estado y formularios | 11 |
+| 024 | Persistencia offline + almacenamiento seguro | 12 |
 
 ---
 
@@ -217,6 +236,20 @@ curl http://localhost:8000/docs
 # Verificar frontend
 curl http://localhost:8100
 ```
+
+---
+
+## Almacenamiento local — LOPDP Ecuador
+
+| Dato | Mecanismo | Duración |
+|---|---|---|
+| JWT access_token | SecureStorage cifrado | Hasta logout / 30min |
+| JWT refresh_token | SecureStorage cifrado | Hasta logout / 1 día |
+| nombre, email, rol | @capacitor/preferences | Hasta logout |
+| tickets_cache | localforage (IndexedDB) | 24 horas o logout |
+| crear_ticket_draft | @capacitor/preferences | Hasta envío o logout |
+
+El logout elimina completamente todos los datos locales.
 
 ---
 

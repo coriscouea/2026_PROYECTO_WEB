@@ -210,6 +210,21 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 | PATCH | /api/v1/notificaciones/{id}/leer | Marcar una como leída |
 | PATCH | /api/v1/notificaciones/leer-todas | Marcar todas como leídas |
 
+## Lógica de notificaciones
+
+Las notificaciones se crean automáticamente en estos eventos:
+
+| Evento | Notificados |
+|---|---|
+| Comentario agregado | Dueño del ticket (si no comentó él) + técnico asignado (si no comentó él) + admin |
+| Técnico asignado | Dueño del ticket + admin |
+| Estado cambiado | Dueño del ticket + técnico asignado + admin |
+| Ticket desactivado | Dueño del ticket + técnico asignado + admin |
+
+**Regla:** Nunca se notifica al mismo usuario que realizó la acción.
+
+---
+
 ### Métricas (solo admin)
 
 | Método | Ruta | Descripción |
@@ -218,6 +233,27 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 | GET | /api/v1/metricas/por-categoria | Tickets por categoría |
 | GET | /api/v1/metricas/por-tecnico | Tickets por técnico |
 | GET | /api/v1/metricas/tiempo-resolucion | Tiempo promedio de resolución |
+
+## Resumen global de métricas
+
+```json
+{
+  "total_global": 33,
+  "pendiente": 14,
+  "en_proceso": 7,
+  "finalizado": 6,
+  "desactivados": 6,
+  "finalizados_historicos": 6,
+  "total_activos": 27
+}
+```
+
+- `total_global` — todos los tickets (activos + inactivos)
+- `pendiente`, `en_proceso`, `finalizado` — solo tickets activos
+- `desactivados` — soft delete
+- `finalizados_historicos` — finalizados activos e inactivos
+
+---
 
 ### Solicitudes de reset (solo admin)
 

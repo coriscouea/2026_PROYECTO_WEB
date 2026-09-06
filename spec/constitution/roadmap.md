@@ -27,6 +27,9 @@ _Features completadas, en orden de implementación._
 19. **019 · Logging estructurado** — niveles INFO/WARNING/ERROR en main.py y middleware/auth.py, lifespan handler.
 20. **020 · Configuración centralizada** — pydantic-settings en core/config.py, reemplaza os.getenv().
 021. **021** Reset password Tabla solicitudes_reset, endpoint solicitar-reset, panel admin, cambio password
+22. **022 · Sistema de diseño — Semana 10** — tokens de diseño en 3 niveles (primitivo/semántico/componente) en global.scss. Tipografía MD3, espaciado base 8px, radio, sombra, animaciones. Contraste WCAG AA verificado. 5 componentes Angular reutilizables: EstadoBadge, EmptyState, LoadingState, TicketCard, ErrorState. ErrorService traductor HTTP. 4 estados por pantalla. Accesibilidad aria-label completa. Responsivo con breakpoints y safe area.
+23. **023 · Navegación y estado — Semana 11** — rutas públicas/protegidas con canActivate, redirectUrl en guard, validación blur en crear-ticket, errores 422 mapeados por campo, tipo cerrado EstadoRemoto<T>, borrador formulario con Preferences y flag ticketGuardado.
+24. **024 · Persistencia offline — Semana 12** — tokens JWT en SecureStorage cifrado (Keychain/Keystore), caché local de tickets con localforage (IndexedDB), indicador de última sincronización, caducidad 24h, logout seguro LOPDP (limpia SecureStorage + Preferences + IndexedDB), prueba modo avión en emulador Android API 37.1.
 
 ## Siguiente 🔜
 
@@ -37,12 +40,12 @@ _Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
 
 _Opcionales para versiones futuras._
 
-- **022 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
-- **023 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
-- **024 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
-- **025 · HTTPS/TLS** — certificado SSL para producción real.
-- **026 · Redis y caché distribuida** — caché de consultas repetitivas.
-- **027 · Índices profundos** — revisión profunda de consultas SQLAlchemy.
+- **025 · Pruebas de carga** — Locust con escenarios para los 4 roles.
+- **026 · Cola de operaciones pendientes** — Outbox pattern para crear tickets offline.
+- **027 · Pruebas automatizadas** — pytest cubriendo auth, CRUD, validaciones y reglas de negocio.
+- **028 · Docker** — docker-compose.yml con FastAPI + MySQL para levantar con un comando.
+- **029 · HTTPS/TLS** — certificado SSL para producción real.
+- **030 · Rotación de refresh token** — invalidar refresh token anterior al renovar.
 
 ## Plan de frontend (detalle)
 

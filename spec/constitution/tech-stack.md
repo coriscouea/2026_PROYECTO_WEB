@@ -100,6 +100,15 @@ export const environment = {
   apiUrl: 'http://192.168.1.12:8000'
 };
 
+## Almacenamiento local — decisiones de seguridad
+
+| Dato | Mecanismo | Por qué |
+|---|---|---|
+| JWT tokens | SecureStorage (Keychain/Keystore) | Credenciales — cifrado hardware obligatorio |
+| nombre, email, rol | @capacitor/preferences | No sensibles — ajustes de UI |
+| tickets_cache | localforage (IndexedDB) | Colección que requiere filtrado/ordenación |
+| crear_ticket_draft | @capacitor/preferences | Estado efímero elevado temporalmente |
+
 
 ## Modelo de datos
 
