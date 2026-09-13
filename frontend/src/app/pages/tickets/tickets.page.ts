@@ -95,7 +95,11 @@ export class TicketsPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    // Leer rol del JWT — no de Preferences — para reflejar cambios inmediatos
+    this.rol    = await this.authService.getRol();
     this.nombre = await this.authService.getNombre();
+    this.tituloHeader = this.getTituloHeader();
+    
     if (!this.estadoFiltro && !this.prioridadFiltro) {
       this.cargarTickets();
     }
