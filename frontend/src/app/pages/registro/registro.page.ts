@@ -16,8 +16,7 @@ import {
   eyeOutline, eyeOffOutline, alertCircleOutline,
   checkmarkCircleOutline
 } from 'ionicons/icons';
-import axios from 'axios';
-import { environment } from '../../../environments/environment';
+import { HttpService } from '../../services/http';
 
 @Component({
   selector   : 'app-registro',
@@ -53,7 +52,8 @@ export class RegistroPage {
   fortaleza: number = 0; // 0-3
 
   constructor(
-    private router: Router
+    private router: Router,
+    private http  : HttpService
   ) {
     addIcons({
       helpCircle, mailOutline, lockClosedOutline, personOutline,
@@ -178,7 +178,7 @@ export class RegistroPage {
     this.exitoMensaje = '';
 
     try {
-      await axios.post(`${environment.apiUrl}/auth/registro`, {
+      await this.http.post('/auth/registro', {
         nombre  : this.nombre.trim(),
         email   : this.email.trim(),
         password: this.password
