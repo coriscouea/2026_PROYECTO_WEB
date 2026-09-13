@@ -65,63 +65,66 @@ export class HttpService {
 
   private registrarInterceptorRenovacion(): void {
     this.cliente.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        const config      = error.config as AxiosRequestConfig & { _reintentado?: boolean };
-        const es401       = error.response?.status === 401;
-        const reintentado = config._reintentado === true;
+      async (response) => {
+        // Captura 401 en respuestas exitosas (por validateStatus < 500)
+        if (response.status === 401) {
+          const config      = response.config as AxiosRequestConfig & { _reintentado?: boolean };
+          const reintentado = config._reintentado === true;
 
-        if (!es401 || reintentado) return Promise.reject(error);
+          if (reintentado) return response;
 
-        if (this.renovando) {
-          return new Promise((resolve, reject) => {
-            this.cola.push((nuevoToken) => {
-              if (nuevoToken) {
-                config.headers = config.headers || {};
-                config.headers['Authorization'] = `Bearer ${nuevoToken}`;
-                config._reintentado = true;
-                resolve(this.cliente(config));
-              } else {
-                reject(error);
-              }
+          if (this.renovando) {
+            return new Promise((resolve, reject) => {
+              this.cola.push((nuevoToken) => {
+                if (nuevoToken) {
+                  config.headers = config.headers || {};
+                  config.headers['Authorization'] = `Bearer ${nuevoToken}`;
+                  config._reintentado = true;
+                  resolve(this.cliente(config));
+                } else {
+                  reject(response);
+                }
+              });
             });
-          });
+          }
+
+          this.renovando = true;
+
+          try {
+            const { value: refreshToken } = await SecureStoragePlugin.get({ key: 'refresh_token' });
+            if (!refreshToken) throw new Error('Sin refresh token');
+
+            const respuesta = await axios.post(
+              `${environment.apiUrl}/auth/refresh`,
+              { refresh_token: refreshToken }
+            );
+
+            const nuevoToken: string = respuesta.data.datos.access_token;
+            await SecureStoragePlugin.set({ key: 'access_token', value: nuevoToken });
+
+            this.cola.forEach(cb => cb(nuevoToken));
+            this.cola = [];
+
+            config.headers = config.headers || {};
+            config.headers['Authorization'] = `Bearer ${nuevoToken}`;
+            config._reintentado = true;
+
+            return this.cliente(config);
+
+          } catch {
+            this.cola.forEach(cb => cb(null));
+            this.cola = [];
+            await this.cerrarSesion();
+            return response;
+
+          } finally {
+            this.renovando = false;
+          }
         }
 
-        this.renovando = true;
-
-        try {
-          const { value: refreshToken } = await SecureStoragePlugin.get({ key: 'refresh_token' });
-          if (!refreshToken) throw new Error('Sin refresh token');
-
-          const respuesta = await axios.post(
-            `${environment.apiUrl}/auth/refresh`,
-            { refresh_token: refreshToken }
-          );
-
-          const nuevoToken: string = respuesta.data.datos.access_token;
-
-          await SecureStoragePlugin.set({ key: 'access_token', value: nuevoToken });
-
-          this.cola.forEach(cb => cb(nuevoToken));
-          this.cola = [];
-
-          config.headers = config.headers || {};
-          config.headers['Authorization'] = `Bearer ${nuevoToken}`;
-          config._reintentado = true;
-
-          return this.cliente(config);
-
-        } catch {
-          this.cola.forEach(cb => cb(null));
-          this.cola = [];
-          await this.cerrarSesion();
-          return Promise.reject(error);
-
-        } finally {
-          this.renovando = false;
-        }
-      }
+        return response;
+      },
+      (error) => Promise.reject(error)
     );
   }
 
