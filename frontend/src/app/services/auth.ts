@@ -83,9 +83,13 @@ export class AuthService {
     const response = await this.http.get('/auth/me');
     const usuario  = response.data.datos;
 
+    // Obtener nombre del rol desde el JWT — consistente con login()
+    const token   = await this.getToken();
+    const payload = token ? JSON.parse(atob(token.split('.')[1])) : {};
+
     await Preferences.set({ key: 'nombre', value: usuario.nombre });
     await Preferences.set({ key: 'email',  value: usuario.email });
-    await Preferences.set({ key: 'rol',    value: usuario.id_rol.toString() });
+    await Preferences.set({ key: 'rol',    value: payload.rol || '' });
 
     return usuario;
   }
