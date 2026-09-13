@@ -38,11 +38,18 @@ TRANSICIONES_VALIDAS = {
     "finalizado"    : []
 }
 
-def svc_crear_ticket(db: Session, datos: TicketCreate) -> Ticket:
+def svc_crear_ticket(db: Session, datos: TicketCreate, current_user: dict) -> Ticket:
+
+    # ---------------------------------------------------------
+    # id_usuario siempre del JWT — nunca del body
+    # Previene IDOR/spoofing: ningún usuario puede crear
+    # tickets a nombre de otra persona
+    # ---------------------------------------------------------
+
+    datos.id_usuario = int(current_user.get("sub"))
 
     # ---------------------------------------------------------
     # Verifica que la categoría existe en la BD
-    # Si no existe devuelve 400 Bad Request
     # ---------------------------------------------------------
 
     categoria = db.query(Categoria).filter(

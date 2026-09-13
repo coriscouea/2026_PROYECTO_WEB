@@ -146,6 +146,19 @@ def svc_refresh(db: Session, refresh_token: str) -> dict:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuario no encontrado"
         )
+    
+    # ---------------------------------------------------------
+    # Verifica que el usuario sigue activo
+    # Un usuario desactivado no puede renovar tokens aunque
+    # su refresh token todavía sea válido (empleado despedido)
+    # ---------------------------------------------------------
+    
+    if not usuario.activo:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuario desactivado"
+        )
+    
     nuevo_payload= {
         "sub"   : str(usuario.id_usuario),
         "email" : usuario.email,

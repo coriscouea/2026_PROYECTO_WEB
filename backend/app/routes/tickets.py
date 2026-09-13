@@ -46,9 +46,9 @@ def crear_ticket(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    ticket = svc_crear_ticket(db, datos)
+    ticket = svc_crear_ticket(db, datos, current_user)
 
-    # Notificación al solicitante en segundo plano
+    # Notificación al solicitante — id del JWT, nunca del body
 
     background_tasks.add_task(
         crear_notificacion,
