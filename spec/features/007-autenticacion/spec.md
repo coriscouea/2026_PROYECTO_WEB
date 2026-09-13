@@ -115,6 +115,7 @@ y métricas solo tienen sentido si sabemos quién ejecuta cada acción.
 **Refresh**
 - [X] `POST /auth/refresh` emite nuevo access token sin requerir login.
 - [X] Si el refresh token es inválido o expirado devuelve **401 Unauthorized**.
+- [X] Si el usuario asociado al refresh token está inactivo (`activo=FALSE`) devuelve **401 Unauthorized** — mismo criterio que Login.
 
 **Protección de rutas**
 - [X] Cualquier endpoint protegido sin token devuelve **401 Unauthorized**.
@@ -157,8 +158,9 @@ Se elige JWT porque respeta el principio REST de statelessness, escala horizonta
 - **Exposición de credenciales** — mitigación: bcrypt para passwords, JWT en encabezado Authorization, claves en `.env`, nunca en logs ni código fuente.
 - **IDOR** — mitigación: verificar siempre que el recurso solicitado pertenece al usuario autenticado antes de ejecutar la operación.
 - **Fuerza bruta en login** — mitigación: rate limiting en `POST /auth/login` → 429 al superar el límite.
-- **Tokens vencidos mal manejados** — mitigación: el frontend detecta 401, usa el refresh token para renovar el access token, y solo redirige al login si el refresh también falla.
+- **Tokens vencidos mal manejados** — mitigación: el frontend detecta 401, usa el refresh token para renovar el access token, y solo redirige al login si el refresh también falla. Implementado en `services/http.ts` (Semana 13) — ver [[013-frontend-login]].
 - **Escalada de roles en `/auth/registro`** — corregido en revisión: `auth_svc.svc_registro` sobreescribe `datos.id_rol` de forma incondicional con el rol `usuario` por defecto antes de crear la cuenta, sin importar qué `id_rol` venga en el body. Antes de la corrección, un cliente no autenticado podía enviar `id_rol` de admin/técnico/mesa_ayuda y el registro lo aceptaba.
+- **Refresh de usuario desactivado** — corregido en revisión (Semana 13): `svc_refresh` no verificaba `usuario.activo` antes de emitir un nuevo access token. Un usuario desactivado por un admin podía seguir renovando su sesión (hasta 1 día, vigencia del refresh token) aunque ya no pudiera hacer login. Ahora `svc_refresh` aplica el mismo chequeo que `svc_login`.
 
 ## Fuera de alcance
 

@@ -27,3 +27,7 @@ notificaciones. Debe completarse antes de tocar cualquier lógica de negocio.
 
 - Autenticación y manejo de roles (→ feature 005).
 - Endpoints CRUD de tickets o usuarios (→ features 006 y 007).
+
+## Revisión posterior
+
+- **Doble fuente de esquema** — corregido en revisión (Semana 13): `main.py` llamaba `Base.metadata.create_all(bind=engine)` en cada arranque, además de las migraciones de Alembic. Con Alembic ya consolidado (feature 020), esto podía crear tablas sin registrar el `alembic_version` correspondiente y esconder migraciones faltantes. Se eliminó `create_all` — Alembic es ahora la única fuente de verdad del esquema, como ya indicaba `tech-stack.md` ("No escribir SQL manual... todo acceso a datos pasa por SQLAlchemy" y el flujo de Alembic).

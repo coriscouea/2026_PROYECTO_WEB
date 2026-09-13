@@ -41,7 +41,6 @@ Cada operación CRUD recorre las siguientes capas en orden:
 | GET    | `/api/v1/tickets/{id}` | Consulta el detalle de un ticket específico   | Pantalla "Detalle del ticket" |
 | PATCH  | `/api/v1/tickets/{id}` | Actualiza estado, técnico asignado o prioridad | Pantalla "Gestionar ticket"  |
 | DELETE | `/api/v1/tickets/{id}` | Soft delete — marca `activo=FALSE` (regla 3)  | Opción admin "Anular ticket" |
-| DELETE | `/api/v1/tickets/{id}` | Soft delete — marca el ticket como inactivo   | Opción admin "Anular ticket"  |
 
 ## Criterios de aceptación
 
@@ -83,7 +82,7 @@ El orden de procesamiento es: **sanitizar → validar → transformar** (FastAPI
 | `descripcion`  | str         | Sí          | min 10 chars, sin etiquetas HTML                     | 422             |
 | `prioridad`    | ENUM        | Sí          | solo `baja`, `media`, `alta`                         | 422             |
 | `id_categoria` | int         | Sí          | debe existir en tabla Categorías                     | 400             |
-| `id_usuario`   | int         | Sí          | debe existir y estar activo en tabla Usuario         | 400             |
+| `id_usuario`   | int         | Sí (schema) | **ignorado si viene distinto del JWT** — el service lo sobreescribe siempre con `sub` del token antes de validar; debe existir y estar activo | 400 |
 | `estado`       | ENUM        | No (PATCH)  | solo `pendiente`, `en_proceso`, `finalizado`         | 422             |
 
 > **400** = FK inexistente o dato malformado.
@@ -114,6 +113,8 @@ El orden de procesamiento es: **sanitizar → validar → transformar** (FastAPI
 - **Acceso sin autenticación** — cualquier endpoint sin token válido devuelve **401 Unauthorized**.
 - **Escalada de privilegios** — un usuario estándar no puede ejecutar PATCH ni DELETE; el rol se valida en la capa service, no en el frontend.
 - **Inyección de contenido** — `titulo` y `descripcion` se sanitizan eliminando etiquetas HTML antes de persistir, previniendo ataques XSS cuando el contenido se muestre a otros usuarios.
+- **IDOR/spoofing en creación de ticket** — corregido en revisión (Semana 13): `svc_crear_ticket` sobreescribía `id_usuario` únicamente en la documentación planeada, pero el código aceptaba el valor del body sin comparar contra el JWT. Cualquier usuario autenticado (de cualquier rol) podía crear un ticket a nombre de otro `id_usuario`. Ahora `id_usuario` se fuerza siempre desde `current_user["sub"]`, antes de cualquier otra validación — mismo patrón que la corrección de escalada de roles en `/auth/registro` (feature 007).
+- **Asignación de técnico sin validar rol** — corregido en revisión (Semana 13): `PATCH /api/v1/tickets/{id}` con `id_tecnico_asignado` aceptaba cualquier `id_usuario` existente, sin importar su rol. Ahora se verifica que el usuario asignado tenga rol `tecnico`, `mesa_ayuda` o `admin`; de lo contrario devuelve **422 Unprocessable Entity**.
 
 ## Fuera de alcance
 

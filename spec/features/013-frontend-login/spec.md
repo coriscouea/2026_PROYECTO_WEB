@@ -42,31 +42,70 @@ Pantallas de autenticación en Ionic Angular. Incluye login dividido estilo Pich
 ```
 Usuario ingresa email + password
         ↓
-POST /auth/login
+POST /auth/login (vía HttpService)
         ↓
 Backend devuelve access_token + refresh_token
         ↓
-Guardar en @capacitor/preferences
+Guardar tokens en SecureStoragePlugin (cifrado Keychain/Keystore)
         ↓
 POST /auth/me → obtener nombre, email, rol
         ↓
-Guardar nombre, email, rol en Preferences
+Guardar nombre, email, rol en @capacitor/preferences
         ↓
 Navegar a /tickets
 ```
 
+> **Actualizado (Semana 13):** el almacenamiento de tokens migró de
+> `@capacitor/preferences` a `SecureStoragePlugin` en la feature 024
+> (persistencia offline). Ver [[024-persistencia-offline]].
+
 ---
 
-## Almacenamiento de tokens
+## Almacenamiento de sesión
 
 ```typescript
-// Claves en @capacitor/preferences
+// Tokens JWT — SecureStoragePlugin (cifrado Keychain/Keystore)
 'access_token'  → JWT de acceso (30 min)
 'refresh_token' → JWT de renovación (1 día)
+
+// Datos no sensibles — @capacitor/preferences
 'nombre'        → Nombre completo del usuario
 'email'         → Email del usuario
 'rol'           → Rol: usuario | tecnico | mesa_ayuda | admin
 ```
+
+---
+
+## Cliente HTTP centralizado y renovación automática (Semana 13)
+
+`services/http.ts` reemplaza el uso directo de Axios en cada servicio.
+Ningún servicio (`ticket.ts`, `usuario.ts`, `metricas.ts`, `notificacion.ts`,
+`auth.ts`) importa Axios — todos consumen `HttpService`.
+
+Interceptores registrados, en orden:
+
+1. **Autenticación** — antes de cada request, lee `access_token` de
+   `SecureStoragePlugin` y lo adjunta como `Authorization: Bearer <token>`.
+   Rutas públicas (`/auth/login`, `/auth/registro`, `/auth/solicitar-reset`)
+   se excluyen.
+2. **Renovación** — captura el 401 de una respuesta rechazada (`onRejected`,
+   comportamiento estándar de Axios — sin `validateStatus` custom, para no
+   romper el manejo de errores 403/404/409/422/429 de las pantallas). Si
+   el 401 no es de un reintento previo (`_reintentado`), llama a
+   `POST /auth/refresh` con el `refresh_token`, guarda el nuevo
+   `access_token` y reintenta la petición original una sola vez. Varias
+   peticiones simultáneas que reciben 401 comparten una sola renovación
+   (cola `this.cola`) para evitar llamadas duplicadas a `/auth/refresh`.
+   Si la renovación falla (sin refresh token, o también expirado), cierra
+   sesión y redirige a `/login`.
+3. **Logging** — solo en desarrollo (`!environment.production`), registra
+   método, URL, código de respuesta y duración de cada request en consola.
+
+Esto cierra el punto pendiente del plan original de esta feature
+("Redirección automática al expirar token — usar refresh token") y del
+`spec.md` de la feature 007 (sección "Riesgos de seguridad" →
+"Tokens vencidos mal manejados"), que quedó descrito pero no
+implementado hasta ahora.
 
 ---
 

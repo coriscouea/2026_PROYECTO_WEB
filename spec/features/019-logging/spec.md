@@ -1,6 +1,6 @@
 # 019 · Logging Estructurado
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -22,12 +22,12 @@ que registren eventos importantes sin exponer información sensible.
 
 ## Criterios de aceptación
 
-- [ ] Configuración centralizada de logging en `backend/app/core/logging_config.py`.
-- [ ] Formato: `[LEVEL] FECHA HORA - módulo - mensaje`.
-- [ ] No registrar passwords, tokens ni datos sensibles en logs.
-- [ ] Los exception handlers globales en `main.py` registran errores con ERROR.
-- [ ] El middleware de auth registra intentos fallidos con WARNING.
-- [ ] `echo=True` de SQLAlchemy desactivado en producción.
+- [X] Configuración centralizada de logging en `backend/app/core/logging_config.py`.
+- [X] Formato: `[LEVEL] FECHA HORA - módulo - mensaje`.
+- [X] No registrar passwords, tokens ni datos sensibles en logs.
+- [X] Los exception handlers globales en `main.py` registran errores con ERROR.
+- [X] El middleware de auth registra intentos fallidos con WARNING.
+- [X] `echo=True` de SQLAlchemy desactivado en producción — nunca se activó en `database.py`.
 
 ## Fuera de alcance
 

@@ -151,7 +151,9 @@ export const environment = {
 - **Código 403** — token válido pero rol insuficiente.
 - **Código 429** — rate limiting en login (prevención de fuerza bruta).
 - **Escalada de roles:** `/auth/registro` siempre fuerza `id_rol = usuario` ignorando el body
+- **IDOR en creación de recursos:** el `id_usuario` de un ticket (y cualquier campo equivalente en features futuras) se fuerza siempre desde `current_user["sub"]` (el JWT), nunca se confía en el valor del body — mismo principio que ya se aplicaba en notificaciones.
 - **Sanitización XSS:** bleach.clean() en titulo, descripcion, nombre y texto de comentarios
+- **Cliente HTTP centralizado (frontend):** `services/http.ts` — único punto que llama a Axios. Interceptor de autenticación adjunta el token; interceptor de renovación captura 401 (vía `onRejected` estándar de Axios, sin `validateStatus` custom) y usa el refresh token para renovar y reintentar una sola vez antes de cerrar sesión.
 
 ## Seguridad de la API
 
@@ -194,12 +196,10 @@ El soft delete usa un solo campo: `activo: BOOLEAN DEFAULT TRUE`. Cuando un regi
 
 ## Optimizaciones futuras (backlog)
 
-- Redis para caché distribuida y colas persistentes (feature 017)
-- Pruebas automatizadas con pytest (feature 022)
-- Docker con docker-compose (feature 023)
-- Rotación de refresh token (feature 021)
-- Configuración centralizada con Pydantic Settings (feature 020)
-- Logging estructurado (feature 019)
+- Redis para caché distribuida y colas persistentes (backlog 017 — ver nota abajo, no implementado pese a estar marcado "Hecho" en el roadmap)
+- Pruebas automatizadas con pytest (backlog 027)
+- Docker con docker-compose (backlog 028)
+- Rotación de refresh token (backlog 030)
 
 ## Límites duros
 

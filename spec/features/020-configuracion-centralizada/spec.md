@@ -1,6 +1,6 @@
 # 020 · Configuración Centralizada
 
-**Estado:** propuesta
+**Estado:** implementado ✅
 
 ## Qué hace
 
@@ -41,12 +41,12 @@ settings = Settings()
 
 ## Criterios de aceptación
 
-- [ ] Crear `backend/app/core/config.py` con clase Settings.
-- [ ] Instalar `pydantic-settings` y agregar a requirements.txt.
-- [ ] Reemplazar `os.getenv()` en `security.py` con `settings.*`.
-- [ ] Reemplazar `os.getenv()` en `database.py` con `settings.*`.
-- [ ] Reemplazar `os.getenv()` en `main.py` con `settings.*`.
-- [ ] Si falta variable obligatoria el servidor no arranca y muestra error claro.
+- [X] Crear `backend/app/core/config.py` con clase Settings.
+- [X] Instalar `pydantic-settings` y agregar a requirements.txt.
+- [X] Reemplazar `os.getenv()` en `security.py` con `settings.*`.
+- [X] Reemplazar `os.getenv()` en `database.py` con `settings.*`.
+- [X] Reemplazar `os.getenv()` en `main.py` con `settings.*`.
+- [X] Si falta variable obligatoria el servidor no arranca y muestra error claro — `pydantic-settings` lo garantiza al no tener default en los campos obligatorios.
 
 ## Fuera de alcance
 
