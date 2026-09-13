@@ -237,6 +237,25 @@ def svc_actualizar_ticket(
         
         from app.repository.usuario_repo import obtener_usuario
         tecnico = obtener_usuario(db, datos.id_tecnico_asignado)
+
+        # ---------------------------------------------------------
+        # Verifica que el usuario asignado tiene rol correcto
+        # Previene asignar a usuarios sin rol técnico/mesa_ayuda/admin
+        # ---------------------------------------------------------
+        
+        if not tecnico:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El técnico especificado no existe"
+            )
+
+        rol_tecnico = tecnico.rol.nombre_rol if tecnico.rol else ""
+        if rol_tecnico not in ["tecnico", "mesa_ayuda", "admin"]:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"El usuario '{tecnico.nombre}' no tiene rol de técnico, mesa de ayuda o administrador"
+            )
+            
         historial_svc.registrar_tecnico_asignado(
             db             = db,
             id_ticket      = id_ticket,

@@ -142,14 +142,9 @@ app.add_middleware(
 )
 
 # -------------------------------------------------------------
-# Crea todas las tablas en la base de datos al arrancar
-# SQLAlchemy lee los modelos que heredan de Base y genera
-# las tablas correspondientes en MySQL si no existen aún
-# Nota: en producción esto se reemplaza por migraciones Alembic
-# Registrar el router
+# Las tablas se gestionan exclusivamente con Alembic.
+# Para aplicar migraciones: alembic upgrade head
 # -------------------------------------------------------------
-
-Base.metadata.create_all(bind = engine)
 
 # Routers
 
