@@ -2,100 +2,41 @@
 // services/notificacion.ts — Servicio de Notificaciones
 // HelpDesk Web | Feature 011 · Notificaciones Avanzadas
 // =============================================================
+// El token se inyecta automáticamente por HttpService.
+// El 401 lo maneja el interceptor de renovación en http.ts.
+// =============================================================
 
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import axios from 'axios';
-import { environment } from '../../environments/environment';
-import { AuthService } from './auth';
+import { HttpService } from './http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificacionService {
 
-  private apiUrl = environment.apiUrl;
+  constructor(private http: HttpService) {}
 
-  constructor(
-    private authService: AuthService,
-    private router     : Router
-  ) {}
-
-  private async getHeaders() {
-    const token = await this.authService.getToken();
-    return { Authorization: `Bearer ${token}` };
-  }
-
-  private async handle401() {
-    await this.authService.logout();
-    this.router.navigate(['/login']);
-  }
-
-  // -----------------------------------------------------------
-  // Listar todas las notificaciones
-  // -----------------------------------------------------------
-  
   async listarNotificaciones(): Promise<any[]> {
-    try {
-      const headers = await this.getHeaders();
-      const response = await axios.get(`${this.apiUrl}/api/v1/notificaciones`, { headers });
-      return response.data.datos;
-    } catch (error: any) {
-      if (error.response?.status === 401) await this.handle401();
-      throw error;
-    }
+    const response = await this.http.get('/api/v1/notificaciones');
+    return response.data.datos;
   }
-
-  // -----------------------------------------------------------
-  // Conteo de no leídas
-  // -----------------------------------------------------------
 
   async conteoNoLeidas(): Promise<number> {
     try {
-      const headers = await this.getHeaders();
-      const response = await axios.get(`${this.apiUrl}/api/v1/notificaciones/conteo`, { headers });
+      const response = await this.http.get('/api/v1/notificaciones/conteo');
       return response.data.datos.total;
-    } catch (error: any) {
-      if (error.response?.status === 401) await this.handle401();
+    } catch {
       return 0;
     }
   }
 
-  // -----------------------------------------------------------
-  // Marcar una notificación como leída
-  // -----------------------------------------------------------
-
   async marcarLeida(id: number): Promise<any> {
-    try {
-      const headers = await this.getHeaders();
-      const response = await axios.patch(
-        `${this.apiUrl}/api/v1/notificaciones/${id}/leer`,
-        {},
-        { headers }
-      );
-      return response.data.datos;
-    } catch (error: any) {
-      if (error.response?.status === 401) await this.handle401();
-      throw error;
-    }
+    const response = await this.http.patch(`/api/v1/notificaciones/${id}/leer`, {});
+    return response.data.datos;
   }
 
-  // -----------------------------------------------------------
-  // Marcar todas como leídas
-  // -----------------------------------------------------------
-
   async marcarTodasLeidas(): Promise<any> {
-    try {
-      const headers = await this.getHeaders();
-      const response = await axios.patch(
-        `${this.apiUrl}/api/v1/notificaciones/leer-todas`,
-        {},
-        { headers }
-      );
-      return response.data.datos;
-    } catch (error: any) {
-      if (error.response?.status === 401) await this.handle401();
-      throw error;
-    }
+    const response = await this.http.patch('/api/v1/notificaciones/leer-todas', {});
+    return response.data.datos;
   }
 }
