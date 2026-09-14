@@ -64,8 +64,8 @@ class TicketCreate(BaseModel):          # nombre de la clase que representa el e
     )
 
     id_usuario: int = Field(            # id_usuario: FK hacia la tabla usuarios (solicitante)
-        ..., 
-        gt = 0, 
+        0, 
+        ge = 0, 
         description = "ID del usuario que reporta el requerimiento"
     )
 

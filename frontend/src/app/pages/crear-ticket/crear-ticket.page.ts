@@ -148,18 +148,12 @@ export class CrearTicketPage {
     this.enviando = true;
 
     try {
-      // Obtiene el id del usuario desde el token almacenado
-      const tokenResult = await Preferences.get({ key: 'access_token' });
-      const token       = tokenResult.value || '';
-      const payload     = JSON.parse(atob(token.split('.')[1]));
-      const idUsuario   = parseInt(payload.sub);
-
       await this.ticketService.crearTicket({
         titulo      : this.titulo.trim(),
         descripcion : this.descripcion.trim(),
         id_categoria: this.idCategoria,
         prioridad   : this.prioridad,
-        id_usuario  : idUsuario
+        id_usuario  : 0
       });
 
       await this.mostrarToast('✅ Ticket creado correctamente');
