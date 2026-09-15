@@ -17,6 +17,10 @@ import {
   chevronDown, chevronForward, peopleOutline, barChartOutline
 } from 'ionicons/icons';
 import { AuthService } from './services/auth';
+
+import{ LocalNotifications } from '@capacitor/local-notifications';
+import { Capacitor } from '@capacitor/core';
+
 @Component({
   selector   : 'app-root',
   templateUrl: './app.component.html',
@@ -63,8 +67,35 @@ export class AppComponent implements OnInit {
       this.rol    = await this.authService.getRol();
       this.nombre = await this.authService.getNombre();
       this.email  = await this.authService.getEmail();
-
+      await this.inicializarNotificaciones();
     }
+
+    // ---------------------------------------------------------
+    // Crea el canal de notificaciones antes del primer uso
+    // El canal es inmutable una vez creado — se define aquí
+    // al arrancar la app, no al solicitar el permiso
+    // ---------------------------------------------------------  
+    
+    private async inicializarNotificaciones() {
+      
+      // Solo en plataformas Android, ya que iOS no requiere canales
+
+      if (!Capacitor.isNativePlatform())return;
+
+      try {
+        await LocalNotifications.createChannel({
+          id                : 'helpdesk-tickets',
+          name              : 'Notificaciones de Tickets',
+          description       : 'Alertas de cambios en tus tickets de soporte',
+          importance        : 4, // IMPORTANCE_HIGH,
+          sound             : 'default',
+          vibration         : true
+        });
+      } catch (error) {
+        console.error('[Notificaciones] No se pudo crear el canal:', error);
+      }
+    }
+    
 
     // ---------------------------------------------------------
     // Actualiza el rol cuando el usuario navega

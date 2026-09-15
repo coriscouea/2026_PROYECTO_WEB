@@ -13,11 +13,14 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonBackButton, IonSpinner, ToastController
+  IonButtons, IonBackButton, IonSpinner, IonIcon, ToastController
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import{ cameraOutline, imageOutline, warningOutline, closeCircle } from 'ionicons/icons';
 import { Preferences } from '@capacitor/preferences';
 import { TicketService } from '../../services/ticket';
 import { ErrorService } from '../../services/error';
+import { CameraService } from '../../services/camera';
 
 @Component({
   selector   : 'app-crear-ticket',
@@ -27,7 +30,7 @@ import { ErrorService } from '../../services/error';
   imports    : [
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
-    IonButtons, IonBackButton, IonSpinner
+    IonButtons, IonBackButton, IonSpinner, IonIcon
   ]
 })
 export class CrearTicketPage {
@@ -41,6 +44,15 @@ export class CrearTicketPage {
   prioridad   : string = '';
   enviando    : boolean = false;
   private ticketGuardado: boolean = false; 
+
+  // ---------------------------------------------------------
+  // Estado de la cámara nativa
+  // ---------------------------------------------------------
+
+  fotoBase64          : string | null = null;
+  camaraDisponible    : boolean = false;
+  mostrarBotonAjustes : boolean = false;
+  mensajeFoto         : string  = '';
 
   // Errores por campo — mapeados desde validación local y respuesta 422
   errores: Record<string, string> = {
@@ -67,9 +79,103 @@ export class CrearTicketPage {
     private router       : Router,
     private errorService : ErrorService,
     private toastCtrl   : ToastController,
-  ) {}
+    private cameraService: CameraService
+  ) {addIcons({ cameraOutline, imageOutline, warningOutline, closeCircle });
 
-  // Valida el título al abandonar el campo
+  // Verificar si la cámara está disponible en este dispositivo
+  this.camaraDisponible = this.cameraService.estaDisponible();
+  }
+
+  // ---------------------------------------------------------
+  // Cámara — solicitar foto con la cámara del dispositivo
+  // Solicita el permiso en el momento de uso — nunca al inicio
+  // ---------------------------------------------------------
+
+  async solicitarFotoCamara() {
+    this.mensajeFoto         = '';
+    this.mostrarBotonAjustes = false;
+
+    const resultado = await this.cameraService.tomarFoto();
+
+    if (resultado.exito && resultado.foto) {
+      this.fotoBase64  = resultado.foto;
+      this.mensajeFoto = '';
+      return;
+    }
+
+    // Gestión de los 4 estados del permiso
+    switch (resultado.estado) {
+      case 'denegado_permanente':
+        this.mostrarBotonAjustes = true;
+        this.mensajeFoto = resultado.mensaje;
+        break;
+      case 'denegado':
+        this.mensajeFoto = resultado.mensaje;
+        await this.mostrarToast(resultado.mensaje, 'warning');
+        break;
+      case 'restringido':
+        this.camaraDisponible = false;
+        break;
+      default:
+        // Cancelado — sin mensaje
+        break;
+    }
+  }
+
+  // ---------------------------------------------------------
+  // Galería — selector del sistema sin permiso de galería
+  // ---------------------------------------------------------
+
+  async solicitarFotoGaleria() {
+    this.mensajeFoto         = '';
+    this.mostrarBotonAjustes = false;
+
+    const resultado = await this.cameraService.elegirFoto();
+
+    if (resultado.exito && resultado.foto) {
+      this.fotoBase64  = resultado.foto;
+      this.mensajeFoto = '';
+      return;
+    }
+
+    switch (resultado.estado) {
+      case 'denegado_permanente':
+        this.mostrarBotonAjustes = true;
+        this.mensajeFoto = resultado.mensaje;
+        break;
+      case 'denegado':
+        this.mensajeFoto = resultado.mensaje;
+        await this.mostrarToast(resultado.mensaje, 'warning');
+        break;
+      case 'restringido':
+        this.camaraDisponible = false;
+        break;
+    }
+  }
+
+  // ---------------------------------------------------------
+  // Abre los ajustes del sistema ante denegación permanente
+  // ---------------------------------------------------------
+
+  async abrirAjustesSistema() {
+    await this.cameraService.abrirAjustes();
+    await this.mostrarToast('Activa el permiso de cámara en Ajustes', 'warning');
+  }
+
+  // ---------------------------------------------------------
+  // Elimina la foto adjunta
+  // ---------------------------------------------------------
+
+  eliminarFoto() {
+    this.fotoBase64          = null;
+    this.mensajeFoto         = '';
+    this.mostrarBotonAjustes = false;
+  }
+
+  // ---------------------------------------------------------
+  // Validaciones por campo
+  // ---------------------------------------------------------  
+
   validarTitulo() {
     this.tocados['titulo'] = true;
     if (!this.titulo.trim()) {
@@ -133,6 +239,11 @@ export class CrearTicketPage {
     });
     await toast.present();
   }
+  
+  // ---------------------------------------------------------
+  // Crear ticket — integra foto si está disponible
+  // La foto es opcional — el ticket se crea sin ella
+  // ---------------------------------------------------------
 
   async crearTicket() {
 
@@ -153,7 +264,8 @@ export class CrearTicketPage {
         descripcion : this.descripcion.trim(),
         id_categoria: this.idCategoria,
         prioridad   : this.prioridad,
-        id_usuario  : 0
+        id_usuario  : 0,
+        foto       : this.fotoBase64 || null
       });
 
       await this.mostrarToast('✅ Ticket creado correctamente');
@@ -195,7 +307,8 @@ export class CrearTicketPage {
         titulo     : this.titulo,
         descripcion: this.descripcion,
         idCategoria: this.idCategoria,
-        prioridad  : this.prioridad
+        prioridad  : this.prioridad,
+        foto       : this.fotoBase64
       })
     });
   }
@@ -209,16 +322,19 @@ export class CrearTicketPage {
       this.descripcion = borrador.descripcion || '';
       this.idCategoria = borrador.idCategoria || 0;
       this.prioridad   = borrador.prioridad   || '';
+      this.fotoBase64  = borrador.foto        || null;
     }
   }
   // Elimina el borrador al crear el ticket exitosamente
   async limpiarBorrador() {
     await Preferences.remove({ key: this.FORM_KEY });
+    this.camaraDisponible = this.cameraService.estaDisponible(); // Actualiza el estado de la cámara
   }
 
   // Restaura el borrador al entrar a la pantalla
   async ionViewWillEnter() {
     await this.restaurarBorrador();
+    this.camaraDisponible = this.cameraService.estaDisponible(); // Actualiza el estado de la cámara
   }
 
   // Guarda el borrador al salir de la pantalla

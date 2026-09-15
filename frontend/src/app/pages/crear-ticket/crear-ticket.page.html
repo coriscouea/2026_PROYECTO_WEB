@@ -106,6 +106,51 @@
     </div>
 
     <!-- -----------------------------------------------------
+      Adjuntar foto — funcionalidad nativa de cámara
+      Solo visible en dispositivos nativos
+      Degradación elegante: ticket se crea sin foto si
+      el permiso es denegado o la cámara no está disponible
+    ------------------------------------------------------ -->
+
+    <div class="field-group" *ngIf="camaraDisponible">
+      <div class="field-label">Foto adjunta (opcional)</div>
+
+      <!-- Previsualización de la foto tomada -->
+      <div class="foto-preview" *ngIf="fotoBase64">
+        <img [src]="'data:image/jpeg;base64,' + fotoBase64" alt="Foto adjunta"/>
+        <button class="foto-eliminar" (click)="eliminarFoto()" aria-label="Eliminar foto">
+          <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Botones de cámara y galería -->
+      <div class="foto-botones" *ngIf="!fotoBase64">
+        <button class="foto-btn" (click)="solicitarFotoCamara()" aria-label="Tomar foto con la cámara">
+          <ion-icon name="camera-outline" aria-hidden="true"></ion-icon>
+          Tomar foto
+        </button>
+        <button class="foto-btn" (click)="solicitarFotoGaleria()" aria-label="Elegir foto de la galería">
+          <ion-icon name="images-outline" aria-hidden="true"></ion-icon>
+          Galería
+        </button>
+      </div>
+
+      <!-- Mensaje de denegación permanente con acceso a Ajustes -->
+      <div class="foto-ajustes" *ngIf="mostrarBotonAjustes">
+        <p class="foto-aviso">
+          <ion-icon name="warning-outline" aria-hidden="true"></ion-icon>
+          Permiso de cámara denegado permanentemente.
+        </p>
+        <button class="foto-btn-ajustes" (click)="abrirAjustesSistema()">
+          Abrir Ajustes del sistema
+        </button>
+      </div>
+
+      <!-- Mensaje informativo de estado -->
+      <div class="foto-mensaje" *ngIf="mensajeFoto">{{ mensajeFoto }}</div>
+    </div>
+
+    <!-- -----------------------------------------------------
       Botón de envío — deshabilitado mientras se procesa
     ------------------------------------------------------ -->
     <button

@@ -156,3 +156,101 @@
   align-items: center;
   gap       : var(--space-1);
 }
+
+// ─── Sección de foto nativa ───────────────────────────────────
+
+// Previsualización de la foto tomada
+.foto-preview {
+  position     : relative;
+  border-radius: var(--radius-lg);
+  overflow     : hidden;
+  margin-bottom: var(--space-2);
+
+  img {
+    width        : 100%;
+    max-height   : 200px;
+    object-fit   : cover;
+    border-radius: var(--radius-lg);
+    display      : block;
+  }
+}
+
+// Botón para eliminar la foto adjunta
+.foto-eliminar {
+  position  : absolute;
+  top       : var(--space-2);
+  right     : var(--space-2);
+  background: rgba(0,0,0,0.5);
+  border    : none;
+  border-radius: var(--radius-full);
+  color     : #fff;
+  font-size : 24px;
+  width     : 32px;
+  height    : 32px;
+  display   : flex;
+  align-items    : center;
+  justify-content: center;
+  cursor    : pointer;
+}
+
+// Fila de botones de cámara y galería
+.foto-botones {
+  display: flex;
+  gap    : var(--space-2);
+}
+
+// Botón individual de cámara o galería
+.foto-btn {
+  flex           : 1;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  gap            : var(--space-1);
+  padding        : var(--space-3);
+  border-radius  : var(--radius-sm);
+  border         : 1.5px dashed var(--color-border);
+  background     : var(--color-surface-light);
+  color          : var(--color-text-secondary);
+  font-size      : var(--type-label-lg-size);
+  font-weight    : var(--font-weight-semibold);
+  cursor         : pointer;
+  min-height     : var(--touch-target-min);
+  transition     : all var(--duration-fast) var(--easing-standard);
+
+  ion-icon { font-size: 20px; }
+}
+
+.foto-btn:active { background: var(--color-surface-dark-alt); }
+
+// Aviso de denegación permanente
+.foto-aviso {
+  display    : flex;
+  align-items: center;
+  gap        : var(--space-1);
+  font-size  : var(--type-body-sm-size);
+  color      : var(--color-warning);
+  margin-bottom: var(--space-2);
+
+  ion-icon { font-size: 16px; }
+}
+
+// Botón para abrir ajustes del sistema
+.foto-btn-ajustes {
+  width          : 100%;
+  padding        : var(--space-2) var(--space-3);
+  border-radius  : var(--radius-sm);
+  border         : 1.5px solid var(--color-warning);
+  background     : transparent;
+  color          : var(--color-warning);
+  font-size      : var(--type-label-lg-size);
+  font-weight    : var(--font-weight-semibold);
+  cursor         : pointer;
+  min-height     : var(--touch-target-min);
+}
+
+// Mensaje de estado de la foto
+.foto-mensaje {
+  font-size : var(--type-label-md-size);
+  color     : var(--color-text-secondary);
+  margin-top: var(--space-1);
+}

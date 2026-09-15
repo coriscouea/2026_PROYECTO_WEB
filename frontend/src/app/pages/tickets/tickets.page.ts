@@ -23,11 +23,12 @@ import { TicketCardComponent } from '../../components/ticket-card/ticket-card.co
 import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
 import { LoadingStateComponent } from '../../components/loading-state/loading-state.component';
 import { ErrorStateComponent } from '../../components/error-state/error-state.component';
-
 import { EstadoRemoto } from 'src/app/models/estado-remoto';
-
 import { SqliteService } from '../../services/sqlite';
 import { Network } from '@capacitor/network';
+import { LocalNotificationService } from '../../services/local-notification';
+
+
 
 @Component({
   selector   : 'app-tickets',
@@ -58,6 +59,10 @@ export class TicketsPage implements OnInit {
 
   ultimaSync: string | null = null;
 
+  // Estado de notificaciones locales nativas
+  notificacionesPermitidas: boolean = false;
+  mostrarBotonAjustesNotif: boolean = false;
+
   constructor(
     private ticketService       : TicketService,
     private authService         : AuthService,
@@ -67,7 +72,8 @@ export class TicketsPage implements OnInit {
     private menuCtrl            : MenuController,
     private errorService        : ErrorService,
     private toastCtrl           : ToastController,
-    private sqliteService       : SqliteService 
+    private sqliteService       : SqliteService,
+    private localNotificationService : LocalNotificationService
   ) {
     addIcons({ logOutOutline, add, clipboardOutline, notificationsOutline, flashOffOutline, cloudDoneOutline, cloudOfflineOutline });
   }
@@ -104,6 +110,8 @@ export class TicketsPage implements OnInit {
       this.cargarTickets();
     }
     this.cargarConteoNotificaciones();
+
+    await this.inicializarNotificacionesLocales();
   }
 
   getTituloHeader(): string {
@@ -116,7 +124,40 @@ export class TicketsPage implements OnInit {
     return titulos[this.rol] || 'Tickets';
   }
 
-  // Método para mostrar toast
+  // ---------------------------------------------------------
+  // Gestiona los 4 estados del permiso de notificaciones
+  // ---------------------------------------------------------
+  async inicializarNotificacionesLocales(): Promise<void> {
+    if (!this.localNotificationService.estaDisponible()) {
+      // Restringido — dispositivo sin soporte o PWA web
+      this.notificacionesPermitidas = false;
+      return;
+    }
+
+    const estado = await this.localNotificationService.solicitarPermiso();
+
+    switch (estado) {
+      case 'concedido':
+        this.notificacionesPermitidas = true;
+        this.mostrarBotonAjustesNotif = false;
+        break;
+      case 'denegado':
+        this.notificacionesPermitidas = false;
+        this.mostrarBotonAjustesNotif = false;
+        await this.mostrarToast('Activa las notificaciones para recibir alertas de tickets', 'warning');
+        break;
+      case 'denegado_permanente':
+        this.notificacionesPermitidas = false;
+        this.mostrarBotonAjustesNotif = true;
+        break;
+      case 'restringido':
+        this.notificacionesPermitidas = false;
+        this.mostrarBotonAjustesNotif = false;
+        break;
+    }
+  }
+
+ //Metodo para mostrar un toast con mensaje y color
 
   async mostrarToast(mensaje: string, color: string = 'success') {
     const toast = await this.toastCtrl.create({
@@ -233,7 +274,17 @@ async cargarTickets() {
 
   async cargarConteoNotificaciones() {
     try {
+      const conteoAnterior = this.conteoNotificaciones;
       this.conteoNotificaciones = await this.notificacionService.conteoNoLeidas();
+      
+      // Disparar notificación local si llegaron nuevas notificaciones
+      if (this.notificacionesPermitidas && this.conteoNotificaciones > conteoAnterior && conteoAnterior > 0) {
+        await this.localNotificationService.mostrarNotificacion(
+          'HelpDesk Web',
+          `Tienes ${this.conteoNotificaciones} notificaciones sin leer`,
+          Date.now()
+        );
+      }      
     } catch (error) {
       this.conteoNotificaciones = 0;
     }
