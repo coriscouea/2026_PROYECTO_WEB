@@ -152,12 +152,17 @@ export class CameraService {
   // ---------------------------------------------------------
   async abrirAjustes(): Promise<void> {
     try {
-      const { NativeSettings } = await import('@capacitor/core') as any;
-      if (NativeSettings?.open) {
-        await NativeSettings.open({ option: 'application' });
-      }
+      const { App } = await import('@capacitor/app');
+      await (App as any).openUrl({ 
+        url: 'package:io.ionic.starter'
+      });
     } catch {
-      console.warn('[Camera] Ir a Ajustes del sistema manualmente');
+      try {
+        // Fallback — abrir configuración de la app
+        window.open('app-settings:', '_system');
+      } catch {
+        console.warn('[Camera] No se pudo abrir ajustes');
+      }
     }
   }
 }
