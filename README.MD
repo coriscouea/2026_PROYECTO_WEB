@@ -32,10 +32,16 @@ HelpDesk Web centraliza los requerimientos de soporte técnico de una empresa co
 | Autenticación | JWT (python-jose HS256) | — |
 | Frontend | Ionic + Capacitor + Angular | 8.8.17 / 8.5.0 / 20.x |
 | CLI Ionic | Ionic CLI | 7.2.1 |
-| HTTP Client | Axios | — |
 | Almacenamiento | @capacitor/preferences | — |
 | Node.js | — | v24.14.0 |
 | npm | — | 11.9.0 |
+| Almacenamiento seguro | capacitor-secure-storage-plugin | 0.13.0 |
+| Almacenamiento simple | @capacitor/preferences | 8.0.1 |
+| Caché local | localforage | 1.10.0 |
+| Cámara nativa | @capacitor/camera | 8.2.4 |
+| Notificaciones locales | @capacitor/local-notifications | 8.3.1 |
+| Red/Conectividad | @capacitor/network | 8.0.1 |
+| HTTP Client | Axios | — |
 
 ---
 
@@ -59,7 +65,7 @@ HelpDesk Web centraliza los requerimientos de soporte técnico de una empresa co
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── pages/          # 9 pantallas
-│   │   │   ├── services/       # 7 servicios
+│   │   │   ├── services/       # # 10 servicios (http, auth, ticket, notificacion, local-notification, camera, usuario, metricas, error, sqlite)
 │   │   │   ├── components/     # 5 componentes reutilizables
 │   │   │   ├── guards/         # auth-guard con redirectUrl
 │   │   │   └── models/         # EstadoRemoto<T>
@@ -174,6 +180,8 @@ Doble clic en `iniciar_helpdesk.bat` — levanta backend y frontend automáticam
 | `npx serve www -s -p 8081` | frontend/ | Servir PWA de producción |
 | `alembic upgrade head` | backend/ | Aplicar migraciones |
 | `ionic capacitor add android` | frontend/ | Agregar plataforma Android |
+| `ionic capacitor run android` | frontend/ | Compilar y ejecutar en dispositivo |
+| `adb -s 5dcd678d install -r "android\app\build\outputs\apk\debug\app-debug.apk"` | frontend/ | Instalar APK en dispositivo físico |
 
 ---
 
@@ -207,9 +215,11 @@ Doble clic en `iniciar_helpdesk.bat` — levanta backend y frontend automáticam
 | 019 | Logging estructurado INFO/WARNING/ERROR | ✅ |
 | 020 | Configuración centralizada pydantic-settings | ✅ |
 | 021 | Reset contraseña con tabla solicitudes_reset | ✅ |
-| 022 | Sistema de diseño + componentes reutilizables | 10 |
-| 023 | Navegación, estado y formularios | 11 |
-| 024 | Persistencia offline + almacenamiento seguro | 12 |
+| 022 | Sistema de diseño + componentes reutilizables | ✅ Semana 10 |
+| 023 | Navegación, estado y formularios | ✅ Semana 11 |
+| 024 | Persistencia offline + almacenamiento seguro | ✅ Semana 12 |
+| 025 | Cliente HTTP centralizado + interceptores + fixes seguridad | ✅ Semana 13 |
+| 026 | Funcionalidades nativas: cámara + notificaciones locales | ✅ Semana 14 |
 
 ---
 
