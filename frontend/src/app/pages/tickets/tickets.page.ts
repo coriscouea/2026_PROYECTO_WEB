@@ -276,15 +276,19 @@ async cargarTickets() {
     try {
       const conteoAnterior = this.conteoNotificaciones;
       this.conteoNotificaciones = await this.notificacionService.conteoNoLeidas();
+
+      console.log('[Notif] Permitidas:', this.notificacionesPermitidas);
+      console.log('[Notif] Conteo anterior:', conteoAnterior, '→ nuevo:', this.conteoNotificaciones);
+    
       
       // Disparar notificación local si llegaron nuevas notificaciones
       if (this.notificacionesPermitidas && this.conteoNotificaciones > conteoAnterior && conteoAnterior > 0) {
         await this.localNotificationService.mostrarNotificacion(
           'HelpDesk Web',
           `Tienes ${this.conteoNotificaciones} notificaciones sin leer`,
-          Date.now()
+          1
         );
-      }      
+      }     
     } catch (error) {
       this.conteoNotificaciones = 0;
     }

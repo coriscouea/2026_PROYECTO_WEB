@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Cámara — cadenas de propósito para App Store -->
+    <key>NSCameraUsageDescription</key>
+    <string>HelpDesk Web usa la cámara para fotografiar la falla técnica al crear un ticket de soporte, permitiendo al técnico visualizar el problema antes de atenderlo.</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>HelpDesk Web accede al selector de fotos del sistema para adjuntar una imagen existente al ticket de soporte sin necesidad de tomar una nueva foto.</string>
+
+    <!-- Notificaciones — cadena de propósito para App Store -->
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>HelpDesk Web envía notificaciones locales para alertar al usuario cuando llegan cambios en sus tickets de soporte técnico.</string>
+</dict>
+</plist>

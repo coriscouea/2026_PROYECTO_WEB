@@ -1,6 +1,6 @@
 # HelpDesk Web — Frontend
 
-Cliente multiplataforma PWA construido con Ionic + Capacitor + Angular.
+Cliente multiplataforma PWA + Android nativo construido con Ionic + Capacitor + Angular.
 
 ---
 
@@ -13,53 +13,54 @@ Cliente multiplataforma PWA construido con Ionic + Capacitor + Angular.
 | Angular | 20.x | Framework JS |
 | Angular CLI | 20.3.28 | Build y generación |
 | Ionic CLI | 7.2.1 | Serve, build, doctor |
-| TypeScript | — | Tipado estático |
-| Axios | — | HTTP Client |
-| @capacitor/preferences | — | Almacenamiento seguro JWT |
-| Ionicons | — | Íconos |
-| Node.js | v24.14.0 | Runtime |
-| npm | 11.9.0 | Gestión de paquetes 
+| Axios | — | HTTP Client centralizado |
 | capacitor-secure-storage-plugin | 0.13.0 | Tokens JWT cifrados (Keychain/Keystore) |
+| @capacitor/preferences | 8.0.1 | Datos de sesión no sensibles |
 | @capacitor/network | 8.0.1 | Detección de conectividad |
+| @capacitor/camera | 8.2.4 | Cámara nativa con 4 estados de permiso |
+| @capacitor/local-notifications | 8.3.1 | Notificaciones locales nativas |
 | localforage | 1.10.0 | Caché local IndexedDB |
+| Node.js | v24.14.0 | Runtime |
+| npm | 11.9.0 | Gestión de paquetes |
 
 ---
 
 ## Estructura
 
 ```
-frontend/
-├── src/
-│   ├── app/
-│   │   ├── pages/
-│   │   │   ├── login/              # Login dividido estilo Pichincha
-│   │   │   ├── registro/           # Registro con validaciones UX
-│   │   │   ├── olvido-password/    # Solicitud reset contraseña
-│   │   │   ├── tickets/            # Dashboard por rol + bandeja
-│   │   │   ├── detalle/            # Detalle ticket + historial + comentarios
-│   │   │   ├── crear-ticket/       # Formulario nuevo ticket
-│   │   │   ├── notificaciones/     # Lista con badge
-│   │   │   ├── usuarios/           # Gestión admin (solo admin)
-│   │   │   └── metricas/           # Dashboard métricas (solo admin)
-│   │   ├── services/
-│   │   │   ├── auth.ts             # login, logout, getToken, getRol, getNombre
-│   │   │   ├── ticket.ts           # CRUD tickets, historial, comentarios
-│   │   │   ├── notificacion.ts     # listar, conteo, marcar leída
-│   │   │   ├── usuario.ts          # CRUD usuarios, solicitudes reset
-│   │   │   └── metricas.ts         # resumen, por categoría, por técnico
-│   │   ├── guards/
-│   │   │   └── auth.guard.ts       # Redirige a /login si no hay token
-│   │   ├── app.component.html      # Sidebar árbol de navegación
-│   │   ├── app.component.ts        # Lógica del sidebar
-│   │   └── app.routes.ts           # Rutas con lazy loading
-│   ├── environments/
-│   │   ├── environment.ts          # apiUrl: localhost (desarrollo)
-│   │   └── environment.prod.ts     # apiUrl: IP red local (producción)
-│   ├── global.scss                 # Estilos globales del sidebar
-│   ├── index.html                  # Título: HelpDesk Web
-│   └── manifest.webmanifest        # Configuración PWA
-├── www/                            # Build de producción (generado)
-└── angular.json                    # Configuración Angular
+frontend/src/app/
+├── pages/
+│   ├── login/              # Login dividido estilo Pichincha
+│   ├── registro/           # Registro con validaciones UX
+│   ├── olvido-password/    # Solicitud reset contraseña
+│   ├── tickets/            # Dashboard + caché offline + notificaciones locales
+│   ├── detalle/            # Info + acciones por rol + historial + comentarios
+│   ├── crear-ticket/       # Formulario + validación blur + borrador + cámara nativa
+│   ├── notificaciones/     # Lista con badge
+│   ├── usuarios/           # Admin panel
+│   └── metricas/           # Dashboard analytics con donut chart
+├── components/
+│   ├── estado-badge/       # Badge de estado reutilizable
+│   ├── empty-state/        # Estado vacío reutilizable
+│   ├── loading-state/      # Spinner reutilizable
+│   ├── ticket-card/        # Tarjeta de ticket reutilizable
+│   └── error-state/        # Estado de error con reintentar
+├── services/
+│   ├── http.ts             # Cliente HTTP centralizado con interceptores
+│   ├── auth.ts             # Login, logout seguro, SecureStorage
+│   ├── ticket.ts           # CRUD tickets, historial, comentarios
+│   ├── notificacion.ts     # listar, conteo, marcar leída (backend)
+│   ├── local-notification.ts # Notificaciones locales nativas (dispositivo)
+│   ├── camera.ts           # Cámara nativa con 4 estados de permiso
+│   ├── usuario.ts          # CRUD usuarios, solicitudes reset
+│   ├── metricas.ts         # resumen global, por categoría, técnico
+│   ├── error.ts            # Traductor códigos HTTP → mensajes usuario
+│   └── sqlite.ts           # Caché local con localforage (IndexedDB)
+├── guards/
+│   └── auth-guard.ts       # canActivate + redirectUrl
+├── models/
+│   └── estado-remoto.ts    # Tipo cerrado EstadoRemoto<T>
+└── app.routes.ts           # Rutas públicas y protegidas
 ```
 
 ---
@@ -76,53 +77,51 @@ npm install
 ## Variables de entorno
 
 ```typescript
-// src/environments/environment.ts — desarrollo
+// environment.ts — desarrollo
 export const environment = {
   production: false,
   apiUrl: 'http://127.0.0.1:8000'
 };
 
-// src/environments/environment.prod.ts — producción
+// environment.prod.ts — producción
 export const environment = {
   production: true,
-  apiUrl: 'http://192.168.1.12:8000'   // IP de la computadora en la red local
+  apiUrl: 'http://192.168.1.12:8000'
 };
 ```
 
 ---
 
-## Comandos
+## Comandos principales
 
-```bash
-# Desarrollo con recarga en caliente
-ionic serve
-# → http://localhost:8100
+| Comando | Descripción |
+|---|---|
+| `ionic serve` | Desarrollo — localhost:8100 |
+| `ionic build --prod` | Build de producción → www/ |
+| `npx serve www -s -p 8081` | Servir PWA → localhost:8081 |
+| `npx cap sync android` | Sincronizar con Android |
+| `ionic capacitor add android` | Agregar plataforma Android |
 
-# Diagnóstico del entorno
-ionic info
+## Compilación APK (orden correcto)
 
-# Build de producción
+```powershell
+# Variables de entorno
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+$env:ANDROID_HOME = "C:\Users\cesar\AppData\Local\Android\Sdk"
+$env:PATH = "$env:PATH;$env:ANDROID_HOME\platform-tools"
+
+# Build
 ionic build --prod
-# → genera carpeta www/
+Remove-Item "android\app\src\main\assets\public\ngsw.json" -ErrorAction SilentlyContinue
+npx cap sync android
+cd android
+.\gradlew assembleDebug
+cd ..
 
-# Servir PWA de producción
-npx serve www -s -p 8081
-# → http://localhost:8081
-# → http://192.168.1.12:8081 (Android físico)
-# → http://10.0.2.2:8081 (emulador Android)
+# Instalar en dispositivo físico
+adb -s 5dcd678d install -r "android\app\build\outputs\apk\debug\app-debug.apk"
 ```
-
----
-
-## Destinos de ejecución
-
-| Destino | URL | Método |
-|---|---|---|
-| Navegador desarrollo | http://localhost:8100 | ionic serve |
-| PC producción | http://localhost:8081 | npx serve www |
-| Android emulador | http://10.0.2.2:8081 | Chrome en emulador |
-| Android físico | http://192.168.1.12:8081 | Chrome en dispositivo |
-| iOS | Chrome DevTools iPhone 14 | Simulación responsive |
 
 ---
 
@@ -133,137 +132,62 @@ npx serve www -s -p 8081
 | JWT tokens | SecureStorage (Keychain/Keystore) | Credenciales — cifrado obligatorio |
 | nombre, email, rol | @capacitor/preferences | No sensibles — ajustes de UI |
 | tickets_cache | localforage (IndexedDB) | Colección — requiere filtrado |
-| crear_ticket_draft | @capacitor/preferences | Estado efímero elevado temporalmente |
+| crear_ticket_draft | @capacitor/preferences | Estado efímero — incluye foto |
 
 ---
 
-## Pantallas implementadas
+## Cliente HTTP centralizado (Semana 13)
 
-### Login (`/login`)
-- Diseño dividido estilo Pichincha
-- Panel izquierdo: servicios que cubre HelpDesk + autor
-- Panel derecho: formulario email/password
-- Checkbox "Mantener sesión"
-- Enter en contraseña ejecuta login
-- Links: ¿Olvidaste tu contraseña? + ¿Usuario nuevo?
+`services/http.ts` — instancia única Axios con:
 
-### Registro (`/registro`)
-- Validaciones en tiempo real por campo
-- Barra de fortaleza de contraseña (Débil/Media/Fuerte)
-- Confirmación de contraseña
-- Redirige al login tras registro exitoso
-
-### Olvido de contraseña (`/olvido-password`)
-- Campo email con validación
-- Rate limiting 3/min
-- Mensaje de éxito explicando flujo por WhatsApp Mesa de Ayuda
-
-### Bandeja de tickets (`/tickets`)
-- Bienvenida con nombre del usuario
-- Subtítulo personalizado por rol
-- Tarjetas resumen: Total / Pendientes / En proceso / Finalizados
-- Filtros: Activos / Todos / Inactivos
-- Lista de tarjetas con borde por prioridad
-- Botón "+ Nuevo Ticket"
-- Sidebar árbol de navegación
-
-### Detalle del ticket (`/detalle/:id`)
-- Información completa del ticket
-- Badges de estado, categoría y prioridad
-- Acciones por rol: Tomar / Iniciar / Finalizar / Desactivar
-- Línea de tiempo del historial
-- Comentarios con campo de texto
-
-### Crear ticket (`/crear-ticket`)
-- Campos: título, descripción, categoría, prioridad
-- Validación antes de enviar
-
-### Notificaciones (`/notificaciones`)
-- Lista con indicador de no leída
-- Badge en el header con conteo
-- Marcar individual o todas como leídas
-- Navega al ticket al hacer clic
-
-### Gestión de usuarios (`/usuarios`) — solo admin
-- Lista con avatar coloreado por rol
-- Botón + para crear nuevo usuario con modal
-- Selector de rol en cada tarjeta
-- Botón 🔑 para cambiar contraseña
-- Botón 🗑 para desactivar usuario
-- Sección de solicitudes de reset pendientes
-
-### Dashboard métricas (`/metricas`) — solo admin
-- Tarjetas: Pendientes / En proceso / Finalizados / Total
-- Tiempo promedio de resolución en horas
-- Barras por categoría y por técnico
+1. **Interceptor de autenticación** — inyecta token desde SecureStorage
+2. **Interceptor de renovación 401** — renueva token transparentemente, flag anti-bucle, cola concurrente
+3. **Interceptor de logging** — solo en desarrollo, oculta Authorization
 
 ---
 
-## Sidebar árbol de navegación
+## Funcionalidades nativas (Semana 14)
 
-```
-⚡ HelpDesk Web
-├── 📂 Activos
-│   ├── 🕐 Pendiente
-│   │   ├── 🔴 Alta
-│   │   ├── 🟡 Media
-│   │   └── 🟢 Baja
-│   ├── ▶ En proceso
-│   │   ├── 🔴 Alta
-│   │   ├── 🟡 Media
-│   │   └── 🟢 Baja
-│   └── ✅ Finalizado
-│       ├── 🔴 Alta
-│       ├── 🟡 Media
-│       └── 🟢 Baja
-├── 🗂 Inactivos
-├── ☰ Todos los tickets
-├── ─────────────── (solo admin)
-├── 👥 Gestión de usuarios
-└── 📊 Dashboard
-─────────────────────────
-👤 César Risco
-   co.riscop@uea.edu.ec
-   🔧 Técnico
-```
+### Cámara — `services/camera.ts`
+- 4 estados de permiso: concedido, denegado, denegado permanente, restringido
+- Selector del sistema para fotos existentes — sin permisos de galería
+- Botón "Abrir Ajustes del sistema" via JavascriptInterface
+
+### Notificaciones locales — `services/local-notification.ts`
+- Canal `helpdesk-tickets` creado en `app.component.ts`
+- Permiso solicitado al entrar a la bandeja — nunca al inicio
+- Banner nativo al detectar nuevas notificaciones del backend
 
 ---
 
-## Paleta de colores
+## Configuración Android
 
-| Color | Hex | Uso |
+| Archivo | Propósito |
+|---|---|
+| `android/app/src/main/AndroidManifest.xml` | CAMERA + POST_NOTIFICATIONS + network config |
+| `android/app/src/main/res/xml/network_security_config.xml` | Permite HTTP en red local |
+| `android/app/src/main/java/io/ionic/starter/MainActivity.java` | MixedContentMode + JavascriptInterface |
+| `android/gradle.properties` | Java 21, SDK path, overridePathCheck |
+| `capacitor.config.ts` | androidScheme: 'http' |
+
+---
+
+## Dispositivos de prueba
+
+| Dispositivo | Tipo | URL |
 |---|---|---|
-| Fondo oscuro | #0D1B2A | Header, sidebar |
-| Azul acento | #0288D1 | Botones, links |
-| Cian claro | #4FC3F7 | Gradientes, badges |
-| Fondo claro | #F0F4F8 | Contenido principal |
-| Alta prioridad | #EF4444 | Borde tarjeta roja |
-| Media prioridad | #F59E0B | Borde tarjeta amarilla |
-| Baja prioridad | #10B981 | Borde tarjeta verde |
+| PC desarrollo | Navegador | http://localhost:8100 |
+| PC producción PWA | Navegador | http://localhost:8081 |
+| Android emulador | Chrome | http://10.0.2.2:8081 |
+| Xiaomi POCO M8 5G | App nativa | http://192.168.1.12:8000 |
 
 ---
-
-## Limitaciones del entorno
-
-### iOS requiere macOS
-**Problema:** Capacitor compila iOS solo en macOS con Xcode.  
-**Estrategia:** Simulación con Chrome DevTools → iPhone 14 para verificar diseño responsive.
-
-### Firewall bloquea Android físico
-**Problema:** El firewall de Windows y el router bloquean tráfico entre dispositivos.  
-**Estrategia:** Reglas específicas de firewall para puertos 8000 y 8081 sin desactivar seguridad global.
-
-### HTTP sin cifrar en desarrollo
-**Problema:** Android/iOS bloquean tráfico HTTP en producción.  
-**Estrategia:** Configuración acotada para desarrollo local. En producción real se requiere HTTPS.
 
 ## Modo offline
 
-La bandeja implementa caché local con localforage:
-1. Lee desde caché local primero — pantalla nunca vacía
+La bandeja implementa caché local:
+1. Lee desde caché primero — pantalla nunca vacía
 2. Verifica conectividad con `@capacitor/network`
-3. Si hay conexión: actualiza desde backend + guarda en caché
-4. Si no hay conexión: muestra caché + toast advertencia
+3. Si hay conexión → actualiza desde backend → guarda en caché
+4. Si no hay → muestra caché + toast advertencia
 5. Indicador de última sincronización visible
-
----
