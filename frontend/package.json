@@ -34,6 +34,7 @@
     "@capacitor/status-bar": "8.0.3",
     "@ionic/angular": "^8.0.0",
     "axios": "^1.19.0",
+    "capacitor-native-settings-extended": "^7.4.0",
     "capacitor-secure-storage-plugin": "^0.13.0",
     "ionicons": "^7.0.0",
     "localforage": "^1.10.0",

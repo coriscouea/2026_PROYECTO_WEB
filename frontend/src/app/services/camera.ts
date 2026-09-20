@@ -152,17 +152,12 @@ export class CameraService {
   // ---------------------------------------------------------
   async abrirAjustes(): Promise<void> {
     try {
-      const { App } = await import('@capacitor/app');
-      await (App as any).openUrl({ 
-        url: 'package:io.ionic.starter'
-      });
-    } catch {
-      try {
-        // Fallback — abrir configuración de la app
-        window.open('app-settings:', '_system');
-      } catch {
-        console.warn('[Camera] No se pudo abrir ajustes');
+      const win = window as any;
+      if (win.AndroidSettings) {
+        win.AndroidSettings.openAppSettings();
       }
+    } catch (error) {
+      console.warn('[Camera] No se pudo abrir ajustes:', error);
     }
   }
 }

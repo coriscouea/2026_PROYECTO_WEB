@@ -158,6 +158,8 @@ export class CrearTicketPage {
   // ---------------------------------------------------------
 
   async abrirAjustesSistema() {
+    console.log('[Camera] abrirAjustesSistema llamado');
+    console.log('[Camera] AndroidSettings:', !!(window as any).AndroidSettings);
     await this.cameraService.abrirAjustes();
     await this.mostrarToast('Activa el permiso de cámara en Ajustes', 'warning');
   }
